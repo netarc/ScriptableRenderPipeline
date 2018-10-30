@@ -237,8 +237,11 @@ namespace UnityEditor.ShaderGraph.Drawing
             if (create)
                 property.displayName = m_Graph.SanitizePropertyName(property.displayName);
 
-            var field = new BlackboardField(exposedIcon, property.displayName, property.propertyType.ToString()) { userData = property };
+            var icon = property.generatePropertyBlock ? exposedIcon : null;
+
+            var field = new BlackboardField(icon, property.displayName, property.propertyType.ToString()) { userData = property };
             var row = new BlackboardRow(field, new BlackboardFieldPropertyView(field, m_Graph, property));
+
             row.userData = property;
             if (index < 0)
                 index = m_PropertyRows.Count;
