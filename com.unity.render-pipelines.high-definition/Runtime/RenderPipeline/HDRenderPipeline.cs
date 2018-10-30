@@ -1208,22 +1208,15 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
                         StopStereoRendering(cmd, renderContext, camera);
 
-#if UNITY_2019_1_OR_NEWER
-                        GraphicsFence buildGPULightListsCompleteFence = new GraphicsFence();
-#else
-                        GPUFence buildGPULightListsCompleteFence = new GPUFence();
-#endif
+                        HDGPUAsyncTask buildLightListTask = new HDGPUAsyncTask("Build light list", ComputeQueueType.Background);
+
                         if (hdCamera.frameSettings.enableAsyncCompute)
                         {
-#if UNITY_2019_1_OR_NEWER
-                            GraphicsFence startFence = cmd.CreateAsyncGraphicsFence();
-#else
-                            GPUFence startFence = cmd.CreateGPUFence();
-#endif
-                            renderContext.ExecuteCommandBuffer(cmd);
-                            cmd.Clear();
-
-                            buildGPULightListsCompleteFence = m_LightLoop.BuildGPULightListsAsyncBegin(hdCamera, renderContext, m_SharedRTManager.GetDepthStencilBuffer(), m_SharedRTManager.GetStencilBufferCopy(), startFence, m_SkyManager.IsLightingSkyValid());
+                            buildLightListTask.PushStartFenceAndExecuteCmdBuffer(cmd, renderContext);
+                            buildLightListTask.Start(renderContext, () =>
+                            {
+                                m_LightLoop.BuildGPULightListsCommon(hdCamera, cmd, m_SharedRTManager.GetDepthStencilBuffer(), m_SharedRTManager.GetStencilBufferCopy(), m_SkyManager.IsLightingSkyValid());
+                            });
                         }
 
                         using (new ProfilingSample(cmd, "Render shadows", CustomSamplerId.RenderShadows.GetSampler()))
@@ -1257,7 +1250,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
                         if (hdCamera.frameSettings.enableAsyncCompute)
                         {
-                            m_LightLoop.BuildGPULightListAsyncEnd(hdCamera, cmd, buildGPULightListsCompleteFence);
+                            buildLightListTask.EndWithPostWork(cmd, () =>
+                            {
+                                m_LightLoop.PushGlobalParams(hdCamera, cmd);
+                            }
+                            );
                         }
                         else
                         {
