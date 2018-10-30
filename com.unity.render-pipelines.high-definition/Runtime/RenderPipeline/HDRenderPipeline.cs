@@ -1162,8 +1162,10 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     {
                         StartStereoRendering(cmd, renderContext, camera);
 
-                        // TODO: Everything here (SSAO, Shadow, Build light list, deferred shadow, material and light classification can be parallelize with Async compute)
-                        RenderSSAO(cmd, hdCamera, renderContext, postProcessLayer);
+                        if (!hdCamera.frameSettings.enableAsyncCompute)
+                        {
+                            RenderSSAO(cmd, hdCamera, renderContext, postProcessLayer);
+                        }
 
                         // Clear and copy the stencil texture needs to be moved to before we invoke the async light list build,
                         // otherwise the async compute queue can end up using that texture before the graphics queue is done with it.
@@ -1203,20 +1205,33 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             }
                         }
 
-                        // Needs the depth pyramid and motion vectors, as well as the render of the previous frame.
-                        RenderSSR(hdCamera, cmd);
+
+                        if (!hdCamera.frameSettings.enableAsyncCompute)
+                        {
+                            // Needs the depth pyramid and motion vectors, as well as the render of the previous frame.
+                            RenderSSR(hdCamera, cmd);
+                        }
 
                         StopStereoRendering(cmd, renderContext, camera);
 
                         HDGPUAsyncTask buildLightListTask = new HDGPUAsyncTask("Build light list", ComputeQueueType.Background);
+                        HDGPUAsyncTask SSLightingTask = new HDGPUAsyncTask("SSR & SSAO", ComputeQueueType.Background);
 
                         if (hdCamera.frameSettings.enableAsyncCompute)
                         {
                             buildLightListTask.PushStartFenceAndExecuteCmdBuffer(cmd, renderContext);
-                            buildLightListTask.Start(renderContext, () =>
+                            buildLightListTask.Start(renderContext, (CommandBuffer asyncCmd) =>
                             {
-                                m_LightLoop.BuildGPULightListsCommon(hdCamera, cmd, m_SharedRTManager.GetDepthStencilBuffer(), m_SharedRTManager.GetStencilBufferCopy(), m_SkyManager.IsLightingSkyValid());
+                                m_LightLoop.BuildGPULightListsCommon(hdCamera, asyncCmd, m_SharedRTManager.GetDepthStencilBuffer(), m_SharedRTManager.GetStencilBufferCopy(), m_SkyManager.IsLightingSkyValid());
                             });
+
+                            SSLightingTask.PushStartFenceAndExecuteCmdBuffer(cmd, renderContext);
+                            SSLightingTask.Start(renderContext, (CommandBuffer asyncCmd) =>
+                            {
+                                RenderSSAO(asyncCmd, hdCamera, renderContext, postProcessLayer);
+                                RenderSSR(hdCamera, asyncCmd);
+                            });
+
                         }
 
                         using (new ProfilingSample(cmd, "Render shadows", CustomSamplerId.RenderShadows.GetSampler()))
@@ -1247,6 +1262,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             PushFullScreenDebugTexture(hdCamera, cmd, m_ScreenSpaceShadowsBuffer, FullScreenDebugMode.ContactShadows);
                             StopStereoRendering(cmd, renderContext, camera);
                         }
+
 
                         if (hdCamera.frameSettings.enableAsyncCompute)
                         {
@@ -1280,7 +1296,12 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
 						SetMicroShadowingSettings(cmd);
 
-						// Might float this higher if we enable stereo w/ deferred
+                       if (hdCamera.frameSettings.enableAsyncCompute)
+                        {
+                            SSLightingTask.End(cmd);
+                        }
+
+                        // Might float this higher if we enable stereo w/ deferred
                         StartStereoRendering(cmd, renderContext, camera);
 
                         RenderDeferredLighting(hdCamera, cmd);

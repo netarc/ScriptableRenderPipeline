@@ -56,7 +56,7 @@ namespace UnityEngine.Rendering
             m_TaskStage = AsyncTaskStage.StartFenceCreated;
         }
 
-        public void Start(ScriptableRenderContext renderContext, Action asyncTask)
+        public void Start(ScriptableRenderContext renderContext, Action<CommandBuffer> asyncTask)
         {
             Debug.Assert(m_TaskStage == AsyncTaskStage.StartFenceCreated);
 
@@ -67,7 +67,7 @@ namespace UnityEngine.Rendering
 #else
             cmd.WaitOnGPUFence(m_StartFence);
 #endif
-            asyncTask();
+            asyncTask(cmd);
 
 #if UNITY_2019_1_OR_NEWER
             m_EndFence = cmd.CreateAsyncGraphicsFence();
