@@ -1162,8 +1162,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     {
                         StartStereoRendering(cmd, renderContext, camera);
 
-                        // TODO: Everything here (SSAO, Shadow, Build light list, deferred shadow, material and light classification can be parallelize with Async compute)
-                        RenderSSAO(cmd, hdCamera, renderContext, postProcessLayer);
+                        if (!hdCamera.frameSettings.enableAsyncCompute)
+                        {
+                            // TODO: Everything here (SSAO, Shadow, Build light list, deferred shadow, material and light classification can be parallelize with Async compute)
+                            RenderSSAO(cmd, hdCamera, renderContext, postProcessLayer);
+                        }
 
                         // Clear and copy the stencil texture needs to be moved to before we invoke the async light list build,
                         // otherwise the async compute queue can end up using that texture before the graphics queue is done with it.
@@ -1203,12 +1206,16 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             }
                         }
 
-                        // Needs the depth pyramid and motion vectors, as well as the render of the previous frame.
-                        RenderSSR(hdCamera, cmd);
+                        if(!hdCamera.frameSettings.enableAsyncCompute)
+                        {
+                            // Needs the depth pyramid and motion vectors, as well as the render of the previous frame.
+                            RenderSSR(hdCamera, cmd);
+                        }
 
                         StopStereoRendering(cmd, renderContext, camera);
 
                         HDGPUAsyncTask buildLightListTask = new HDGPUAsyncTask("Build light list", ComputeQueueType.Background);
+                        HDGPUAsyncTask SSLightingTask = new HDGPUAsyncTask("SSR & SSAO", ComputeQueueType.Background);
 
                         if (hdCamera.frameSettings.enableAsyncCompute)
                         {
@@ -1216,6 +1223,14 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             buildLightListTask.Start(renderContext, () =>
                             {
                                 m_LightLoop.BuildGPULightListsCommon(hdCamera, cmd, m_SharedRTManager.GetDepthStencilBuffer(), m_SharedRTManager.GetStencilBufferCopy(), m_SkyManager.IsLightingSkyValid());
+                            });
+
+                            SSLightingTask.PushStartFenceAndExecuteCmdBuffer(cmd, renderContext);
+                            SSLightingTask.Start(renderContext, () =>
+                            {
+                                RenderSSR(hdCamera, cmd);
+                                // TODO: Everything here (SSAO, Shadow, Build light list, deferred shadow, material and light classification can be parallelize with Async compute)
+                                RenderSSAO(cmd, hdCamera, renderContext, postProcessLayer);
                             });
                         }
 
@@ -1279,6 +1294,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                         m_VolumetricLightingSystem.VolumetricLightingPass(hdCamera, cmd, m_FrameCount);
 
 						SetMicroShadowingSettings(cmd);
+
+                        if(hdCamera.frameSettings.enableAsyncCompute)
+                        {
+                            SSLightingTask.End(cmd);
+                        }
 
 						// Might float this higher if we enable stereo w/ deferred
                         StartStereoRendering(cmd, renderContext, camera);

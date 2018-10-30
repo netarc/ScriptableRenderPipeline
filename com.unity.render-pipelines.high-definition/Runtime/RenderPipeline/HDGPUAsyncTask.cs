@@ -60,7 +60,7 @@ namespace UnityEngine.Rendering
         {
             Debug.Assert(m_TaskStage == AsyncTaskStage.StartFenceCreated);
 
-            CommandBuffer cmd = CommandBufferPool.Get(m_TaskName);
+            var cmd = CommandBufferPool.Get(m_TaskName);
 #if UNITY_2019_1_OR_NEWER
             cmd.WaitOnAsyncGraphicsFence(m_StartFence);
 #else
