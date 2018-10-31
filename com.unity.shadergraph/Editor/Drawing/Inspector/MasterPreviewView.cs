@@ -83,28 +83,28 @@ namespace UnityEditor.ShaderGraph.Drawing.Inspector
 
             m_PreviewRenderHandle = previewManager.masterRenderData;
 
-            var topContainer = new VisualElement() { name = "top" };
-            {
-                m_Title = new Label() { name = "title" };
-
-                // Add preview collapse button on top of preview
-                m_CollapsePreviewContainer = new VisualElement { name = "collapse-container" };
-                m_CollapsePreviewContainer.AddToClassList("collapse-container");
-                m_CollapsePreviewButton = new VisualElement { name = "icon" };
-                m_CollapsePreviewButton.AddToClassList("icon");
-                m_CollapsePreviewContainer.Add(m_CollapsePreviewButton);
-                m_CollapsePreviewContainer.AddManipulator(new Clickable(() =>
-                    {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Collapse Preview");
-                        m_Expanded ^= true;
-                        UpdateExpandedButtonState();
-                        UpdatePreviewVisibility();
-                    }));
-
-                topContainer.Add(m_Title);
-                topContainer.Add(m_CollapsePreviewContainer);
-            }
-            Add(topContainer);
+//            var topContainer = new VisualElement() { name = "top" };
+//            {
+//                m_Title = new Label() { name = "title" };
+//
+//                // Add preview collapse button on top of preview
+//                m_CollapsePreviewContainer = new VisualElement { name = "collapse-container" };
+//                m_CollapsePreviewContainer.AddToClassList("collapse-container");
+//                m_CollapsePreviewButton = new VisualElement { name = "icon" };
+//                m_CollapsePreviewButton.AddToClassList("icon");
+//                m_CollapsePreviewContainer.Add(m_CollapsePreviewButton);
+//                m_CollapsePreviewContainer.AddManipulator(new Clickable(() =>
+//                    {
+//                        m_Graph.owner.RegisterCompleteObjectUndo("Collapse Preview");
+//                        m_Expanded ^= true;
+//                        UpdateExpandedButtonState();
+//                        UpdatePreviewVisibility();
+//                    }));
+//
+//                topContainer.Add(m_Title);
+//                topContainer.Add(m_CollapsePreviewContainer);
+//            }
+//            Add(topContainer);
 
             m_Preview = new VisualElement {name = "middle"};
             {

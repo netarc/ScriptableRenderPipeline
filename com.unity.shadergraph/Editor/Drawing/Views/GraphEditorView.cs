@@ -22,8 +22,17 @@ namespace UnityEditor.ShaderGraph.Drawing
         public Vector2 masterPreviewSize = new Vector2(400, 400);
     }
 
+    [Serializable]
+    class ToggleSettings
+    {
+        public bool toggleBlackboard = true;
+        public bool togglePreview = true;
+    }
+
     public class GraphEditorView : VisualElement, IDisposable
     {
+
+
         MaterialGraphView m_GraphView;
         MasterPreviewView m_MasterPreviewView;
 
@@ -32,6 +41,9 @@ namespace UnityEditor.ShaderGraph.Drawing
         SearchWindowProvider m_SearchWindowProvider;
         EdgeConnectorListener m_EdgeConnectorListener;
         BlackboardProvider m_BlackboardProvider;
+
+        const string k_ToggleSettings = "UnityEditor.ShaderGraph.ToggleSettings";
+        ToggleSettings m_ToggleSettings;
 
         const string k_FloatingWindowsLayoutKey = "UnityEditor.ShaderGraph.FloatingWindowsLayout";
         FloatingWindowsLayout m_FloatingWindowsLayout;
@@ -63,7 +75,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             set
             {
                 m_BlackboardProvider.assetName = value;
-                m_MasterPreviewView.assetName = value;
+                //m_MasterPreviewView.assetName = value;
             }
         }
 
@@ -72,6 +84,12 @@ namespace UnityEditor.ShaderGraph.Drawing
             m_Graph = graph;
             AddStyleSheetPath("Styles/GraphEditorView");
             previewManager = new PreviewManager(graph);
+
+            string serializedToggle = EditorUserSettings.GetConfigValue(k_ToggleSettings);
+            if (!string.IsNullOrEmpty(serializedToggle))
+            {
+                m_ToggleSettings = JsonUtility.FromJson<ToggleSettings>(serializedToggle);
+            }
 
             string serializedWindowLayout = EditorUserSettings.GetConfigValue(k_FloatingWindowsLayoutKey);
             if (!string.IsNullOrEmpty(serializedWindowLayout))
@@ -97,6 +115,16 @@ namespace UnityEditor.ShaderGraph.Drawing
                         if (showInProjectRequested != null)
                             showInProjectRequested();
                     }
+                    GUILayout.Space(6);
+                    if (GUILayout.Button("Toggle Blackboard", EditorStyles.toolbarButton))
+                    {
+                        ToggleBlackboard();
+                    }
+                    GUILayout.Space(6);
+                    if (GUILayout.Button("Toggle Preview", EditorStyles.toolbarButton))
+                    {
+                        ToggleMasterPreview();
+                    }
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
                 });
@@ -120,6 +148,13 @@ namespace UnityEditor.ShaderGraph.Drawing
                 blackboardLayout.y = 10f;
                 m_BlackboardProvider.blackboard.layout = blackboardLayout;
 
+                // Initialize toggle settings if it doesnt exist.
+                if (m_ToggleSettings == null)
+                {
+                    m_ToggleSettings = new ToggleSettings();
+                }
+                m_BlackboardProvider.blackboard.visible = m_ToggleSettings.toggleBlackboard;
+
                 m_MasterPreviewView = new MasterPreviewView(previewManager, graph) { name = "masterPreview" };
 
                 WindowDraggable masterPreviewViewDraggable = new WindowDraggable(null, this);
@@ -130,6 +165,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 //m_BlackboardProvider.onResizeFinished += UpdateSerializedWindowLayout;
                 masterPreviewViewDraggable.OnDragFinished += UpdateSerializedWindowLayout;
                 m_MasterPreviewView.previewResizeBorderFrame.OnResizeFinished += UpdateSerializedWindowLayout;
+                m_MasterPreviewView.visible = m_ToggleSettings.togglePreview;
 
                 m_GraphView.graphViewChanged = GraphViewChanged;
 
@@ -153,6 +189,22 @@ namespace UnityEditor.ShaderGraph.Drawing
                 AddEdge(edge);
 
             Add(content);
+        }
+
+        void ToggleMasterPreview()
+        {
+            m_ToggleSettings.togglePreview = !m_ToggleSettings.togglePreview;
+            m_MasterPreviewView.visible = m_ToggleSettings.togglePreview;
+            string serializedToggle = JsonUtility.ToJson(m_ToggleSettings);
+            EditorUserSettings.SetConfigValue(k_ToggleSettings, serializedToggle);
+        }
+
+        void ToggleBlackboard()
+        {
+            m_ToggleSettings.toggleBlackboard = !m_ToggleSettings.toggleBlackboard;
+            m_BlackboardProvider.blackboard.visible = m_ToggleSettings.toggleBlackboard;
+            string serializedToggle = JsonUtility.ToJson(m_ToggleSettings);
+            EditorUserSettings.SetConfigValue(k_ToggleSettings, serializedToggle);
         }
 
         void OnSpaceDown(KeyDownEvent evt)
