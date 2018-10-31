@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [5.1.0-preview] - 2018-10-18
 ### Fixed
-- When a property is exposed in the blackboard, it will have a small green circle on it.
+- Non-exposed properties in the blackboard no longer have a green dot next to them.
 
 ## [5.0.0-preview] - 2018-09-28
 
