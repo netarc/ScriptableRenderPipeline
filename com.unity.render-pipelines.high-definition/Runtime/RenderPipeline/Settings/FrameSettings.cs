@@ -314,6 +314,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             LightLoopSettings.InitializeLightLoopSettings(camera, aggregate, renderPipelineSettings, srcFrameSettings, ref aggregate.lightLoopSettings);
         }
 
+        public bool AsyncComputeAvailable()
+        {
+            return SystemInfo.supportsAsyncCompute && enableAsyncCompute;
+        }
+
         public void ConfigureMSAADependentSettings()
         {
             if (enableMSAA)

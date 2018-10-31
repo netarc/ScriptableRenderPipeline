@@ -21,7 +21,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         static readonly GUIContent postprocessContent = CoreEditorUtils.GetContent("Postprocess");
         static readonly GUIContent litShaderModeContent = CoreEditorUtils.GetContent("Lit Shader Mode");
         static readonly GUIContent depthPrepassWithDeferredRenderingContent = CoreEditorUtils.GetContent("Depth Prepass With Deferred Rendering");
-        static readonly GUIContent asyncComputeContent = CoreEditorUtils.GetContent("Async Compute");
+        static readonly GUIContent asyncComputeContent = CoreEditorUtils.GetContent("Async Compute (when supported)");
         static readonly GUIContent opaqueObjectsContent = CoreEditorUtils.GetContent("Opaque Objects");
         static readonly GUIContent transparentObjectsContent = CoreEditorUtils.GetContent("Transparent Objects");
         static readonly GUIContent realtimePlanarReflectionContent = CoreEditorUtils.GetContent("Enable Realtime Planar Reflection"); 

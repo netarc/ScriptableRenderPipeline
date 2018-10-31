@@ -1162,7 +1162,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     {
                         StartStereoRendering(cmd, renderContext, camera);
 
-                        if (!hdCamera.frameSettings.enableAsyncCompute)
+                        if (!hdCamera.frameSettings.AsyncComputeAvailable())
                         {
                             RenderSSAO(cmd, hdCamera, renderContext, postProcessLayer);
                         }
@@ -1206,7 +1206,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                         }
 
 
-                        if (!hdCamera.frameSettings.enableAsyncCompute)
+                        if (!hdCamera.frameSettings.AsyncComputeAvailable())
                         {
                             // Needs the depth pyramid and motion vectors, as well as the render of the previous frame.
                             RenderSSR(hdCamera, cmd);
@@ -1217,7 +1217,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                         HDGPUAsyncTask buildLightListTask = new HDGPUAsyncTask("Build light list", ComputeQueueType.Background);
                         HDGPUAsyncTask SSLightingTask = new HDGPUAsyncTask("SSR & SSAO", ComputeQueueType.Background);
 
-                        if (hdCamera.frameSettings.enableAsyncCompute)
+                        if (hdCamera.frameSettings.AsyncComputeAvailable())
                         {
                             buildLightListTask.PushStartFenceAndExecuteCmdBuffer(cmd, renderContext);
                             buildLightListTask.Start(renderContext, (CommandBuffer asyncCmd) =>
@@ -1264,7 +1264,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                         }
 
 
-                        if (hdCamera.frameSettings.enableAsyncCompute)
+                        if (hdCamera.frameSettings.AsyncComputeAvailable())
                         {
                             buildLightListTask.EndWithPostWork(cmd, () =>
                             {
@@ -1296,7 +1296,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
 						SetMicroShadowingSettings(cmd);
 
-                       if (hdCamera.frameSettings.enableAsyncCompute)
+                       if (hdCamera.frameSettings.AsyncComputeAvailable())
                         {
                             SSLightingTask.End(cmd);
                         }
