@@ -25,8 +25,8 @@ namespace UnityEditor.ShaderGraph.Drawing
     [Serializable]
     class ToggleSettings
     {
-        public bool toggleBlackboard = true;
-        public bool togglePreview = true;
+        public bool isBlackboardVisible = true;
+        public bool isPreviewVisible = true;
     }
 
     public class GraphEditorView : VisualElement, IDisposable
@@ -75,7 +75,6 @@ namespace UnityEditor.ShaderGraph.Drawing
             set
             {
                 m_BlackboardProvider.assetName = value;
-                //m_MasterPreviewView.assetName = value;
             }
         }
 
@@ -100,7 +99,6 @@ namespace UnityEditor.ShaderGraph.Drawing
             }
 
             previewManager.RenderPreviews();
-
             var toolbar = new IMGUIContainer(() =>
                 {
                     GUILayout.BeginHorizontal(EditorStyles.toolbar);
@@ -115,15 +113,28 @@ namespace UnityEditor.ShaderGraph.Drawing
                         if (showInProjectRequested != null)
                             showInProjectRequested();
                     }
+
                     GUILayout.Space(6);
-                    if (GUILayout.Button("Toggle Blackboard", EditorStyles.toolbarButton))
+
+                    EditorGUI.BeginChangeCheck();
+
+                    m_ToggleSettings.isBlackboardVisible = GUILayout.Toggle(m_ToggleSettings.isBlackboardVisible, "Blackboard", EditorStyles.toolbarButton);
+
+                    if (EditorGUI.EndChangeCheck())
                     {
-                        ToggleBlackboard();
+                        m_BlackboardProvider.blackboard.visible = m_ToggleSettings.isBlackboardVisible;
+                        string serializedToggleables = JsonUtility.ToJson(m_ToggleSettings);
+                        EditorUserSettings.SetConfigValue(k_ToggleSettings, serializedToggleables);
                     }
                     GUILayout.Space(6);
-                    if (GUILayout.Button("Toggle Preview", EditorStyles.toolbarButton))
+
+                    EditorGUI.BeginChangeCheck();
+                    m_ToggleSettings.isPreviewVisible = GUILayout.Toggle(m_ToggleSettings.isPreviewVisible, "Preview", EditorStyles.toolbarButton);
+                    if (EditorGUI.EndChangeCheck())
                     {
-                        ToggleMasterPreview();
+                        m_MasterPreviewView.visible = m_ToggleSettings.isPreviewVisible;
+                        string serializedToggleables = JsonUtility.ToJson(m_ToggleSettings);
+                        EditorUserSettings.SetConfigValue(k_ToggleSettings, serializedToggleables);
                     }
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
@@ -153,7 +164,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 {
                     m_ToggleSettings = new ToggleSettings();
                 }
-                m_BlackboardProvider.blackboard.visible = m_ToggleSettings.toggleBlackboard;
+                m_BlackboardProvider.blackboard.visible = m_ToggleSettings.isBlackboardVisible;
 
                 m_MasterPreviewView = new MasterPreviewView(previewManager, graph) { name = "masterPreview" };
 
@@ -165,7 +176,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 //m_BlackboardProvider.onResizeFinished += UpdateSerializedWindowLayout;
                 masterPreviewViewDraggable.OnDragFinished += UpdateSerializedWindowLayout;
                 m_MasterPreviewView.previewResizeBorderFrame.OnResizeFinished += UpdateSerializedWindowLayout;
-                m_MasterPreviewView.visible = m_ToggleSettings.togglePreview;
+                m_MasterPreviewView.visible = m_ToggleSettings.isPreviewVisible;
 
                 m_GraphView.graphViewChanged = GraphViewChanged;
 
@@ -193,16 +204,16 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         void ToggleMasterPreview()
         {
-            m_ToggleSettings.togglePreview = !m_ToggleSettings.togglePreview;
-            m_MasterPreviewView.visible = m_ToggleSettings.togglePreview;
+            m_ToggleSettings.isPreviewVisible = !m_ToggleSettings.isPreviewVisible;
+            m_MasterPreviewView.visible = m_ToggleSettings.isPreviewVisible;
             string serializedToggle = JsonUtility.ToJson(m_ToggleSettings);
             EditorUserSettings.SetConfigValue(k_ToggleSettings, serializedToggle);
         }
 
         void ToggleBlackboard()
         {
-            m_ToggleSettings.toggleBlackboard = !m_ToggleSettings.toggleBlackboard;
-            m_BlackboardProvider.blackboard.visible = m_ToggleSettings.toggleBlackboard;
+            m_ToggleSettings.isBlackboardVisible = !m_ToggleSettings.isBlackboardVisible;
+            m_BlackboardProvider.blackboard.visible = m_ToggleSettings.isBlackboardVisible;
             string serializedToggle = JsonUtility.ToJson(m_ToggleSettings);
             EditorUserSettings.SetConfigValue(k_ToggleSettings, serializedToggle);
         }
