@@ -129,7 +129,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                     GUILayout.Space(6);
 
                     EditorGUI.BeginChangeCheck();
-                    m_ToggleSettings.isPreviewVisible = GUILayout.Toggle(m_ToggleSettings.isPreviewVisible, "Preview", EditorStyles.toolbarButton);
+                    m_ToggleSettings.isPreviewVisible = GUILayout.Toggle(m_ToggleSettings.isPreviewVisible, "Main Preview", EditorStyles.toolbarButton);
                     if (EditorGUI.EndChangeCheck())
                     {
                         m_MasterPreviewView.visible = m_ToggleSettings.isPreviewVisible;
