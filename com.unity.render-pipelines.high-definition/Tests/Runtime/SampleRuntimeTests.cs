@@ -16,7 +16,7 @@ class SampleRuntimeTests : IPrebuildSetup
 
     static List<string> s_Scenes;
 
-    static PostProcessingTests()
+    static SampleRuntimeTests()
     {
         s_Scenes = new List<string>
         {
@@ -38,7 +38,7 @@ class SampleRuntimeTests : IPrebuildSetup
 #endif
     }
 
-    [UnityTest]
+   // [UnityTest]
     public IEnumerator SampleLoadSceneTest()
     {
         SceneManager.LoadScene(s_Scenes[0]);
