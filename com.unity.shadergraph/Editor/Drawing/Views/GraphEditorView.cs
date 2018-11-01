@@ -31,8 +31,6 @@ namespace UnityEditor.ShaderGraph.Drawing
 
     public class GraphEditorView : VisualElement, IDisposable
     {
-
-
         MaterialGraphView m_GraphView;
         MasterPreviewView m_MasterPreviewView;
 
@@ -200,22 +198,6 @@ namespace UnityEditor.ShaderGraph.Drawing
                 AddEdge(edge);
 
             Add(content);
-        }
-
-        void ToggleMasterPreview()
-        {
-            m_ToggleSettings.isPreviewVisible = !m_ToggleSettings.isPreviewVisible;
-            m_MasterPreviewView.visible = m_ToggleSettings.isPreviewVisible;
-            string serializedToggle = JsonUtility.ToJson(m_ToggleSettings);
-            EditorUserSettings.SetConfigValue(k_ToggleSettings, serializedToggle);
-        }
-
-        void ToggleBlackboard()
-        {
-            m_ToggleSettings.isBlackboardVisible = !m_ToggleSettings.isBlackboardVisible;
-            m_BlackboardProvider.blackboard.visible = m_ToggleSettings.isBlackboardVisible;
-            string serializedToggle = JsonUtility.ToJson(m_ToggleSettings);
-            EditorUserSettings.SetConfigValue(k_ToggleSettings, serializedToggle);
         }
 
         void OnSpaceDown(KeyDownEvent evt)
