@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `Scene Depth` and `Scene Color` nodes now work in single pass stereo in Lightweight Render Pipeline.
 - `Channel Mask` node controls are now aligned correctly.
 - In Lightweight Render Pipeline, Pre-multiply surface type now matches the Lit shader. 
+- Shader Graph and Sub Graph files are now automatically checked out on version control when saved.
 
 ## [5.0.0-preview] - 2018-09-28
 
