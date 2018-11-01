@@ -112,7 +112,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                             showInProjectRequested();
                     }
 
-                    GUILayout.Space(6);
+                    GUILayout.FlexibleSpace();
 
                     EditorGUI.BeginChangeCheck();
 
@@ -134,7 +134,6 @@ namespace UnityEditor.ShaderGraph.Drawing
                         string serializedToggleables = JsonUtility.ToJson(m_ToggleSettings);
                         EditorUserSettings.SetConfigValue(k_ToggleSettings, serializedToggleables);
                     }
-                    GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
                 });
             Add(toolbar);
