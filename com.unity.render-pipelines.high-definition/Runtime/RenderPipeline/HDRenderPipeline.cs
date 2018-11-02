@@ -1246,7 +1246,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             buildLightListTask.Start(cmd, renderContext, (CommandBuffer asyncCmd) =>
                             {
                                 m_LightLoop.BuildGPULightListsCommon(hdCamera, asyncCmd, m_SharedRTManager.GetDepthStencilBuffer(), m_SharedRTManager.GetStencilBufferCopy(), m_SkyManager.IsLightingSkyValid());
-                            });
+                            }, !haveAsyncTaskWithShadows);
 
                             haveAsyncTaskWithShadows = true;
                         }
