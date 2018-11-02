@@ -1184,7 +1184,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     {
                         StartStereoRendering(cmd, renderContext, camera);
 
-                        if (!hdCamera.frameSettings.AsyncComputeAvailable())
+                        if (!hdCamera.frameSettings.SSAORunsAsync())
                         {
                             RenderSSAO(cmd, hdCamera, renderContext, postProcessLayer);
                         }
@@ -1228,7 +1228,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                         }
 
 
-                        if (!hdCamera.frameSettings.AsyncComputeAvailable())
+                        if (!hdCamera.frameSettings.SSRRunsAsync())
                         {
                             // Needs the depth pyramid and motion vectors, as well as the render of the previous frame.
                             RenderSSR(hdCamera, cmd);
@@ -1237,23 +1237,35 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                         StopStereoRendering(cmd, renderContext, camera);
 
                         HDGPUAsyncTask buildLightListTask = new HDGPUAsyncTask("Build light list", ComputeQueueType.Background);
-                        HDGPUAsyncTask SSLightingTask = new HDGPUAsyncTask("SSR & SSAO", ComputeQueueType.Background);
+                        HDGPUAsyncTask SSRTask = new HDGPUAsyncTask("Screen Space Reflection", ComputeQueueType.Background);
+                        HDGPUAsyncTask SSAOTask = new HDGPUAsyncTask("SSAO", ComputeQueueType.Background);
 
-                        if (hdCamera.frameSettings.AsyncComputeAvailable())
+                        if (hdCamera.frameSettings.BuildLightListRunsAsync())
                         {
                             buildLightListTask.PushStartFenceAndExecuteCmdBuffer(cmd, renderContext);
                             buildLightListTask.Start(renderContext, (CommandBuffer asyncCmd) =>
                             {
                                 m_LightLoop.BuildGPULightListsCommon(hdCamera, asyncCmd, m_SharedRTManager.GetDepthStencilBuffer(), m_SharedRTManager.GetStencilBufferCopy(), m_SkyManager.IsLightingSkyValid());
                             });
+                        }
 
-                            SSLightingTask.PushStartFenceAndExecuteCmdBuffer(cmd, renderContext);
-                            SSLightingTask.Start(renderContext, (CommandBuffer asyncCmd) =>
+                        if (hdCamera.frameSettings.SSRRunsAsync())
+                        {
+                            SSRTask.PushStartFenceAndExecuteCmdBuffer(cmd, renderContext);
+                            SSRTask.Start(renderContext, (CommandBuffer asyncCmd) =>
                             {
-                                RenderSSAO(asyncCmd, hdCamera, renderContext, postProcessLayer);
                                 RenderSSR(hdCamera, asyncCmd);
                             });
 
+                        }
+
+                        if (hdCamera.frameSettings.SSAORunsAsync())
+                        {
+                            SSAOTask.PushStartFenceAndExecuteCmdBuffer(cmd, renderContext);
+                            SSAOTask.Start(renderContext, (CommandBuffer asyncCmd) =>
+                            {
+                                RenderSSAO(asyncCmd, hdCamera, renderContext, postProcessLayer);
+                            });
                         }
 
                         using (new ProfilingSample(cmd, "Render shadows", CustomSamplerId.RenderShadows.GetSampler()))
@@ -1286,7 +1298,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                         }
 
 
-                        if (hdCamera.frameSettings.AsyncComputeAvailable())
+                        if (hdCamera.frameSettings.BuildLightListRunsAsync())
                         {
                             buildLightListTask.EndWithPostWork(cmd, () =>
                             {
@@ -1318,9 +1330,14 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
 						SetMicroShadowingSettings(cmd);
 
-                       if (hdCamera.frameSettings.AsyncComputeAvailable())
+                        if (hdCamera.frameSettings.SSAORunsAsync())
                         {
-                            SSLightingTask.End(cmd);
+                            SSAOTask.End(cmd);
+                        }
+
+                        if (hdCamera.frameSettings.SSRRunsAsync())
+                        {
+                            SSRTask.End(cmd);
                         }
 
                         // Might float this higher if we enable stereo w/ deferred
