@@ -1269,7 +1269,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             }, !haveAsyncTaskWithShadows);
 
                             haveAsyncTaskWithShadows = true;
-
                         }
 
                         using (new ProfilingSample(cmd, "Render shadows", CustomSamplerId.RenderShadows.GetSampler()))
