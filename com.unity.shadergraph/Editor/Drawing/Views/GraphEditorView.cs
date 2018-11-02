@@ -115,22 +115,15 @@ namespace UnityEditor.ShaderGraph.Drawing
                     GUILayout.FlexibleSpace();
 
                     EditorGUI.BeginChangeCheck();
-
                     m_ToggleSettings.isBlackboardVisible = GUILayout.Toggle(m_ToggleSettings.isBlackboardVisible, "Blackboard", EditorStyles.toolbarButton);
 
-                    if (EditorGUI.EndChangeCheck())
-                    {
-                        m_BlackboardProvider.blackboard.visible = m_ToggleSettings.isBlackboardVisible;
-                        string serializedToggleables = JsonUtility.ToJson(m_ToggleSettings);
-                        EditorUserSettings.SetConfigValue(k_ToggleSettings, serializedToggleables);
-                    }
                     GUILayout.Space(6);
 
-                    EditorGUI.BeginChangeCheck();
                     m_ToggleSettings.isPreviewVisible = GUILayout.Toggle(m_ToggleSettings.isPreviewVisible, "Main Preview", EditorStyles.toolbarButton);
                     if (EditorGUI.EndChangeCheck())
                     {
                         m_MasterPreviewView.visible = m_ToggleSettings.isPreviewVisible;
+                        m_BlackboardProvider.blackboard.visible = m_ToggleSettings.isBlackboardVisible;
                         string serializedToggleables = JsonUtility.ToJson(m_ToggleSettings);
                         EditorUserSettings.SetConfigValue(k_ToggleSettings, serializedToggleables);
                     }
