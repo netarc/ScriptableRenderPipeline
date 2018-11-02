@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added support of emissive color override in debug mode
 - Exposed max light for lightloop settings in hdrp asset UI
 - Disable NormalDBuffer pass update if no there is no decal
+- Expose option to run SSR and SSAO on async compute. 
 
 ### Fixed
 - Fixed sphere shaped influence handles clamping in reflection probes
