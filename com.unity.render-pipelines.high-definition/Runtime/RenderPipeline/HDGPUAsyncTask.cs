@@ -40,7 +40,7 @@ namespace UnityEngine.Rendering
             m_TaskStage = AsyncTaskStage.NotTriggered;
         }
 
-        public void PushStartFenceAndExecuteCmdBuffer(CommandBuffer cmd, ScriptableRenderContext renderContext)
+        private void PushStartFenceAndExecuteCmdBuffer(CommandBuffer cmd, ScriptableRenderContext renderContext)
         {
             Debug.Assert(m_TaskStage == AsyncTaskStage.NotTriggered);
 
@@ -55,27 +55,33 @@ namespace UnityEngine.Rendering
 
             m_TaskStage = AsyncTaskStage.StartFenceCreated;
         }
-
-        public void Start(ScriptableRenderContext renderContext, Action<CommandBuffer> asyncTask)
+        public void Start(CommandBuffer cmd, ScriptableRenderContext renderContext, Action<CommandBuffer> asyncTask, bool pushStartFence = true)
         {
-            Debug.Assert(m_TaskStage == AsyncTaskStage.StartFenceCreated);
+            Debug.Assert(m_TaskStage == AsyncTaskStage.NotTriggered);
+            if (pushStartFence)
+            {
+                PushStartFenceAndExecuteCmdBuffer(cmd, renderContext);
+            }
 
-            CommandBuffer cmd = CommandBufferPool.Get(m_TaskName);
+            CommandBuffer asyncCmd = CommandBufferPool.Get(m_TaskName);
 #if UNITY_2019_1_OR_NEWER
-            cmd.SetExecutionFlags(CommandBufferExecutionFlags.AsyncCompute);
-            cmd.WaitOnAsyncGraphicsFence(m_StartFence);
+            asyncCmd.SetExecutionFlags(CommandBufferExecutionFlags.AsyncCompute);
+            if (pushStartFence)
+            {
+                asyncCmd.WaitOnAsyncGraphicsFence(m_StartFence);
+            }
 #else
-            cmd.WaitOnGPUFence(m_StartFence);
+            asyncCmd.WaitOnGPUFence(m_StartFence);
 #endif
-            asyncTask(cmd);
+            asyncTask(asyncCmd);
 
 #if UNITY_2019_1_OR_NEWER
-            m_EndFence = cmd.CreateAsyncGraphicsFence();
+            m_EndFence = asyncCmd.CreateAsyncGraphicsFence();
 #else
-            m_EndFence = cmd.CreateGPUFence();
+            m_EndFence = asyncCmd.CreateGPUFence();
 #endif
-            renderContext.ExecuteCommandBufferAsync(cmd, m_QueueType);
-            CommandBufferPool.Release(cmd);
+            renderContext.ExecuteCommandBufferAsync(asyncCmd, m_QueueType);
+            CommandBufferPool.Release(asyncCmd);
 
             m_TaskStage = AsyncTaskStage.AsyncCmdEnqueued;
         }

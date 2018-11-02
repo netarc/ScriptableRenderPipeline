@@ -1240,32 +1240,36 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                         HDGPUAsyncTask SSRTask = new HDGPUAsyncTask("Screen Space Reflection", ComputeQueueType.Background);
                         HDGPUAsyncTask SSAOTask = new HDGPUAsyncTask("SSAO", ComputeQueueType.Background);
 
+                        bool haveAsyncTaskWithShadows = false;
                         if (hdCamera.frameSettings.BuildLightListRunsAsync())
                         {
-                            buildLightListTask.PushStartFenceAndExecuteCmdBuffer(cmd, renderContext);
-                            buildLightListTask.Start(renderContext, (CommandBuffer asyncCmd) =>
+                            buildLightListTask.Start(cmd, renderContext, (CommandBuffer asyncCmd) =>
                             {
                                 m_LightLoop.BuildGPULightListsCommon(hdCamera, asyncCmd, m_SharedRTManager.GetDepthStencilBuffer(), m_SharedRTManager.GetStencilBufferCopy(), m_SkyManager.IsLightingSkyValid());
                             });
+
+                            haveAsyncTaskWithShadows = true;
                         }
 
                         if (hdCamera.frameSettings.SSRRunsAsync())
                         {
-                            SSRTask.PushStartFenceAndExecuteCmdBuffer(cmd, renderContext);
-                            SSRTask.Start(renderContext, (CommandBuffer asyncCmd) =>
+                            SSRTask.Start(cmd, renderContext, (CommandBuffer asyncCmd) =>
                             {
                                 RenderSSR(hdCamera, asyncCmd);
-                            });
+                            }, !haveAsyncTaskWithShadows);
 
+                            haveAsyncTaskWithShadows = true;
                         }
 
                         if (hdCamera.frameSettings.SSAORunsAsync())
                         {
-                            SSAOTask.PushStartFenceAndExecuteCmdBuffer(cmd, renderContext);
-                            SSAOTask.Start(renderContext, (CommandBuffer asyncCmd) =>
+                            SSAOTask.Start(cmd, renderContext, (CommandBuffer asyncCmd) =>
                             {
                                 RenderSSAO(asyncCmd, hdCamera, renderContext, postProcessLayer);
-                            });
+                            }, !haveAsyncTaskWithShadows);
+
+                            haveAsyncTaskWithShadows = true;
+
                         }
 
                         using (new ProfilingSample(cmd, "Render shadows", CustomSamplerId.RenderShadows.GetSampler()))
