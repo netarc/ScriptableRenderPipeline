@@ -101,7 +101,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/AllTests/VFXTests/GraphicsTests/SimpleLit.unity
     guid: 61f447f894ffdd741aa7a64ced0311cf
-  - enabled: 1
-    path: Assets/AllTests/VFXTests/GraphicsTests/AngularVelocity.unity
-    guid: da2063a2a525cb849a6fbdb716cc5b43
   m_configObjects: {}
