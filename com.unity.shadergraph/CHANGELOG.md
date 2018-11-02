@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `Scene Depth` and `Scene Color` nodes now work in single pass stereo in Lightweight Render Pipeline.
 - `Channel Mask` node controls are now aligned correctly.
 - In Lightweight Render Pipeline, Pre-multiply surface type now matches the Lit shader. 
-- Serialize default reference name for shader properties so that they cannot change after initial creation.
+- Default reference name for shader properties are now serialized. You cannot change them after initial creation.
 
 ## [5.0.0-preview] - 2018-09-28
 
