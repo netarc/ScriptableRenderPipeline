@@ -1,12 +1,15 @@
 using System;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.Experimental.Rendering.HDPipeline;
 
 namespace UnityEditor.Experimental.Rendering.HDPipeline
-{ 
-    partial class HDLightEditor
+{
+    using CED = CoreEditorDrawer<HDLightEditor, HDLightEditor>;
+
+    partial class HDLightUI
     {
-        void DrawInspector()
+        static void DrawInspector(HDLightUI ui, SerializedHDLight serialized, Editor owner)
         {
             DrawFoldout(m_AdditionalLightData.showFeatures, "Features", DrawFeatures);
             DrawFoldout(settings.lightType, "Shape", DrawShape);
@@ -34,7 +37,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             foldoutProperty.isExpanded = state;
         }
 
-        void DrawFeatures()
+        void DrawFeatures(HDLightUI ui, SerializedHDLight serialized, Editor owner)
         {
             bool disabledScope = m_LightShape == LightShape.Tube || (m_LightShape == LightShape.Rectangle && settings.isRealtime);
 
@@ -47,7 +50,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             EditorGUILayout.PropertyField(m_AdditionalLightData.showAdditionalSettings);
         }
 
-        void DrawShape()
+        void DrawShape(HDLightUI ui, SerializedHDLight serialized, Editor owner)
         {
             EditorGUI.BeginChangeCheck(); // For GI we need to detect any change on additional data and call SetLightDirty + For intensity we need to detect light shape change
 
@@ -165,7 +168,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             }
         }
 
-        void UpdateLightIntensityUnit()
+        void UpdateLightIntensityUnit(HDLightUI ui, SerializedHDLight serialized, Editor owner)
         {
             if (m_LightShape == LightShape.Directional)
                 m_AdditionalLightData.lightUnit.enumValueIndex = (int)DirectionalLightUnit.Lux;
@@ -274,7 +277,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             m_UpdateAreaLightEmissiveMeshComponents = false;
         }
 
-        void DrawLightSettings()
+        void DrawLightSettings(HDLightUI ui, SerializedHDLight serialized, Editor owner)
         {
             settings.DrawColor();
 
@@ -351,7 +354,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             }
         }
 
-        void DrawBakedShadowParameters()
+        void DrawBakedShadowParameters(HDLightUI ui, SerializedHDLight serialized, Editor owner)
         {
             switch ((LightType)settings.lightType.enumValueIndex)
             {
@@ -378,7 +381,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             }
         }
 
-        void DrawShadows()
+        void DrawShadows(HDLightUI ui, SerializedHDLight serialized, Editor owner)
         {
             if (settings.isCompletelyBaked)
             {
@@ -444,17 +447,17 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             }
         }
         
-        void DrawLowShadowSettings()
+        void DrawLowShadowSettings(HDLightUI ui, SerializedHDLight serialized, Editor owner)
         {
             // Currently there is nothing to display here
         }
 
-        void DrawMediumShadowSettings()
+        void DrawMediumShadowSettings(HDLightUI ui, SerializedHDLight serialized, Editor owner)
         {
 
         }
 
-        void DrawHighShadowSettings()
+        void DrawHighShadowSettings(HDLightUI ui, SerializedHDLight serialized, Editor owner)
         {
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Hight Quality Settings", EditorStyles.boldLabel);

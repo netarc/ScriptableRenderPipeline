@@ -3,9 +3,9 @@ using UnityEngine.Experimental.Rendering.HDPipeline;
 
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
-    partial class HDLightEditor
+    internal class SerializedHDLight
     {
-        sealed class SerializedLightData
+        public sealed class SerializedLightData
         {
             public SerializedProperty intensity;
             public SerializedProperty enableSpotReflector;
@@ -40,7 +40,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             public SerializedProperty showAdditionalSettings;
         }
 
-        sealed class SerializedShadowData
+        public sealed class SerializedShadowData
         {
             public SerializedProperty shadowDimmer;
             public SerializedProperty volumetricShadowDimmer;
@@ -61,19 +61,14 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             public SerializedProperty edgeTolerance;
         }
 
-        SerializedObject m_SerializedAdditionalLightData;
-        SerializedObject m_SerializedAdditionalShadowData;
+        public SerializedObject m_SerializedAdditionalLightData;
+        public SerializedObject m_SerializedAdditionalShadowData;
+        
 
-        SerializedLightData m_AdditionalLightData;
-        SerializedShadowData m_AdditionalShadowData;
-
-        void InitSerializedData()
+        public SerializedHDLight(HDAdditionalLightData[] lightDatas, AdditionalShadowData[] shadowDatas)
         {
-            // Get & automatically add additional HD data if not present
-            m_AdditionalLightDatas = CoreEditorUtils.GetAdditionalData<HDAdditionalLightData>(targets, HDAdditionalLightData.InitDefaultHDAdditionalLightData);
-            m_AdditionalShadowDatas = CoreEditorUtils.GetAdditionalData<AdditionalShadowData>(targets, HDAdditionalShadowData.InitDefaultHDAdditionalShadowData);
-            m_SerializedAdditionalLightData = new SerializedObject(m_AdditionalLightDatas);
-            m_SerializedAdditionalShadowData = new SerializedObject(m_AdditionalShadowDatas);
+            m_SerializedAdditionalLightData = new SerializedObject(lightDatas);
+            m_SerializedAdditionalShadowData = new SerializedObject(shadowDatas);
 
             using (var o = new PropertyFetcher<HDAdditionalLightData>(m_SerializedAdditionalLightData))
                 m_AdditionalLightData = new SerializedLightData

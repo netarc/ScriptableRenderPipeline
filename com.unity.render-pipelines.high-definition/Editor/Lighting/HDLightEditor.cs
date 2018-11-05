@@ -48,9 +48,12 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
         // Used for UI only; the processing code must use LightTypeExtent and LightType
         LightShape m_LightShape;
+        
+        public SerializedObject m_SerializedAdditionalLightData;
+        public SerializedObject m_SerializedAdditionalShadowData;
 
-        HDAdditionalLightData[]     m_AdditionalLightDatas;
-        AdditionalShadowData[]      m_AdditionalShadowDatas;
+        HDAdditionalLightData[] m_AdditionalLightDatas;
+        AdditionalShadowData[] m_AdditionalShadowDatas;
 
         bool m_UpdateAreaLightEmissiveMeshComponents = false;
 
@@ -60,6 +63,12 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         protected override void OnEnable()
         {
             base.OnEnable();
+
+            // Get & automatically add additional HD data if not present
+            m_AdditionalLightDatas = CoreEditorUtils.GetAdditionalData<HDAdditionalLightData>(targets, HDAdditionalLightData.InitDefaultHDAdditionalLightData);
+            m_AdditionalShadowDatas = CoreEditorUtils.GetAdditionalData<AdditionalShadowData>(targets, HDAdditionalShadowData.InitDefaultHDAdditionalShadowData);
+            m_SerializedAdditionalLightData = new SerializedObject(m_AdditionalLightDatas);
+            m_SerializedAdditionalShadowData = new SerializedObject(m_AdditionalShadowDatas);
 
             InitSerializedData();
 
