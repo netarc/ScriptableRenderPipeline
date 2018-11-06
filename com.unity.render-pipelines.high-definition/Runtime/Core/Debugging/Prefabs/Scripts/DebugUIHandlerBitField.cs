@@ -40,7 +40,7 @@ namespace UnityEngine.Experimental.Rendering.UI
 
             for (; toggleIndex < toggles.Count; ++toggleIndex)
             {
-                toggles[toggleIndex].transform.parent = null;
+                toggles[toggleIndex].transform.SetParent(null);
             }
         }
 

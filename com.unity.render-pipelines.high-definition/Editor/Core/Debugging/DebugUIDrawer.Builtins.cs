@@ -164,7 +164,7 @@ namespace UnityEditor.Experimental.Rendering
         public override bool OnGUI(DebugUI.Widget widget, DebugState state)
         {
             var w = Cast<DebugUI.BitField>(widget);
-            var s = Cast<DebugStateInt>(state);
+            var s = Cast<DebugStateFlags>(state);
 
             EditorGUI.BeginChangeCheck();
             Enum value = w.GetValue();
