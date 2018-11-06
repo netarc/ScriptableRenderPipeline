@@ -71,6 +71,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
         //contain serialized property that are mainly used to draw inspector
         public LightEditor.Settings settings;
+        
+        // Used for UI only; the processing code must use LightTypeExtent and LightType
+        public HDLightUI.LightShape editorLightShape;
 
         public SerializedHDLight(HDAdditionalLightData[] lightDatas, AdditionalShadowData[] shadowDatas, LightEditor.Settings settings)
         {
@@ -142,6 +145,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             serializedLightDatas.Update();
             serializedShadowDatas.Update();
             settings.Update();
+
+            ResolveLightShape();
         }
 
         public void Apply()
@@ -149,6 +154,44 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             serializedLightDatas.ApplyModifiedProperties();
             serializedShadowDatas.ApplyModifiedProperties();
             settings.ApplyModifiedProperties();
+        }
+
+        void ResolveLightShape()
+        {
+            var type = settings.lightType;
+
+            // Special case for multi-selection: don't resolve light shape or it'll corrupt lights
+            if (type.hasMultipleDifferentValues
+                || serializedLightData.lightTypeExtent.hasMultipleDifferentValues)
+            {
+                editorLightShape = (LightShape)(-1);
+                return;
+            }
+
+            var lightTypeExtent = (LightTypeExtent)serializedLightData.lightTypeExtent.enumValueIndex;
+            switch (lightTypeExtent)
+            {
+                case LightTypeExtent.Punctual:
+                    switch ((LightType)type.enumValueIndex)
+                    {
+                        case LightType.Directional:
+                            editorLightShape = LightShape.Directional;
+                            break;
+                        case LightType.Point:
+                            editorLightShape = LightShape.Point;
+                            break;
+                        case LightType.Spot:
+                            editorLightShape = LightShape.Spot;
+                            break;
+                    }
+                    break;
+                case LightTypeExtent.Rectangle:
+                    editorLightShape = LightShape.Rectangle;
+                    break;
+                case LightTypeExtent.Tube:
+                    editorLightShape = LightShape.Tube;
+                    break;
+            }
         }
     }
 }
