@@ -80,7 +80,7 @@ namespace UnityEditor.Experimental.Rendering
     [Serializable, DebugState(typeof(DebugUI.BoolField), typeof(DebugUI.Foldout))]
     public sealed class DebugStateBool : DebugState<bool> {}
 
-    [Serializable, DebugState(typeof(DebugUI.IntField), typeof(DebugUI.EnumField))]
+    [Serializable, DebugState(typeof(DebugUI.IntField), typeof(DebugUI.EnumField), typeof(DebugUI.BitField))]
     public sealed class DebugStateInt : DebugState<int> {}
 
     [Serializable, DebugState(typeof(DebugUI.UIntField))]
