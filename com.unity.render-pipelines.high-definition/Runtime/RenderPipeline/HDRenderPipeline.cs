@@ -685,13 +685,15 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
                 if (hdCamera.frameSettings.enableMotionVectors)
                 {
-                    PushGlobalRTHandle(
-                        cmd,
-                        m_SharedRTManager.GetVelocityBuffer(),
-                        HDShaderIDs._CameraMotionVectorsTexture,
-                        HDShaderIDs._CameraMotionVectorsSize,
-                        HDShaderIDs._CameraMotionVectorsScale
-                    );
+                    var buf = m_SharedRTManager.GetVelocityBuffer();
+
+                    cmd.SetGlobalTexture(HDShaderIDs._CameraMotionVectorsTexture, buf);
+                    cmd.SetGlobalVector( HDShaderIDs._CameraMotionVectorsSize, new Vector4(buf.referenceSize.x,
+                                                                                           buf.referenceSize.y,
+                                                                                           1.0f / buf.referenceSize.x,
+                                                                                           1.0f / buf.referenceSize.y));
+                    cmd.SetGlobalVector(HDShaderIDs._CameraMotionVectorsScale, new Vector4(buf.referenceSize.x / (float)buf.rt.width,
+                                                                                           buf.referenceSize.y / (float)buf.rt.height));
                 }
                 else
                 {
@@ -2539,49 +2541,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 renderContext.ExecuteCommandBuffer(cmd);
                 cmd.Clear();
                 renderContext.StopMultiEye(cam);
-            }
-        }
-
-        /// <summary>
-        /// Push a RenderTexture handled by a RTHandle in global parameters.
-        /// </summary>
-        /// <param name="cmd">Command buffer to queue commands</param>
-        /// <param name="rth">RTHandle handling the RenderTexture</param>
-        /// <param name="textureID">TextureID to use for texture binding.</param>
-        /// <param name="sizeID">Property ID to store RTHandle size ((x,y) = Actual Pixel Size, (z,w) = 1 / Actual Pixel Size).</param>
-        /// <param name="scaleID">PropertyID to store RTHandle scale ((x,y) = Screen Scale, z = lod count, w = unused).</param>
-        void PushGlobalRTHandle(CommandBuffer cmd, RTHandleSystem.RTHandle rth, int textureID, int sizeID, int scaleID)
-        {
-            if (rth != null)
-            {
-                cmd.SetGlobalTexture(textureID, rth);
-                cmd.SetGlobalVector(
-                    sizeID,
-                    new Vector4(
-                    rth.referenceSize.x,
-                    rth.referenceSize.y,
-                    1f / rth.referenceSize.x,
-                    1f / rth.referenceSize.y
-                    )
-                );
-                cmd.SetGlobalVector(
-                    scaleID,
-                    new Vector4(
-                    rth.referenceSize.x / (float)rth.rt.width,
-                    rth.referenceSize.y / (float)rth.rt.height,
-                    // This computation is wrong.
-                    // It should be:
-                    // (int)(Mathf.Log(Math.Max(hdCamera.actualWidth, hdCamera.actualHeight), 2)) + 1 - NumMipLevelsDropped;
-                    Mathf.Log(Mathf.Min(rth.rt.width, rth.rt.height), 2),
-                    0.0f
-                    )
-                );
-            }
-            else
-            {
-                cmd.SetGlobalTexture(textureID, Texture2D.blackTexture);
-                cmd.SetGlobalVector(sizeID, Vector4.one);
-                cmd.SetGlobalVector(scaleID, Vector4.one);
             }
         }
     }
