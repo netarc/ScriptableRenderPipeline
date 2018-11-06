@@ -11,10 +11,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
     [CustomEditorForRenderPipeline(typeof(Light), typeof(HDRenderPipelineAsset))]
     sealed partial class HDLightEditor : LightEditor
     {
-
-
         // LightType + LightTypeExtent combined
-        enum LightShape
+        internal enum LightShape
         {
             Spot,
             Directional,
@@ -26,19 +24,19 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             //Disc,
         }
 
-        enum DirectionalLightUnit
+        internal enum DirectionalLightUnit
         {
             Lux = LightUnit.Lux,
         }
 
-        enum AreaLightUnit
+        internal enum AreaLightUnit
         {
             Lumen = LightUnit.Lumen,
             Luminance = LightUnit.Luminance,
             Ev100 = LightUnit.Ev100,
         }
 
-        enum PunctualLightUnit
+        internal enum PunctualLightUnit
         {
             Lumen = LightUnit.Lumen,
             Candela = LightUnit.Candela,
@@ -49,8 +47,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         // Used for UI only; the processing code must use LightTypeExtent and LightType
         LightShape m_LightShape;
         
-        public SerializedObject m_SerializedAdditionalLightData;
-        public SerializedObject m_SerializedAdditionalShadowData;
+        public SerializedHDLight m_SerializedHDLight;
 
         HDAdditionalLightData[] m_AdditionalLightDatas;
         AdditionalShadowData[] m_AdditionalShadowDatas;
@@ -67,14 +64,11 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             // Get & automatically add additional HD data if not present
             m_AdditionalLightDatas = CoreEditorUtils.GetAdditionalData<HDAdditionalLightData>(targets, HDAdditionalLightData.InitDefaultHDAdditionalLightData);
             m_AdditionalShadowDatas = CoreEditorUtils.GetAdditionalData<AdditionalShadowData>(targets, HDAdditionalShadowData.InitDefaultHDAdditionalShadowData);
-            m_SerializedAdditionalLightData = new SerializedObject(m_AdditionalLightDatas);
-            m_SerializedAdditionalShadowData = new SerializedObject(m_AdditionalShadowDatas);
-
-            InitSerializedData();
-
+            m_SerializedHDLight = new SerializedHDLight(m_AdditionalLightDatas, m_AdditionalShadowDatas, settings);
+            
             // Update emissive mesh and light intensity when undo/redo
             Undo.undoRedoPerformed += () => {
-                m_SerializedAdditionalLightData.ApplyModifiedProperties();
+                m_SerializedHDLight.serializedLightDatas.ApplyModifiedProperties();
                 foreach (var hdLightData in m_AdditionalLightDatas)
                     if (hdLightData != null)
                         hdLightData.UpdateAreaLightEmissiveMesh();
@@ -95,8 +89,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
         public override void OnInspectorGUI()
         {
-            m_SerializedAdditionalLightData.Update();
-            m_SerializedAdditionalShadowData.Update();
+            m_SerializedHDLight.Update();
 
             //add space before the first collapsible area
             EditorGUILayout.Space();
@@ -123,20 +116,38 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
             // New editor
             ApplyAdditionalComponentsVisibility(true);
-            CheckStyles();
-
-            settings.Update();
 
             ResolveLightShape();
 
             DrawInspector();
 
-            m_SerializedAdditionalShadowData.ApplyModifiedProperties();
-            m_SerializedAdditionalLightData.ApplyModifiedProperties();
-            settings.ApplyModifiedProperties();
+            m_SerializedHDLight.Apply();
 
-            if (m_UpdateAreaLightEmissiveMeshComponents)
+            if (m_SerializedHDLight.needUpdateAreaLightEmissiveMeshComponents)
                 UpdateAreaLightEmissiveMeshComponents();
+        }
+
+        void UpdateAreaLightEmissiveMeshComponents()
+        {
+            foreach (var hdLightData in m_AdditionalLightDatas)
+            {
+                hdLightData.UpdateAreaLightEmissiveMesh();
+
+                MeshRenderer emissiveMeshRenderer = hdLightData.GetComponent<MeshRenderer>();
+                MeshFilter emissiveMeshFilter = hdLightData.GetComponent<MeshFilter>();
+
+                // If the display emissive mesh is disabled, skip to the next selected light
+                if (emissiveMeshFilter == null || emissiveMeshRenderer == null)
+                    continue;
+
+                // We only load the mesh and it's material here, because we can't do that inside HDAdditionalLightData (Editor assembly)
+                // Every other properties of the mesh is updated in HDAdditionalLightData to support timeline and editor records
+                emissiveMeshFilter.mesh = UnityEditor.Experimental.Rendering.HDPipeline.HDEditorUtils.LoadAsset<Mesh>("Runtime/RenderPipelineResources/Mesh/Quad.FBX");
+                if (emissiveMeshRenderer.sharedMaterial == null)
+                    emissiveMeshRenderer.material = new Material(Shader.Find("HDRenderPipeline/Unlit"));
+            }
+
+            m_SerializedHDLight.needUpdateAreaLightEmissiveMeshComponents = false;
         }
 
         // Internal utilities
@@ -147,10 +158,10 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             // var flags = hide ? HideFlags.HideInInspector : HideFlags.None;
             var flags = HideFlags.None;
 
-            foreach (var t in m_SerializedAdditionalLightData.targetObjects)
+            foreach (var t in m_SerializedHDLight.serializedLightDatas.targetObjects)
                 ((HDAdditionalLightData)t).hideFlags = flags;
 
-            foreach (var t in m_SerializedAdditionalShadowData.targetObjects)
+            foreach (var t in m_SerializedHDLight.serializedShadowDatas.targetObjects)
                 ((AdditionalShadowData)t).hideFlags = flags;
         }
 
@@ -160,7 +171,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
             // Special case for multi-selection: don't resolve light shape or it'll corrupt lights
             if (type.hasMultipleDifferentValues
-                || m_AdditionalLightData.lightTypeExtent.hasMultipleDifferentValues)
+                || m_SerializedHDLight.serializedLightData.lightTypeExtent.hasMultipleDifferentValues)
             {
                 m_LightShape = (LightShape)(-1);
                 return;

@@ -61,17 +61,25 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             public SerializedProperty edgeTolerance;
         }
 
-        public SerializedObject m_SerializedAdditionalLightData;
-        public SerializedObject m_SerializedAdditionalShadowData;
-        
+        public bool needUpdateAreaLightEmissiveMeshComponents = false;
 
-        public SerializedHDLight(HDAdditionalLightData[] lightDatas, AdditionalShadowData[] shadowDatas)
+        public SerializedObject serializedLightDatas;
+        public SerializedObject serializedShadowDatas;
+
+        public SerializedLightData serializedLightData;
+        public SerializedShadowData serializedShadowData;
+
+        //contain serialized property that are mainly used to draw inspector
+        public LightEditor.Settings settings;
+
+        public SerializedHDLight(HDAdditionalLightData[] lightDatas, AdditionalShadowData[] shadowDatas, LightEditor.Settings settings)
         {
-            m_SerializedAdditionalLightData = new SerializedObject(lightDatas);
-            m_SerializedAdditionalShadowData = new SerializedObject(shadowDatas);
+            serializedLightDatas = new SerializedObject(lightDatas);
+            serializedShadowDatas = new SerializedObject(shadowDatas);
+            this.settings = settings;
 
-            using (var o = new PropertyFetcher<HDAdditionalLightData>(m_SerializedAdditionalLightData))
-                m_AdditionalLightData = new SerializedLightData
+            using (var o = new PropertyFetcher<HDAdditionalLightData>(serializedLightDatas))
+                serializedLightData = new SerializedLightData
                 {
                     intensity = o.Find(x => x.displayLightIntensity),
                     enableSpotReflector = o.Find(x => x.enableSpotReflector),
@@ -107,8 +115,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 };
 
             // TODO: Review this once AdditionalShadowData is refactored
-            using (var o = new PropertyFetcher<AdditionalShadowData>(m_SerializedAdditionalShadowData))
-                m_AdditionalShadowData = new SerializedShadowData
+            using (var o = new PropertyFetcher<AdditionalShadowData>(serializedShadowDatas))
+                serializedShadowData = new SerializedShadowData
                 {
                     shadowDimmer = o.Find(x => x.shadowDimmer),
                     volumetricShadowDimmer = o.Find(x => x.volumetricShadowDimmer),
@@ -127,6 +135,20 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     edgeToleranceNormal = o.Find(x => x.edgeToleranceNormal),
                     edgeTolerance = o.Find(x => x.edgeTolerance)
                 };
+        }
+
+        public void Update()
+        {
+            serializedLightDatas.Update();
+            serializedShadowDatas.Update();
+            settings.Update();
+        }
+
+        public void Apply()
+        {
+            serializedLightDatas.ApplyModifiedProperties();
+            serializedShadowDatas.ApplyModifiedProperties();
+            settings.ApplyModifiedProperties();
         }
     }
 }
