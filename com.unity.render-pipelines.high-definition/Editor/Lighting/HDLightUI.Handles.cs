@@ -3,7 +3,7 @@ using UnityEngine.Experimental.Rendering.HDPipeline;
 
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 { 
-    partial class HDLightEditor
+    partial class HDLightUI
     {
         protected override void OnSceneGUI()
         {
