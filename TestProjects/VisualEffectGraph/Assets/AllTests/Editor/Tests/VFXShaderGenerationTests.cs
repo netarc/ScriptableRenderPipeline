@@ -125,7 +125,7 @@ namespace UnityEditor.VFX.Test
             {
                 get
                 {
-                    return VFXContextType.kInitAndUpdate;
+                    return VFXContextType.InitAndUpdate;
                 }
             }
 
