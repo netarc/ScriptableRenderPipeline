@@ -89,6 +89,7 @@ namespace UnityEditor.VFX.UI
             public Property[] inputSlots;
             public string[] expandedInputs;
             public string[] expandedOutputs;
+            public int indexInClipboard;
         }
 
 
@@ -113,6 +114,7 @@ namespace UnityEditor.VFX.UI
             public Vector2 position;
             public bool collapsed;
             public string[] expandedOutput;
+            public int indexInClipboard;
         }
 
         [Serializable]
@@ -145,7 +147,7 @@ namespace UnityEditor.VFX.UI
             public bool blocksOnly;
 
             public Context[] contexts;
-            public Node[] operatorsOrBlocks; // this contains blocks if blocksOnly else it contains operators and blocks are included in their respective contexts
+            public Node[] operators; // this contains blocks if blocksOnly else it contains operators and blocks are included in their respective contexts
             public Data[] datas;
 
             public Parameter[] parameters;
@@ -155,6 +157,8 @@ namespace UnityEditor.VFX.UI
 
             public VFXUI.StickyNoteInfo[] stickyNotes;
             public GroupNode[] groupNodes;
+
+            public int controllerCount;
         }
 
         static Dictionary<Type, List<FieldInfo>> s_SerializableFieldByType = new Dictionary<Type, List<FieldInfo>>();
