@@ -128,6 +128,7 @@ namespace UnityEditor.VFX.UI
             public VFXSerializableObject min;
             public VFXSerializableObject max;
             public string tooltip;
+            public bool isOutput;
             public ParameterNode[] nodes;
         }
 
