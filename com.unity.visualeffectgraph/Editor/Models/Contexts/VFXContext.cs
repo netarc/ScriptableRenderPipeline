@@ -21,11 +21,12 @@ namespace UnityEditor.VFX
         Output = 1 << 3,
         Event = 1 << 4,
         SpawnerGPU = 1 << 5,
+        Subgraph = 1 << 6,
 
         InitAndUpdate = Init | Update,
         InitAndUpdateAndOutput = Init | Update | Output,
         UpdateAndOutput = Update | Output,
-        All = Init | Update | Output | Spawner | SpawnerGPU,
+        All = Init | Update | Output | Spawner | SpawnerGPU | Subgraph,
     };
 
     [Flags]
@@ -268,7 +269,8 @@ namespace UnityEditor.VFX
         private bool CanLinkFromMany()
         {
             return contextType == VFXContextType.Output
-                ||  contextType == VFXContextType.Spawner
+                || contextType == VFXContextType.Spawner
+                || contextType == VFXContextType.Subgraph
                 ||  contextType == VFXContextType.Init;
         }
 
@@ -291,7 +293,8 @@ namespace UnityEditor.VFX
             {
                 if (!link.context.CanLinkFromMany() || (IsExclusiveLink(link.context.contextType, to.contextType) && from.contextType == link.context.contextType))
                 {
-                    InnerUnlink(from, link.context, fromIndex, toIndex, notify);
+                    if (link.context.inputFlowCount > toIndex)
+                        InnerUnlink(from, link.context, fromIndex, toIndex, notify);
                 }
             }
 
