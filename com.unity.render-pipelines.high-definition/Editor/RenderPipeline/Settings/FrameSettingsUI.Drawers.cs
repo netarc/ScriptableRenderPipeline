@@ -15,6 +15,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             LightingSettings = 1 << 2,
             AsynComputeSettings = 1 << 3,
             LightLoop = 1 << 4,
+#if FRAMESETTINGS_LOD_BIAS
+            OtherSettings = 1 << 5,
+#endif
         }
 
         readonly static ExpandedState<Expandable, FrameSettings> k_ExpandedState = new ExpandedState<Expandable, FrameSettings>(~(-1), "HDRP");
@@ -43,6 +46,11 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 CED.FoldoutGroup(lightLoopSettingsHeaderContent, Expandable.LightLoop, k_ExpandedState, FoldoutOption.Indent | FoldoutOption.Boxed,
                     CED.Group(190, (serialized, owner) => Drawer_SectionLightLoopSettings(serialized, owner, withOverride))
                     )
+#if FRAMESETTINGS_LOD_BIAS
+                    , CED.FoldoutGroup(otherSettingsHeaderContent, Expandable.OtherSettings, k_ExpandedState, FoldoutOption.Indent | FoldoutOption.Boxed,
+                        CED.Group(190, (serialized, owner) => Drawer_SectionOtherSettings(serialized, owner, withOverride))
+                    )
+#endif
                 );
 
         static HDRenderPipelineAsset GetHDRPAssetFor(Editor owner)
@@ -176,6 +184,19 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             var area = GetFrameSettingSectionContent(3, serialized, owner);
             area.Draw(withOverride);
         }
+
+#if FRAMESETTINGS_LOD_BIAS
+        static void Drawer_SectionOtherSettings(SerializedFrameSettings serialized, Editor owner, bool withOverride)
+        {
+            var area = GetFrameSettingSectionContent(4, serialized, owner);
+            area.AmmendInfo(FrameSettingsField.LODBias,
+                overridedDefaultValue: 1.0f,
+                overrideable: () => true,
+                customGetter: () => serialized.lodBias.floatValue,
+                customSetter: v => serialized.lodBias.floatValue = (float)v);
+            area.Draw(withOverride);
+        }
+#endif
 
         static OverridableFrameSettingsArea GetFrameSettingSectionContent(int group, SerializedFrameSettings serialized, Editor owner)
         {

@@ -97,6 +97,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         VolumeVoxelizationsAsync = 45,
 
         //from 60 to 119 : space for new scopes
+#if FRAMESETTINGS_LOD_BIAS
+        /// <summary>Set the LOD Bias with the value in <see cref="FrameSettings.lodBias"/>.</summary>
+        [FrameSettingsField(4, autoName: LODBias, type: FrameSettingsFieldAttribute.DisplayType.Others)]
+        LODBias = 60,
+#endif
 
         //lightLoop settings from 120 to 127
         [FrameSettingsField(3, autoName: FPTLForForwardOpaque)]
@@ -173,7 +178,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 (uint)FrameSettingsField.BigTilePrepass,
                 (uint)FrameSettingsField.TransparentsWriteVelocity,
                 (uint)FrameSettingsField.SpecularLighting,
-            })
+#if FRAMESETTINGS_LOD_BIAS
+                (uint)FrameSettingsField.LODBias,
+#endif
+            }),
+#if FRAMESETTINGS_LOD_BIAS
+            lodBias = 1,
+#endif
         };
         /// <summary>Default FrameSettings for realtime ReflectionProbe/PlanarReflectionProbe renderer.</summary>
         public static readonly FrameSettings defaultRealtimeReflectionProbe = new FrameSettings()
@@ -217,7 +228,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 (uint)FrameSettingsField.FPTLForForwardOpaque,
                 (uint)FrameSettingsField.BigTilePrepass,
                 (uint)FrameSettingsField.SpecularLighting,
-            })
+#if FRAMESETTINGS_LOD_BIAS
+                (uint)FrameSettingsField.LODBias,
+#endif
+            }),
+#if FRAMESETTINGS_LOD_BIAS
+            lodBias = 1,
+#endif
         };
         /// <summary>Default FrameSettings for baked or custom ReflectionProbe/PlanarReflectionProbe renderer.</summary>
         public static readonly FrameSettings defaultCustomOrBakeReflectionProbe = new FrameSettings()
@@ -260,7 +277,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 (uint)FrameSettingsField.FPTLForForwardOpaque,
                 (uint)FrameSettingsField.BigTilePrepass,
                 (uint)FrameSettingsField.SpecularLighting,
-            })
+#if FRAMESETTINGS_LOD_BIAS
+                (uint)FrameSettingsField.LODBias,
+#endif
+            }),
+#if FRAMESETTINGS_LOD_BIAS
+            lodBias = 1,
+#endif
         };
 
         // Each time you add data in the framesettings. Attempt to add boolean one only if possible.
@@ -269,6 +292,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         // For more, you should write one using previous as exemple.
         [SerializeField]
         BitArray128 bitDatas;
+
+#if FRAMESETTINGS_LOD_BIAS
+        /// <summary>if <c>IsEnabled(FrameSettingsField.LODBias)</c>, then this value will overwrite <c>QualitySettings.lodBias</c></summary>
+        public float lodBias;
+#endif
 
         /// <summary>Helper to see binary saved data on LitShaderMode as a LitShaderMode enum.</summary>
         public LitShaderMode litShaderMode
@@ -300,6 +328,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         {
             //quick override of all booleans
             overriddenFrameSettings.bitDatas = (overridingFrameSettings.bitDatas & frameSettingsOverideMask.mask) | (~frameSettingsOverideMask.mask & overriddenFrameSettings.bitDatas);
+#if FRAMESETTINGS_LOD_BIAS
+            if (frameSettingsOverideMask.mask[(uint) FrameSettingsField.LODBias])
+            {
+                overriddenFrameSettings.SetEnabled(FrameSettingsField.LODBias, true);
+                overriddenFrameSettings.lodBias = overridingFrameSettings.lodBias;
+            }
+#endif
 
             //override remaining values here if needed
         }
