@@ -13,15 +13,18 @@
   * [Volume Profiles](Volume-Profile)
   * [Volume Overrides](Volume-Components)
 * Volume Overrides
+  * [Diffusion Profile](Diffusion-Profile-Override)
   * Fog
     * [Exponential Fog](Exponential-Fog)
     * [Linear Fog](Linear-Fog)
     * [Volumetric Fog](Volumetric-Fog)
   * Lighting
+    * [Ambient Occlusion](Override-Ambient-Occlusion)
     * [Indirect Lighting Controller](Indirect-Lighting-Controller)
     * [Volumetric Lighting Quality](Volumetric-Lighting-Controller)
   * Shadowing
     * [Contact Shadows](Contact-Shadows)
+    * [Micro Shadows](Override-Micro-Shadows)
     * [Shadows](HD-Shadow-Settings)
   * Sky
     * [Gradient Sky](Gradient-Sky)
@@ -63,6 +66,7 @@
 * Decals
   * [Decal Projector](Decal-Projector)
 * Camera
+  * [Dynamic Resolution](Dynamic-Resolution)
   * [Multisampling Anti-Aliasing](MSAA)
 * [VR in HDRP](VR-in-HDRP)
 * [HDRP Glossary](Glossary)
