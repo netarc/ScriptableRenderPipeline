@@ -30,7 +30,7 @@
     * [Gradient Sky](Override-Gradient-Sky)
     * [HDRI Sky](Override-HDRI-Sky)
     * [Procedural Sky](Override-Procedural-Sky)
-  * [Visual Environment](Override-Override-Visual-Environment)
+  * [Visual Environment](Override-Visual-Environment)
 * Render Pipeline Settings
   * [HDRP Asset](HDRP-Asset)
   * [Frame Settings](Frame-Settings)
