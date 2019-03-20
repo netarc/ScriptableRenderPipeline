@@ -1732,8 +1732,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     // This call overwrites camera properties passed to the shader system.
                     m_LightLoop.RenderShadows(renderContext, cmd, cullingResults, hdCamera);
 
-                    // Overwrite camera properties set during the shadow pass with the original camera properties.
-                    SetupCameraProperties(camera, renderContext, cmd);
                     hdCamera.SetupGlobalParams(cmd, m_Time, m_LastTime, m_FrameCount);
                 }
 
@@ -1981,6 +1979,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             HDUtils.DrawFullScreen(cmd, hdCamera.finalViewport, HDUtils.GetBlitMaterial(m_IntermediateAfterPostProcessBuffer.rt.dimension), destination, m_BlitPropertyBlock, 0);
         }
 
+        // TODO: Try to remove this once we got shadows working
         void SetupCameraProperties(Camera camera, ScriptableRenderContext renderContext, CommandBuffer cmd)
         {
             // The next 2 functions are required to flush the command buffer before calling functions directly on the render context.

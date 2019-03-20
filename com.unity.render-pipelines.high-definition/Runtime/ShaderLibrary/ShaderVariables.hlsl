@@ -450,11 +450,7 @@ float4x4 GetRawUnityWorldToObject() { return unity_WorldToObject; }
 #define unity_WorldToObject Use_Macro_UNITY_MATRIX_I_M_instead_of_unity_WorldToObject
 
 // Define View/Projection matrix macro
-#ifdef USE_LEGACY_UNITY_MATRIX_VARIABLES
-    #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariablesMatrixDefsLegacyUnity.hlsl"
-#else
-    #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariablesMatrixDefsHDCamera.hlsl"
-#endif
+#include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariablesMatrixDefsHDCamera.hlsl"
 
 // This define allow to tell to unity instancing that we will use our camera relative functions (ApplyCameraTranslationToMatrix and  ApplyCameraTranslationToInverseMatrix) for the model view matrix
 #define MODIFY_MATRIX_FOR_CAMERA_RELATIVE_RENDERING
