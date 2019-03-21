@@ -268,8 +268,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
                 // Setup matrices for shadow rendering:
                 Matrix4x4 viewProjection = shadowRequest.deviceProjectionYFlip * shadowRequest.view;
+                cmd.SetGlobalMatrix(HDShaderIDs._ViewMatrix, shadowRequest.view);
+                cmd.SetGlobalMatrix(HDShaderIDs._InvViewMatrix, shadowRequest.view.inverse);
+                cmd.SetGlobalMatrix(HDShaderIDs._ProjMatrix, shadowRequest.deviceProjectionYFlip);
+                cmd.SetGlobalMatrix(HDShaderIDs._InvProjMatrix, shadowRequest.deviceProjectionYFlip.inverse);
                 cmd.SetGlobalMatrix(HDShaderIDs._ViewProjMatrix, viewProjection);
                 cmd.SetGlobalMatrix(HDShaderIDs._InvViewProjMatrix, viewProjection.inverse);
+                cmd.SetGlobalVectorArray(HDShaderIDs._ShadowClipPlanes, shadowRequest.frustumPlanes);
 
                 // TODO: remove this execute when DrawShadows will use a CommandBuffer
                 renderContext.ExecuteCommandBuffer(cmd);

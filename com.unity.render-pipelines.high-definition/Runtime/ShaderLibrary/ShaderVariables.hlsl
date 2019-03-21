@@ -189,6 +189,7 @@ CBUFFER_START(UnityGlobal)
     float4x4 _ProjMatrix;
     float4x4 _InvProjMatrix;
     float4x4 _ViewProjMatrix;
+    float4x4 _CameraViewProjMatrix;
     float4x4 _InvViewProjMatrix;
     float4x4 _NonJitteredViewProjMatrix;
     float4x4 _PrevViewProjMatrix;       // non-jittered
@@ -237,6 +238,7 @@ CBUFFER_START(UnityGlobal)
     float4 _ScreenParams;
 
     float4 _FrustumPlanes[6];           // { (a, b, c) = N, d = -dot(N, P) } [L, R, T, B, N, F]
+    float4 _ShadowFrustumPlanes[6];     // { (a, b, c) = N, d = -dot(N, P) } [L, R, T, B, N, F]
 
     // TAA Frame Index ranges from 0 to 7.
     // First two channels of this gives you two rotations per cycle.

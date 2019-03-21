@@ -73,6 +73,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         // Warning: this field is updated by ProcessShadowRequests and is invalid before
         public Rect                 atlasViewport;
         public bool                 zClip;
+        public Vector4[]            frustumPlanes;
 
         // Store the final shadow indice in the shadow data array
         // Warning: the index is computed during ProcessShadowRequest and so is invalid before calling this function

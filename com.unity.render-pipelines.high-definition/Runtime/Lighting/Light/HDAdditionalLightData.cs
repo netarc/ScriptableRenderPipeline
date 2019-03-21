@@ -234,6 +234,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         bool                m_WillRenderShadows;
         int[]               m_ShadowRequestIndices;
 
+        [System.NonSerialized]
+        Plane[]             m_ShadowFrustumPlanes = new Plane[6];
 
         #if ENABLE_RAYTRACING
         // Temporary index that stores the current shadow index for the light
@@ -424,7 +426,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 }
 
                 // Assign all setting common to every lights
-                SetCommonShadowRequestSettings(shadowRequest, cameraPos, invViewProjection, viewportSize, lightIndex);
+                SetCommonShadowRequestSettings(shadowRequest, cameraPos, invViewProjection, shadowRequest.deviceProjectionYFlip * shadowRequest.view, viewportSize, lightIndex);
 
                 manager.UpdateShadowRequest(shadowRequestIndex, shadowRequest);
 
@@ -438,7 +440,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             return firstShadowRequestIndex;
         }
 
-        void SetCommonShadowRequestSettings(HDShadowRequest shadowRequest, Vector3 cameraPos, Matrix4x4 invViewProjection, Vector2 viewportSize, int lightIndex)
+        void SetCommonShadowRequestSettings(HDShadowRequest shadowRequest, Vector3 cameraPos, Matrix4x4 invViewProjection, Matrix4x4 viewProjection, Vector2 viewportSize, int lightIndex)
         {
             // zBuffer param to reconstruct depth position (for transmission)
             float f = legacyLight.range;
@@ -486,6 +488,21 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             }
 
             shadowRequest.lightType = (int) legacyLight.type;
+
+            // shadow clip planes (used for tessellation clipping)
+            GeometryUtility.CalculateFrustumPlanes(viewProjection, m_ShadowFrustumPlanes);
+            if (shadowRequest.frustumPlanes?.Length != 6)
+                shadowRequest.frustumPlanes = new Vector4[6];
+            // Left, right, top, bottom, near, far.
+            for (int i = 0; i < 6; i++)
+            {
+                shadowRequest.frustumPlanes[i] = new Vector4(
+                    m_ShadowFrustumPlanes[i].normal.x,
+                    m_ShadowFrustumPlanes[i].normal.y,
+                    m_ShadowFrustumPlanes[i].normal.z,
+                    m_ShadowFrustumPlanes[i].distance
+                );
+            }
 
             // Shadow algorithm parameters
             shadowRequest.shadowSoftness = shadowSoftness / 100f;
