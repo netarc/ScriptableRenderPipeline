@@ -50,7 +50,8 @@ Shader "Hidden/HDRP/DrawDiffusionProfile"
             Varyings Vert(Attributes input)
             {
                 Varyings output;
-                output.vertex   = TransformWorldToHClip(input.vertex);
+                // We still use the legacy matrices in the editor GUI
+                output.vertex   = mul(unity_MatrixVP, float4(input.vertex, 1));
                 output.texcoord = input.texcoord.xy;
                 return output;
             }

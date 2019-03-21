@@ -276,11 +276,7 @@ float4x4 OptimizeProjectionMatrix(float4x4 M)
     return M;
 }
 
-#ifdef USE_LEGACY_UNITY_MATRIX_VARIABLES
-    #include "ShaderVariablesMatrixDefsLegacyUnity.hlsl"
-#else
-    #include "ShaderVariablesMatrixDefsHDCamera.hlsl"
-#endif
+#include "ShaderVariablesMatrixDefsLegacyUnity.hlsl"
 
 #include "ShaderVariablesFunctions.hlsl"
 
