@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [5.11.0] - 2019-XX-XX
 ### Fixed
-- Fixed issue that caused transparent objects to sort incorrectly.
+- Fixed an issue that caused transparent objects to sort incorrectly.
 
 ## [5.10.0] - 2019-03-19
 ### Added
