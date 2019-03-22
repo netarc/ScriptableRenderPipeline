@@ -1450,7 +1450,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 #if FRAMESETTINGS_LOD_BIAS
             // Set the LOD bias and store current value to be able to restore it.
             var initialLODBias = QualitySettings.lodBias;
-            if (hdCamera.frameSettings.IsEnabled(FrameSettingsField.LODBias))
+            if (hdCamera.frameSettings.lodBiasMode == LODBiasMode.Fixed)
             {
                 QualitySettings.lodBias = hdCamera.frameSettings.lodBias;
                 cmd.SetLODBias(hdCamera.frameSettings.lodBias);
@@ -1971,7 +1971,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
 #if FRAMESETTINGS_LOD_BIAS
             // Restore LOD bias
-            if (hdCamera.frameSettings.IsEnabled(FrameSettingsField.LODBias))
+            if (hdCamera.frameSettings.lodBiasMode == LODBiasMode.Fixed)
                 cmd.SetLODBias(initialLODBias);
 #endif
         }
@@ -2203,7 +2203,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             var initialLODBias = QualitySettings.lodBias;
             try
             {
-                if (hdCamera.frameSettings.IsEnabled(FrameSettingsField.LODBias))
+                if (hdCamera.frameSettings.lodBiasMode == LODBiasMode.Fixed)
                     QualitySettings.lodBias = hdCamera.frameSettings.lodBias;
 #endif
 

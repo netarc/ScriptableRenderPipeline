@@ -189,11 +189,14 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         static void Drawer_SectionOtherSettings(SerializedFrameSettings serialized, Editor owner, bool withOverride)
         {
             var area = GetFrameSettingSectionContent(4, serialized, owner);
+            area.AmmendInfo(FrameSettingsField.LODBiasMode, overridedDefaultValue: LODBiasMode.FromQualitySettings);
+            var hasFixedLODBias = serialized.IsEnabled(FrameSettingsField.LODBiasMode).HasValue &&
+                                  serialized.IsEnabled(FrameSettingsField.LODBiasMode).Value;
             area.AmmendInfo(FrameSettingsField.LODBias,
-                overridedDefaultValue: 1.0f,
-                overrideable: () => true,
+                overridedDefaultValue: QualitySettings.lodBias,
                 customGetter: () => serialized.lodBias.floatValue,
-                customSetter: v => serialized.lodBias.floatValue = (float)v);
+                customSetter: v => serialized.lodBias.floatValue = (float)v,
+                customOverrideable: () => hasFixedLODBias);
             area.Draw(withOverride);
         }
 #endif

@@ -13,6 +13,14 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         Deferred
     }
 
+#if FRAMESETTINGS_LOD_BIAS
+    public enum LODBiasMode
+    {
+        FromQualitySettings,
+        Fixed,
+    }
+#endif
+
     // To add a new element to FrameSettings, add en entry in this enum using the FrameSettingsFieldAttribute.
     // Inspector UI and DebugMenu are generated from this.
     // If you have very specific display requirement, you could add them in FrameSettingsUI.Drawer.cs with a AmmendInfo command.
@@ -98,9 +106,12 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
         //from 60 to 119 : space for new scopes
 #if FRAMESETTINGS_LOD_BIAS
+        // true <=> Fixed, false <=> FromQualitySettings (default)
+        [FrameSettingsField(4, autoName: LODBiasMode, type: FrameSettingsFieldAttribute.DisplayType.BoolAsEnumPopup, targetType: typeof(LODBiasMode))]
+        LODBiasMode = 60,
         /// <summary>Set the LOD Bias with the value in <see cref="FrameSettings.lodBias"/>.</summary>
-        [FrameSettingsField(4, autoName: LODBias, type: FrameSettingsFieldAttribute.DisplayType.Others)]
-        LODBias = 60,
+        [FrameSettingsField(4, autoName: LODBias, type: FrameSettingsFieldAttribute.DisplayType.Others, positiveDependencies: new[]{ LODBiasMode })]
+        LODBias = 61,
 #endif
 
         //lightLoop settings from 120 to 127
@@ -180,6 +191,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 (uint)FrameSettingsField.SpecularLighting,
 #if FRAMESETTINGS_LOD_BIAS
                 (uint)FrameSettingsField.LODBias,
+                //(uint)FrameSettingsField.LODBiasMode,
 #endif
             }),
 #if FRAMESETTINGS_LOD_BIAS
@@ -230,6 +242,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 (uint)FrameSettingsField.SpecularLighting,
 #if FRAMESETTINGS_LOD_BIAS
                 (uint)FrameSettingsField.LODBias,
+                //(uint)FrameSettingsField.LODBiasMode,
 #endif
             }),
 #if FRAMESETTINGS_LOD_BIAS
@@ -279,6 +292,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 (uint)FrameSettingsField.SpecularLighting,
 #if FRAMESETTINGS_LOD_BIAS
                 (uint)FrameSettingsField.LODBias,
+                //(uint)FrameSettingsField.LODBiasMode,
 #endif
             }),
 #if FRAMESETTINGS_LOD_BIAS
@@ -296,6 +310,14 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 #if FRAMESETTINGS_LOD_BIAS
         /// <summary>if <c>IsEnabled(FrameSettingsField.LODBias)</c>, then this value will overwrite <c>QualitySettings.lodBias</c></summary>
         public float lodBias;
+
+        public LODBiasMode lodBiasMode
+        {
+            get => bitDatas[(uint) FrameSettingsField.LODBiasMode]
+                ? LODBiasMode.Fixed
+                : LODBiasMode.FromQualitySettings;
+            set => bitDatas[(uint)FrameSettingsField.LODBiasMode] = value == LODBiasMode.Fixed;
+        }
 #endif
 
         /// <summary>Helper to see binary saved data on LitShaderMode as a LitShaderMode enum.</summary>
