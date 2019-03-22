@@ -513,7 +513,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             (uint)StaticEditorFlags.ReflectionProbeStatic
                         );
                         HDBakingUtilities.CreateParentDirectoryIfMissing(targetFile);
-                        Checkout(targetFile, CheckoutMode.Both);
+                        if (Provider.isActive)
+                            Checkout(targetFile, CheckoutMode.Both);
                         HDTextureUtilities.WriteTextureFileToDisk(cubeRT, targetFile);
                         break;
                     }
@@ -532,11 +533,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             out CameraSettings cameraSettings, out CameraPositionSettings cameraPositionSettings
                         );
                         HDBakingUtilities.CreateParentDirectoryIfMissing(targetFile);
-                        Checkout(targetFile, CheckoutMode.Both);
+                        if (Provider.isActive)
+                            Checkout(targetFile, CheckoutMode.Both);
                         HDTextureUtilities.WriteTextureFileToDisk(planarRT, targetFile);
                         var renderData = new HDProbe.RenderData(cameraSettings, cameraPositionSettings);
                         var targetRenderDataFile = targetFile + ".renderData";
-                        Checkout(targetRenderDataFile, CheckoutMode.Both);
+                        if (Provider.isActive)
+                            Checkout(targetRenderDataFile, CheckoutMode.Both);
                         HDBakingUtilities.TrySerializeToDisk(renderData, targetRenderDataFile);
                         break;
                     }
