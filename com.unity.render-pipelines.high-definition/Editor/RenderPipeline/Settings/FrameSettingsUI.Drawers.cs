@@ -197,6 +197,15 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 customGetter: () => serialized.lodBias.floatValue,
                 customSetter: v => serialized.lodBias.floatValue = (float)v,
                 customOverrideable: () => hasFixedLODBias);
+
+            area.AmmendInfo(FrameSettingsField.MaximumLODLevelMode, overridedDefaultValue: MaximumLODLevelMode.FromQualitySettings);
+            var hasFixedMaximumLODLevel = serialized.IsEnabled(FrameSettingsField.MaximumLODLevelMode).HasValue &&
+                                  serialized.IsEnabled(FrameSettingsField.MaximumLODLevelMode).Value;
+            area.AmmendInfo(FrameSettingsField.MaximumLODLevel,
+                overridedDefaultValue: QualitySettings.maximumLODLevel,
+                customGetter: () => serialized.maximumLODLevel.intValue,
+                customSetter: v => serialized.maximumLODLevel.intValue = (int)v,
+                customOverrideable: () => hasFixedMaximumLODLevel);
             area.Draw(withOverride);
         }
 #endif

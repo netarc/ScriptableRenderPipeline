@@ -19,6 +19,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         FromQualitySettings,
         Fixed,
     }
+    public enum MaximumLODLevelMode
+    {
+        FromQualitySettings,
+        Fixed,
+    }
 #endif
 
     // To add a new element to FrameSettings, add en entry in this enum using the FrameSettingsFieldAttribute.
@@ -112,6 +117,12 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         /// <summary>Set the LOD Bias with the value in <see cref="FrameSettings.lodBias"/>.</summary>
         [FrameSettingsField(4, autoName: LODBias, type: FrameSettingsFieldAttribute.DisplayType.Others, positiveDependencies: new[]{ LODBiasMode })]
         LODBias = 61,
+        // true <=> Fixed, false <=> FromQualitySettings (default)
+        [FrameSettingsField(4, autoName: MaximumLODLevelMode, type: FrameSettingsFieldAttribute.DisplayType.BoolAsEnumPopup, targetType: typeof(MaximumLODLevelMode))]
+        MaximumLODLevelMode = 62,
+        /// <summary>Set the LOD Bias with the value in <see cref="FrameSettings.maximumLODLevel"/>.</summary>
+        [FrameSettingsField(4, autoName: MaximumLODLevel, type: FrameSettingsFieldAttribute.DisplayType.Others, positiveDependencies: new[]{ MaximumLODLevelMode })]
+        MaximumLODLevel = 63,
 #endif
 
         //lightLoop settings from 120 to 127
@@ -192,6 +203,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 #if FRAMESETTINGS_LOD_BIAS
                 (uint)FrameSettingsField.LODBias,
                 //(uint)FrameSettingsField.LODBiasMode,
+                (uint)FrameSettingsField.MaximumLODLevel,
+                //(uint)FrameSettingsField.MaximumLODLevelMode,
 #endif
             }),
 #if FRAMESETTINGS_LOD_BIAS
@@ -243,6 +256,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 #if FRAMESETTINGS_LOD_BIAS
                 (uint)FrameSettingsField.LODBias,
                 //(uint)FrameSettingsField.LODBiasMode,
+                (uint)FrameSettingsField.MaximumLODLevel,
+                //(uint)FrameSettingsField.MaximumLODLevelMode,
 #endif
             }),
 #if FRAMESETTINGS_LOD_BIAS
@@ -293,6 +308,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 #if FRAMESETTINGS_LOD_BIAS
                 (uint)FrameSettingsField.LODBias,
                 //(uint)FrameSettingsField.LODBiasMode,
+                (uint)FrameSettingsField.MaximumLODLevel,
+                //(uint)FrameSettingsField.MaximumLODLevelMode,
 #endif
             }),
 #if FRAMESETTINGS_LOD_BIAS
@@ -308,7 +325,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         BitArray128 bitDatas;
 
 #if FRAMESETTINGS_LOD_BIAS
-        /// <summary>if <c>IsEnabled(FrameSettingsField.LODBias)</c>, then this value will overwrite <c>QualitySettings.lodBias</c></summary>
+        /// <summary>if <c>lodBiasMode == LODBiasMode.Fixed</c>, then this value will overwrite <c>QualitySettings.lodBias</c></summary>
         public float lodBias;
 
         public LODBiasMode lodBiasMode
@@ -317,6 +334,17 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 ? LODBiasMode.Fixed
                 : LODBiasMode.FromQualitySettings;
             set => bitDatas[(uint)FrameSettingsField.LODBiasMode] = value == LODBiasMode.Fixed;
+        }
+
+        /// <summary>if <c>maximumLODLevelMode == MaximumLODLevelMode.FromQualitySettings</c>, then this value will overwrite <c>QualitySettings.maximumLODLevel</c></summary>
+        public int maximumLODLevel;
+
+        public MaximumLODLevelMode maximumLODLevelMode
+        {
+            get => bitDatas[(uint) FrameSettingsField.MaximumLODLevelMode]
+                ? MaximumLODLevelMode.Fixed
+                : MaximumLODLevelMode.FromQualitySettings;
+            set => bitDatas[(uint)FrameSettingsField.MaximumLODLevelMode] = value == MaximumLODLevelMode.Fixed;
         }
 #endif
 
@@ -355,6 +383,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             {
                 overriddenFrameSettings.SetEnabled(FrameSettingsField.LODBias, true);
                 overriddenFrameSettings.lodBias = overridingFrameSettings.lodBias;
+            }
+            if (frameSettingsOverideMask.mask[(uint) FrameSettingsField.MaximumLODLevel])
+            {
+                overriddenFrameSettings.SetEnabled(FrameSettingsField.LODBias, true);
+                overriddenFrameSettings.maximumLODLevel = overridingFrameSettings.maximumLODLevel;
             }
 #endif
 

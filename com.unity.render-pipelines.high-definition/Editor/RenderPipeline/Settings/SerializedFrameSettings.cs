@@ -9,6 +9,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         SerializedProperty rootData;
         SerializedProperty rootOverride;
         public SerializedProperty lodBias;
+        public SerializedProperty maximumLODLevel;
 
         public SerializedObject serializedObject => rootData.serializedObject;
         
@@ -98,6 +99,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             this.rootData = rootData.FindPropertyRelative("bitDatas");
             this.rootOverride = rootOverride?.FindPropertyRelative("mask");  //rootOverride can be null in case of hdrpAsset defaults
             lodBias = rootData.FindPropertyRelative("lodBias");
+            maximumLODLevel = rootData.FindPropertyRelative("maximumLODLevel");
         }
     }
 }

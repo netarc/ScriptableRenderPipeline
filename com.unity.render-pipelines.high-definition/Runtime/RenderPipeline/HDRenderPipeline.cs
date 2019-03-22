@@ -1455,6 +1455,12 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 QualitySettings.lodBias = hdCamera.frameSettings.lodBias;
                 cmd.SetLODBias(hdCamera.frameSettings.lodBias);
             }
+            var initialMaximumLODLevel = QualitySettings.maximumLODLevel;
+            if (hdCamera.frameSettings.maximumLODLevelMode == MaximumLODLevelMode.Fixed)
+            {
+                QualitySettings.maximumLODLevel = hdCamera.frameSettings.maximumLODLevel;
+                cmd.SetMaximumLODLevel(hdCamera.frameSettings.maximumLODLevel);
+            }
 #endif
 
             m_DbufferManager.enableDecals = false;
@@ -1973,6 +1979,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             // Restore LOD bias
             if (hdCamera.frameSettings.lodBiasMode == LODBiasMode.Fixed)
                 cmd.SetLODBias(initialLODBias);
+            // Restore Maximum LOD Level
+            if (hdCamera.frameSettings.maximumLODLevelMode == MaximumLODLevelMode.Fixed)
+                cmd.SetMaximumLODLevel(initialMaximumLODLevel);
 #endif
         }
 
@@ -2201,10 +2210,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             // Set the LOD bias and store current value to be able to restore it.
             // Use a try/finalize pattern to be sure to restore properly the qualitySettings.lodBias
             var initialLODBias = QualitySettings.lodBias;
+            var initialMaximumLODLevel = QualitySettings.maximumLODLevel;
             try
             {
                 if (hdCamera.frameSettings.lodBiasMode == LODBiasMode.Fixed)
                     QualitySettings.lodBias = hdCamera.frameSettings.lodBias;
+                if (hdCamera.frameSettings.maximumLODLevelMode == MaximumLODLevelMode.Fixed)
+                    QualitySettings.maximumLODLevel = hdCamera.frameSettings.maximumLODLevel;
 #endif
 
                 var includeEnvLights = hdCamera.frameSettings.IsEnabled(FrameSettingsField.SpecularLighting);
@@ -2251,6 +2263,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             finally
             {
                 QualitySettings.lodBias = initialLODBias;
+                QualitySettings.maximumLODLevel = initialMaximumLODLevel;
             }
 #endif
         }
