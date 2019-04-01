@@ -23,7 +23,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             { "HDRP/LitTessellation", LitGUI.SetupMaterialKeywordsAndPass },
             { "HDRP/Unlit", UnlitGUI.SetupUnlitMaterialKeywordsAndPass },
             { "HDRP/Decal", DecalUI.SetupMaterialKeywordsAndPass },
-            { "HDRP/TerrainLit", TerrainLitGUI.SetupMaterialKeywordsAndPass }
+            { "HDRP/TerrainLit", TerrainLitGUI.SetupMaterialKeywordsAndPass },
+            { "HDRP/AxF", AxFGUI.SetupMaterialKeywordsAndPass }
         };
 
         static Dictionary<Type, MaterialResetter> k_ShaderGraphMaterialResetters = new Dictionary<Type, MaterialResetter>
@@ -40,6 +41,12 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             return AssetDatabase.LoadAssetAtPath<T>(HDUtils.GetHDRenderPipelinePath() + relativePath);
         }
 
+        /// <summary>
+        /// Reset the dedicated Keyword and Pass regarding the shader kind.
+        /// Also reinit the drawers ans set the material dirty for the engine.
+        /// <seealso cref="MaterialUtils.SetupMaterialKeywordsAndPass"/> 
+        /// </summary>
+        /// <param name="material">The material that nees to be setup</param>
         public static bool ResetMaterialKeywords(Material material)
         {
             MaterialResetter resetter = null;
@@ -74,6 +81,23 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 return true;
             }
 
+            return false;
+        }
+
+        /// <summary>
+        /// Reset the dedicated Keyword and Pass regarding the shader kind.
+        /// It only does this. For also handling full reset of keywords and
+        /// material, see <see cref="ResetMaterialKeywords"/>.
+        /// </summary>
+        /// <param name="material">The material that nees to be setup</param>
+        public static bool SetupMaterialKeywordsAndPass(Material material)
+        {
+            MaterialResetter resetter;
+            if (k_MaterialResetters.TryGetValue(material.shader.name, out resetter))
+            { 
+                resetter(material);
+                return true;
+            }
             return false;
         }
 
