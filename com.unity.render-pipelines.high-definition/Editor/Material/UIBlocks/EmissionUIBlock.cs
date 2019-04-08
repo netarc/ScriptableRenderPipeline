@@ -29,7 +29,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             public static GUIContent emissiveIntensityFromHDRColorText = new GUIContent("The emission intensity is from the HDR color picker in luminance", "");
             public static GUIContent emissiveExposureWeightText = new GUIContent("Exposure weight", "Control the percentage of emission to expose.");
 
-            public static GUIContent UVBaseMappingText = new GUIContent("Base UV Mapping", "");
+            public static GUIContent UVEmissiveMappingText = new GUIContent("Emission UV mapping", "");
             public static GUIContent texWorldScaleText = new GUIContent("World Scale", "Sets the tiling factor HDRP applies to Planar/Trilinear mapping.");
         }
 
@@ -153,7 +153,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             if (materials[0].GetTexture(kEmissiveColorMap))
             {
                 EditorGUI.indentLevel++;
-                materialEditor.ShaderProperty(UVEmissive, Styles.UVBaseMappingText);
+                materialEditor.ShaderProperty(UVEmissive, Styles.UVEmissiveMappingText);
                 UVBaseMapping uvEmissiveMapping = (UVBaseMapping)UVEmissive.floatValue;
 
                 float X, Y, Z, W;
