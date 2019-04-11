@@ -14,20 +14,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - When in playmode, the error 'Non matching Profiler.EndSample' no longer appears. [case 1140750](https://fogbugz.unity3d.com/f/cases/1140750/)
-- LWRP Particle shaders now correctly render in stereo rendering modes. [case 1106699](https://fogbugz.unity3d.com/f/cases/1106699/)
-- Shaders with 'debug' in the name no longer are stripped automatically. [case 1112983](https://fogbugz.unity3d.com/f/cases/1112983/)
+- LWRP Particle Shaders now correctly render in stereo rendering modes. [case 1106699](https://fogbugz.unity3d.com/f/cases/1106699/)
+- Shaders with 'debug' in the name are no longer stripped automatically. [case 1112983](https://fogbugz.unity3d.com/f/cases/1112983/)
 - Fixed tiling issue with selection outline and baked cutout shadows.
-- Shadergraph Unlit Master node Premultiply acted the same as Alpha. [case 1114708](https://fogbugz.unity3d.com/f/cases/1114708/)
-- Fixed issue missing Lightprobe data if it was needed per-pixel and GPU instancing was enabled.
-- Soft ScreenSpaceShadows shader variant no longer gets stripped form builds. [case 1138236](https://fogbugz.unity3d.com/f/cases/1138236/)
+- in the Shadergraph Unlit Master node, Premultiply no longer acts the same as Alpha. [case 1114708](https://fogbugz.unity3d.com/f/cases/1114708/)
+- Fixed an issue where Lightprobe data was missing if it was needed per-pixel and GPU instancing was enabled.
+- The Soft ScreenSpaceShadows Shader variant no longer gets stripped form builds. [case 1138236](https://fogbugz.unity3d.com/f/cases/1138236/)
 - Fixed a project import issue in the LWRP template.
 - Fixed the warnings that appear when you create new Unlit Shader Graphs using the Lightweight Render Pipeline.
 - Fixed light attenuation precision on mobile platforms.
 - Fixed split-screen rendering on mobile platforms.
 - Fixed rendering when using an off-screen camera that renders to a depth texture.
-- Exposed stencil render state in the renderer.
-- The default layer mask is now applied to a depth pre-pass.
-- Several improvements and fixes to the render pass UI.
+- Fixed the exposed stencil render state in the renderer.
+- Fixed the default layer mask so it's now applied to a depth pre-pass.
+- Made several improvements and fixes to the render pass UI.
 - Fixed an XR rendering issue where Unity required a depth texture.
 - Fixed an issue that caused transparent objects to sort incorrectly.
 
