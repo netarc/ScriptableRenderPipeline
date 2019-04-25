@@ -155,23 +155,30 @@ namespace UnityEditor.VFX
         }
     }
 
-    interface ISRPProvider
+    abstract class SRPProvider
     {
-        string templatePath { get; }
-        Type SRPAssetType { get; }
-        VFXModel CreateSRPOutputData();
+        abstract public string templatePath { get; }
+        abstract public Type SRPAssetType { get; }
+        abstract public VFXModel CreateSRPOutputData();
+    }
+    class HDRPTestProvider : SRPProvider
+    {
+        public override string templatePath { get { return "Packages/com.unity.visualeffectgraph/Shaders/RenderPipeline/HDRP"; } }
+        public override Type SRPAssetType { get { return null; } }
+
+        public override VFXModel CreateSRPOutputData() { return null; } // TODO
     }
 
     static class VFXLibrary
     {
-        public static IEnumerable<VFXModelDescriptor<VFXContext>> GetContexts()     { LoadIfNeeded(); return VFXViewPreference.displayExperimentalOperator ? m_ContextDescs : m_ContextDescs.Where(o => !o.info.experimental); }
-        public static IEnumerable<VFXModelDescriptor<VFXBlock>> GetBlocks()         { LoadIfNeeded(); return VFXViewPreference.displayExperimentalOperator ? m_BlockDescs : m_BlockDescs.Where(o => !o.info.experimental); }
-        public static IEnumerable<VFXModelDescriptor<VFXOperator>> GetOperators()   { LoadIfNeeded(); return VFXViewPreference.displayExperimentalOperator ? m_OperatorDescs : m_OperatorDescs.Where(o => !o.info.experimental); }
-        public static IEnumerable<VFXModelDescriptor<VFXSlot>> GetSlots()           { LoadSlotsIfNeeded(); return m_SlotDescs.Values; }
-        public static IEnumerable<Type> GetSlotsType()                              { LoadSlotsIfNeeded(); return m_SlotDescs.Keys; }
-        public static bool IsSpaceableSlotType(Type type)                           { LoadSlotsIfNeeded(); return m_SlotSpaceable.Contains(type); }
+        public static IEnumerable<VFXModelDescriptor<VFXContext>> GetContexts() { LoadIfNeeded(); return VFXViewPreference.displayExperimentalOperator ? m_ContextDescs : m_ContextDescs.Where(o => !o.info.experimental); }
+        public static IEnumerable<VFXModelDescriptor<VFXBlock>> GetBlocks() { LoadIfNeeded(); return VFXViewPreference.displayExperimentalOperator ? m_BlockDescs : m_BlockDescs.Where(o => !o.info.experimental); }
+        public static IEnumerable<VFXModelDescriptor<VFXOperator>> GetOperators() { LoadIfNeeded(); return VFXViewPreference.displayExperimentalOperator ? m_OperatorDescs : m_OperatorDescs.Where(o => !o.info.experimental); }
+        public static IEnumerable<VFXModelDescriptor<VFXSlot>> GetSlots() { LoadSlotsIfNeeded(); return m_SlotDescs.Values; }
+        public static IEnumerable<Type> GetSlotsType() { LoadSlotsIfNeeded(); return m_SlotDescs.Keys; }
+        public static bool IsSpaceableSlotType(Type type) { LoadSlotsIfNeeded(); return m_SlotSpaceable.Contains(type); }
 
-        public static IEnumerable<VFXModelDescriptorParameters> GetParameters()     { LoadIfNeeded(); return m_ParametersDescs; }
+        public static IEnumerable<VFXModelDescriptorParameters> GetParameters() { LoadIfNeeded(); return m_ParametersDescs; }
 
         public static VFXModelDescriptor<VFXSlot> GetSlot(System.Type type)
         {
@@ -393,20 +400,20 @@ namespace UnityEditor.VFX
             return types.Where(type => attributeType == null || type.GetCustomAttributes(attributeType, false).Length == 1);
         }
 
-        private static Dictionary<Type, ISRPProvider> srpProviders = null;
+        private static Dictionary<Type, SRPProvider> srpProviders = null;
 
         private static void LoadSRPProvidersIfNeeded()
         {
             if (srpProviders != null)
                 return;
 
-            srpProviders = new Dictionary<Type, ISRPProvider>();
+            srpProviders = new Dictionary<Type, SRPProvider>();
 
-            foreach (var providerType in FindConcreteSubclasses(typeof(ISRPProvider)))
+            foreach (var providerType in FindConcreteSubclasses(typeof(SRPProvider)))
             {
                 try
                 {
-                    ISRPProvider provider = (ISRPProvider)Activator.CreateInstance(providerType);
+                    SRPProvider provider = (SRPProvider)Activator.CreateInstance(providerType);
                     Type SRPAssetType = provider.SRPAssetType;
                     if (!SRPAssetType.IsSubclassOf(typeof(RenderPipelineAsset)))
                         throw new Exception(string.Format("The type of the RenderpipelineAsset provided by {0} is invalid ({1})", providerType, SRPAssetType));
@@ -416,19 +423,19 @@ namespace UnityEditor.VFX
 
                     Debug.Log(string.Format("Register {0} SRP for VFX", SRPAssetType));
                 }
-                catch
+                catch(Exception e)
                 {
-                    Debug.LogError(string.Format("Exception while registering SRPProvider: {0}", providerType));
+                    Debug.LogError(string.Format("Exception while registering SRPProvider {0}: {1} - {2}", providerType, e, e.StackTrace));
                 }
             }
         }
 
-        public static ISRPProvider SRPProvider
+        public static SRPProvider srpProvider
         {
             get
             {
                 LoadSRPProvidersIfNeeded();
-                ISRPProvider provider = null;
+                SRPProvider provider = null;
                 srpProviders.TryGetValue(GraphicsSettings.renderPipelineAsset.GetType(), out provider);
                 return provider;
             }
