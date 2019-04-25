@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Experimental.VFX;
+using UnityEngine.Rendering;
 using Object = System.Object;
 
 namespace UnityEditor.VFX
@@ -153,6 +153,13 @@ namespace UnityEditor.VFX
             instance.Init(model.outputSlots[0].property.type);
             return instance;
         }
+    }
+
+    interface ISRPProvider
+    {
+        string templatePath { get; }
+        Type SRPAssetType { get; }
+        VFXModel CreateSRPOutputData();
     }
 
     static class VFXLibrary
@@ -384,6 +391,47 @@ namespace UnityEditor.VFX
                             types.Add(assemblyType);
             }
             return types.Where(type => attributeType == null || type.GetCustomAttributes(attributeType, false).Length == 1);
+        }
+
+        private static Dictionary<Type, ISRPProvider> srpProviders = null;
+
+        private static void LoadSRPProvidersIfNeeded()
+        {
+            if (srpProviders != null)
+                return;
+
+            srpProviders = new Dictionary<Type, ISRPProvider>();
+
+            foreach (var providerType in FindConcreteSubclasses(typeof(ISRPProvider)))
+            {
+                try
+                {
+                    ISRPProvider provider = (ISRPProvider)Activator.CreateInstance(providerType);
+                    Type SRPAssetType = provider.SRPAssetType;
+                    if (!SRPAssetType.IsSubclassOf(typeof(RenderPipelineAsset)))
+                        throw new Exception(string.Format("The type of the RenderpipelineAsset provided by {0} is invalid ({1})", providerType, SRPAssetType));
+                    if (srpProviders.ContainsKey(SRPAssetType))
+                        throw new Exception(string.Format("The SRP of asset type {0} is already registered ({1})", SRPAssetType, srpProviders[SRPAssetType].GetType()));
+                    srpProviders[SRPAssetType] = provider;
+
+                    Debug.Log(string.Format("Register {0} SRP for VFX", SRPAssetType));
+                }
+                catch
+                {
+                    Debug.LogError(string.Format("Exception while registering SRPProvider: {0}", providerType));
+                }
+            }
+        }
+
+        public static ISRPProvider SRPProvider
+        {
+            get
+            {
+                LoadSRPProvidersIfNeeded();
+                ISRPProvider provider = null;
+                srpProviders.TryGetValue(GraphicsSettings.renderPipelineAsset.GetType(), out provider);
+                return provider;
+            }
         }
 
         private static volatile List<VFXModelDescriptor<VFXContext>> m_ContextDescs;
