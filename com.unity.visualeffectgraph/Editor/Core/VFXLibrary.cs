@@ -159,7 +159,7 @@ namespace UnityEditor.VFX
     {
         abstract public string templatePath { get; }
         abstract public Type SRPAssetType { get; }
-        abstract public VFXModel CreateSRPOutputData();
+        abstract public Type SRPOutputDataType { get; }
     } 
 
     static class VFXLibrary

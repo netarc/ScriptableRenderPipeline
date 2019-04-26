@@ -9,7 +9,7 @@ using UnityEngine.Experimental.VFX;
 
 namespace UnityEditor.VFX
 {
-    abstract class VFXAbstractParticleOutput : VFXContext, IVFXSubRenderer
+    abstract class VFXAbstractParticleOutput : VFXAbstractRenderedOutput, IVFXSubRenderer
     {
         public enum ColorMappingMode
         {
@@ -124,7 +124,7 @@ namespace UnityEditor.VFX
         }
         public bool NeedsDeadListCount() { return HasIndirectDraw() && (taskType == VFXTaskType.ParticleQuadOutput || taskType == VFXTaskType.ParticleHexahedronOutput); } // Should take the capacity into account to avoid false positive
 
-        protected VFXAbstractParticleOutput() : base(VFXContextType.kOutput, VFXDataType.kParticle, VFXDataType.kNone) {}
+        protected VFXAbstractParticleOutput() : base(VFXDataType.kParticle) {}
 
         public override bool codeGeneratorCompute { get { return false; } }
 
