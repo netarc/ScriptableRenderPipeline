@@ -33,16 +33,16 @@ public class VFXSlotContainerEditor : Editor
     public virtual void DoInspectorGUI()
     {
         var slotContainer = targets[0] as VFXModel;
-        IEnumerable<FieldInfo> settingFields = slotContainer.GetSettings(false, VFXSettingAttribute.VisibleFlags.InInspector);
+        IEnumerable<VFXSetting> settingFields = slotContainer.GetSettings(false, VFXSettingAttribute.VisibleFlags.InInspector);
 
         for (int i = 1; i < targets.Length; ++i)
         {
-            IEnumerable<FieldInfo> otherSettingFields = (targets[i] as VFXModel).GetSettings(false, VFXSettingAttribute.VisibleFlags.InInspector);
+            IEnumerable<VFXSetting> otherSettingFields = (targets[i] as VFXModel).GetSettings(false, VFXSettingAttribute.VisibleFlags.InInspector);
 
             settingFields = settingFields.Intersect(otherSettingFields);
         }
 
-        foreach (var prop in settingFields.Select(t => new KeyValuePair<FieldInfo, SerializedProperty>(t, serializedObject.FindProperty(t.Name))).Where(t => t.Value != null))
+        foreach (var prop in settingFields.Select(t => new KeyValuePair<FieldInfo, SerializedProperty>(t.field, serializedObject.FindProperty(t.field.Name))).Where(t => t.Value != null))
         {
             var attrs = prop.Key.GetCustomAttributes(typeof(StringProviderAttribute), true);
             if (attrs.Length > 0)

@@ -699,14 +699,14 @@ namespace UnityEditor.VFX.UI
             var contextType = controller.model.GetType();
             foreach (var setting in newContextController.model.GetSettings(true))
             {
-                FieldInfo myField = contextType.GetField(setting.Name, BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic);
+                FieldInfo myField = contextType.GetField(setting.field.Name, BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic);
                 if (myField == null || myField.GetCustomAttributes(typeof(VFXSettingAttribute), true).Length == 0)
                     continue;
 
                 object value;
-                if (VFXConverter.TryConvertTo(myField.GetValue(controller.model), setting.FieldType, out value))
+                if (VFXConverter.TryConvertTo(myField.GetValue(controller.model), setting.field.FieldType, out value))
                 {
-                    newContextController.model.SetSettingValue(setting.Name, value);
+                    newContextController.model.SetSettingValue(setting.field.Name, value);
                 }
             }
 
