@@ -155,19 +155,12 @@ namespace UnityEditor.VFX
         }
     }
 
-    abstract class SRPProvider
+    abstract class VFXSRPBinder
     {
         abstract public string templatePath { get; }
         abstract public Type SRPAssetType { get; }
         abstract public VFXModel CreateSRPOutputData();
-    }
-    class HDRPTestProvider : SRPProvider
-    {
-        public override string templatePath { get { return "Packages/com.unity.visualeffectgraph/Shaders/RenderPipeline/HDRP"; } }
-        public override Type SRPAssetType { get { return null; } }
-
-        public override VFXModel CreateSRPOutputData() { return null; } // TODO
-    }
+    } 
 
     static class VFXLibrary
     {
@@ -400,44 +393,51 @@ namespace UnityEditor.VFX
             return types.Where(type => attributeType == null || type.GetCustomAttributes(attributeType, false).Length == 1);
         }
 
-        private static Dictionary<Type, SRPProvider> srpProviders = null;
+        private static Dictionary<Type, VFXSRPBinder> srpBinders = null;
 
-        private static void LoadSRPProvidersIfNeeded()
+        private static void LoadSRPBindersIfNeeded()
         {
-            if (srpProviders != null)
+            if (srpBinders != null)
                 return;
 
-            srpProviders = new Dictionary<Type, SRPProvider>();
+            srpBinders = new Dictionary<Type, VFXSRPBinder>();
 
-            foreach (var providerType in FindConcreteSubclasses(typeof(SRPProvider)))
+            foreach (var binderType in FindConcreteSubclasses(typeof(VFXSRPBinder)))
             {
                 try
                 {
-                    SRPProvider provider = (SRPProvider)Activator.CreateInstance(providerType);
-                    Type SRPAssetType = provider.SRPAssetType;
+                    VFXSRPBinder binder = (VFXSRPBinder)Activator.CreateInstance(binderType);
+                    Type SRPAssetType = binder.SRPAssetType;
                     if (!SRPAssetType.IsSubclassOf(typeof(RenderPipelineAsset)))
-                        throw new Exception(string.Format("The type of the RenderpipelineAsset provided by {0} is invalid ({1})", providerType, SRPAssetType));
-                    if (srpProviders.ContainsKey(SRPAssetType))
-                        throw new Exception(string.Format("The SRP of asset type {0} is already registered ({1})", SRPAssetType, srpProviders[SRPAssetType].GetType()));
-                    srpProviders[SRPAssetType] = provider;
+                        throw new Exception(string.Format("The type of the RenderpipelineAsset provided by {0} is invalid ({1})", binderType, SRPAssetType));
+                    if (srpBinders.ContainsKey(SRPAssetType))
+                        throw new Exception(string.Format("The SRP of asset type {0} is already registered ({1})", SRPAssetType, srpBinders[SRPAssetType].GetType()));
+                    srpBinders[SRPAssetType] = binder;
 
                     Debug.Log(string.Format("Register {0} SRP for VFX", SRPAssetType));
                 }
                 catch(Exception e)
                 {
-                    Debug.LogError(string.Format("Exception while registering SRPProvider {0}: {1} - {2}", providerType, e, e.StackTrace));
+                    Debug.LogError(string.Format("Exception while registering VFXSRPBinder {0}: {1} - {2}", binderType, e, e.StackTrace));
                 }
             }
         }
 
-        public static SRPProvider srpProvider
+        public static VFXSRPBinder currentSRPBinder
         {
             get
             {
-                LoadSRPProvidersIfNeeded();
-                SRPProvider provider = null;
-                srpProviders.TryGetValue(GraphicsSettings.renderPipelineAsset.GetType(), out provider);
-                return provider;
+                if (GraphicsSettings.renderPipelineAsset == null)
+                    return null;
+
+                LoadSRPBindersIfNeeded();
+                VFXSRPBinder binder = null;
+                srpBinders.TryGetValue(GraphicsSettings.renderPipelineAsset.GetType(), out binder);
+
+                if (binder == null)
+                    throw new NullReferenceException("The SRP was not registered in VFX: " + GraphicsSettings.renderPipelineAsset.GetType());
+
+                return binder;
             }
         }
 
