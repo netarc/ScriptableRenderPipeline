@@ -33,7 +33,7 @@ namespace UnityEditor.Rendering.LookDev
 
             public float longitude
             {
-                get => m_Longitude; 
+                get => m_Longitude;
                 set { m_Longitude = value; ConformLatLong(); }
             }
 
@@ -51,7 +51,7 @@ namespace UnityEditor.Rendering.LookDev
                     m_Longitude = 360.0f + m_Longitude;
             }
         }
-        
+
         [Serializable]
         public class Sky
         {
@@ -108,7 +108,7 @@ namespace UnityEditor.Rendering.LookDev
         {
             height = height >> 1; //quick *.5
             Environment environment = (target as Environment);
-            
+
             RenderTexture oldActive = RenderTexture.active;
             //[TODO: optimize RenderTexture creation]
             RenderTexture temporaryRT = new RenderTexture(width, height, 0);
@@ -119,7 +119,7 @@ namespace UnityEditor.Rendering.LookDev
             EnvironmentUtil.cubeToLatlongMaterial.SetPass(0);
             GL.LoadPixelMatrix(0, width, height, 0);
             GL.Clear(true, true, default);
-            Renderer.DrawFullScreenQuad(new Rect(0, 0, width, height));
+            LookDevRenderer.DrawFullScreenQuad(new Rect(0, 0, width, height));
             Texture2D result = new Texture2D(width, height, TextureFormat.ARGB32, false);
             result.ReadPixels(new Rect(0, 0, width, height), 0, 0, false);
             result.Apply(false);
