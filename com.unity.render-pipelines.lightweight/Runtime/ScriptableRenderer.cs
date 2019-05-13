@@ -20,32 +20,34 @@ namespace UnityEngine.Rendering.LWRP
     /// </summary>
     public abstract class ScriptableRenderer
     {
-        struct PerFrameConstants
-         {
-             // Time values
-             public Vector4 time;
-             public Vector4 sinTime;
-             public Vector4 cosTime;
-             public Vector4 deltaTime;
- 
-             public void SetFrameValues(CommandBuffer cmd)
-             {
-                 if (cmd == null)
-                 {
-                     Shader.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer._Time, time);
-                     Shader.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer._SinTime, sinTime);
-                     Shader.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer._CosTime, cosTime);
-                     Shader.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer.unity_DeltaTime, deltaTime);
-                 }
-                 else
-                 {
-                     cmd.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer._Time, time);
-                     cmd.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer._SinTime, sinTime);
-                     cmd.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer._CosTime, cosTime);
-                     cmd.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer.unity_DeltaTime, deltaTime);
-                 }
-             }
-         }
+        void SetShaderTimeValues(CommandBuffer cmd, float time)
+        {
+            // We make these parameters to mirror those described in `https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
+            float timeEights = Time.time / 8f;
+            float timeFourth = Time.time / 4f;
+            float timeHalf = Time.time / 2f;
+
+            // Time values
+            Vector4 timeVector = Time.time * new Vector4(1f / 20f, 1f, 2f, 1f);
+            Vector4 sinTimeVector = new Vector4(Mathf.Sin(timeEights), Mathf.Sin(timeFourth), Mathf.Sin(timeHalf), Mathf.Sin(Time.time));
+            Vector4 cosTimeVector = new Vector4(Mathf.Cos(timeEights), Mathf.Cos(timeFourth), Mathf.Cos(timeHalf), Mathf.Cos(Time.time));
+            Vector4 deltaTimeVector = new Vector4(Time.deltaTime, 1f / Time.deltaTime, Time.smoothDeltaTime, 1f / Time.smoothDeltaTime);
+
+            if (cmd == null)
+            {
+                Shader.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer._Time, timeVector);
+                Shader.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer._SinTime, sinTimeVector);
+                Shader.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer._CosTime, cosTimeVector);
+                Shader.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer.unity_DeltaTime, deltaTimeVector);
+            }
+            else
+            {
+                cmd.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer._Time, timeVector);
+                cmd.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer._SinTime, sinTimeVector);
+                cmd.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer._CosTime, cosTimeVector);
+                cmd.SetGlobalVector(LightweightRenderPipeline.PerFrameBuffer.unity_DeltaTime, deltaTimeVector);
+            }
+        }
  
         public RenderTargetIdentifier cameraColorTarget
         {
@@ -100,25 +102,6 @@ namespace UnityEngine.Rendering.LWRP
             }
             Clear();
         }
-
-        static PerFrameConstants GetFrameConstants(ref Camera camera)
-        {
-            // We make these parameters to mirror those described in `https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
-            float timeEights = Time.time / 8f;
-            float timeFourth = Time.time / 4f;
-            float timeHalf = Time.time / 2f;
-
-            PerFrameConstants perFrameConstants = new PerFrameConstants();
-
-            // Time values
-            perFrameConstants.time = Time.time * new Vector4(1f / 20f, 1f, 2f, 1f);
-            perFrameConstants.sinTime = new Vector4(Mathf.Sin(timeEights), Mathf.Sin(timeFourth), Mathf.Sin(timeHalf), Mathf.Sin(Time.time));
-            perFrameConstants.cosTime = new Vector4(Mathf.Cos(timeEights), Mathf.Cos(timeFourth), Mathf.Cos(timeHalf), Mathf.Cos(Time.time));
-            perFrameConstants.deltaTime = new Vector4(Time.deltaTime, 1f / Time.deltaTime, Time.smoothDeltaTime, 1f / Time.smoothDeltaTime);
-
-            return perFrameConstants;
-        }
- 
 
         /// <summary>
         /// Configures the camera target.
@@ -182,8 +165,8 @@ namespace UnityEngine.Rendering.LWRP
 
             SortStable(m_ActiveRenderPassQueue);
 
-            PerFrameConstants perFrameConstants = GetFrameConstants(ref camera);
-            perFrameConstants.SetFrameValues(null);
+            // Cache the time for after the call to `SetupCameraProperties`
+            float time = Time.time;
 
             // Before Render Block. This render blocks always execute in mono rendering.
             // Camera is not setup. Lights are not setup.
@@ -201,6 +184,10 @@ namespace UnityEngine.Rendering.LWRP
             bool stereoEnabled = renderingData.cameraData.isStereoEnabled;
             context.SetupCameraProperties(camera, stereoEnabled);
             SetupLights(context, ref renderingData);
+
+            // Override time values from when `SetupCameraProperties` were called.
+            // They might be a frame behind.
+            SetShaderTimeValues(null, time);
 
             if (stereoEnabled)
                 BeginXRRendering(context, camera);
