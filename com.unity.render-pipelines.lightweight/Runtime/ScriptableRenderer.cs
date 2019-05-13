@@ -165,8 +165,9 @@ namespace UnityEngine.Rendering.LWRP
 
             SortStable(m_ActiveRenderPassQueue);
 
-            // Cache the time for after the call to `SetupCameraProperties`
+            // Cache the time for after the call to `SetupCameraProperties` and set the time variables in shader
             float time = Time.time;
+            SetShaderTimeValues(null, time);
 
             // Before Render Block. This render blocks always execute in mono rendering.
             // Camera is not setup. Lights are not setup.
