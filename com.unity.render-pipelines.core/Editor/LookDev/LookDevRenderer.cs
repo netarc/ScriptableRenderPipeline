@@ -13,11 +13,11 @@ namespace UnityEditor.Rendering.LookDev
         public RenderTexture output;
     }
 
-    public class LookDevRenderer
+    public class Renderer
     {
         public bool pixelPerfect { get; set; }
 
-        public LookDevRenderer(bool pixelPerfect = false)
+        public Renderer(bool pixelPerfect = false)
             => this.pixelPerfect = pixelPerfect;
 
         public void Acquire(RenderingData data)

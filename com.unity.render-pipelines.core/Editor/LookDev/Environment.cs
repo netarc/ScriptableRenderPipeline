@@ -119,7 +119,7 @@ namespace UnityEditor.Rendering.LookDev
             EnvironmentUtil.cubeToLatlongMaterial.SetPass(0);
             GL.LoadPixelMatrix(0, width, height, 0);
             GL.Clear(true, true, default);
-            LookDevRenderer.DrawFullScreenQuad(new Rect(0, 0, width, height));
+            Renderer.DrawFullScreenQuad(new Rect(0, 0, width, height));
             Texture2D result = new Texture2D(width, height, TextureFormat.ARGB32, false);
             result.ReadPixels(new Rect(0, 0, width, height), 0, 0, false);
             result.Apply(false);

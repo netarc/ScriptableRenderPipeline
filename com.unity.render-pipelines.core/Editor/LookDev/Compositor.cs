@@ -80,7 +80,7 @@ namespace UnityEditor.Rendering.LookDev
         RenderTextureCache m_RenderTextures = new RenderTextureCache();
         StageCache m_Stages;
 
-        LookDevRenderer m_Renderer = new LookDevRenderer();
+        Renderer m_Renderer = new Renderer();
         RenderingData[] m_RenderDataCache;
 
         bool m_pixelPerfect;
@@ -304,7 +304,7 @@ namespace UnityEditor.Rendering.LookDev
             s_MaterialCompositer.SetVector("_ToneMapCoeffs2", tonemapCoeff2);
             s_MaterialCompositer.SetPass((int)m_Contexts.layout.viewLayout); //missing horizontal pass
 
-            LookDevRenderer.DrawFullScreenQuad(new Rect(0, 0, rect.width, rect.height));
+            Renderer.DrawFullScreenQuad(new Rect(0, 0, rect.width, rect.height));
 
             RenderTexture.active = oldActive;
             //GUI.DrawTexture(rect, m_RenderTextures[ViewCompositionIndex.Composite], ScaleMode.StretchToFill, false);
