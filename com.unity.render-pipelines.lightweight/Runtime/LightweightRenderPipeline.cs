@@ -28,6 +28,8 @@ namespace UnityEngine.Rendering.LWRP
             // TODO: This needs to account for stereo rendering
             public static int _InvCameraViewProj;
             public static int _ScaledScreenParams;
+            public static int _ScreenParams;
+            public static int _WorldSpaceCameraPos;
         }
 
         public const string k_ShaderTagName = "LightweightPipeline";
@@ -84,7 +86,9 @@ namespace UnityEngine.Rendering.LWRP
             PerFrameBuffer.unity_DeltaTime = Shader.PropertyToID("unity_DeltaTime");
 
             PerCameraBuffer._InvCameraViewProj = Shader.PropertyToID("_InvCameraViewProj");
+            PerCameraBuffer._ScaledScreenParams = Shader.PropertyToID("_ScreenParams");
             PerCameraBuffer._ScaledScreenParams = Shader.PropertyToID("_ScaledScreenParams");
+            PerCameraBuffer._WorldSpaceCameraPos = Shader.PropertyToID("_WorldSpaceCameraPos");
 
             // Let engine know we have MSAA on for cases where we support MSAA backbuffer
             if (QualitySettings.antiAliasing != asset.msaaSampleCount)
@@ -479,9 +483,14 @@ namespace UnityEngine.Rendering.LWRP
         static void SetupPerCameraShaderConstants(CameraData cameraData)
         {
             Camera camera = cameraData.camera;
-            float cameraWidth = (float)cameraData.camera.pixelWidth * cameraData.renderScale;
-            float cameraHeight = (float)cameraData.camera.pixelHeight * cameraData.renderScale;
-            Shader.SetGlobalVector(PerCameraBuffer._ScaledScreenParams, new Vector4(cameraWidth, cameraHeight, 1.0f + 1.0f / cameraWidth, 1.0f + 1.0f / cameraHeight));
+
+            float scaledCameraWidth = (float)cameraData.camera.pixelWidth * cameraData.renderScale;
+            float scaledCameraHeight = (float)cameraData.camera.pixelHeight * cameraData.renderScale;
+            Shader.SetGlobalVector(PerCameraBuffer._ScaledScreenParams, new Vector4(scaledCameraWidth, scaledCameraHeight, 1.0f + 1.0f / scaledCameraWidth, 1.0f + 1.0f / scaledCameraHeight))
+            Shader.SetGlobalVector(PerCameraBuffer._WorldSpaceCameraPos, camera.transform.position);
+            float cameraWidth = (float)cameraData.camera.pixelWidth;
+            float cameraHeight = (float)cameraData.camera.pixelHeight;
+            Shader.SetGlobalVector(PerCameraBuffer._ScreenParams, new Vector4(cameraWidth, cameraHeight, 1.0f + 1.0f / cameraWidth, 1.0f + 1.0f / cameraHeight));
 
             Matrix4x4 projMatrix = GL.GetGPUProjectionMatrix(camera.projectionMatrix, false);
             Matrix4x4 viewMatrix = camera.worldToCameraMatrix;

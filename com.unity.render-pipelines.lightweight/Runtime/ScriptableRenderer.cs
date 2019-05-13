@@ -20,7 +20,7 @@ namespace UnityEngine.Rendering.LWRP
     /// </summary>
     public abstract class ScriptableRenderer
     {
-        void SetShaderTimeValues(CommandBuffer cmd, float time)
+        void SetShaderTimeValues(float time, CommandBuffer cmd = null)
         {
             // We make these parameters to mirror those described in `https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
             float timeEights = Time.time / 8f;
@@ -166,8 +166,11 @@ namespace UnityEngine.Rendering.LWRP
             SortStable(m_ActiveRenderPassQueue);
 
             // Cache the time for after the call to `SetupCameraProperties` and set the time variables in shader
+            // For now we set the time variables per camera, as we plan to remove `SetupCamearProperties`.
+            // Setting the time per frame would take API changes to pass the variable to each camera render.
+            // Once `SetupCameraProperties` is gone, the variable should be set higher in the call-stack.
             float time = Time.time;
-            SetShaderTimeValues(null, time);
+            SetShaderTimeValues(time);
 
             // Before Render Block. This render blocks always execute in mono rendering.
             // Camera is not setup. Lights are not setup.
@@ -188,7 +191,8 @@ namespace UnityEngine.Rendering.LWRP
 
             // Override time values from when `SetupCameraProperties` were called.
             // They might be a frame behind.
-            SetShaderTimeValues(null, time);
+            // We can remove this after removing `SetupCameraProperties` as the values should be per frame, and not per camera.
+            SetShaderTimeValues(time);
 
             if (stereoEnabled)
                 BeginXRRendering(context, camera);
