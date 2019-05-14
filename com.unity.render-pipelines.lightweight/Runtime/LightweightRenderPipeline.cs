@@ -86,7 +86,7 @@ namespace UnityEngine.Rendering.LWRP
             PerFrameBuffer.unity_DeltaTime = Shader.PropertyToID("unity_DeltaTime");
 
             PerCameraBuffer._InvCameraViewProj = Shader.PropertyToID("_InvCameraViewProj");
-            PerCameraBuffer._ScaledScreenParams = Shader.PropertyToID("_ScreenParams");
+            PerCameraBuffer._ScreenParams = Shader.PropertyToID("_ScreenParams");
             PerCameraBuffer._ScaledScreenParams = Shader.PropertyToID("_ScaledScreenParams");
             PerCameraBuffer._WorldSpaceCameraPos = Shader.PropertyToID("_WorldSpaceCameraPos");
 
@@ -486,7 +486,7 @@ namespace UnityEngine.Rendering.LWRP
 
             float scaledCameraWidth = (float)cameraData.camera.pixelWidth * cameraData.renderScale;
             float scaledCameraHeight = (float)cameraData.camera.pixelHeight * cameraData.renderScale;
-            Shader.SetGlobalVector(PerCameraBuffer._ScaledScreenParams, new Vector4(scaledCameraWidth, scaledCameraHeight, 1.0f + 1.0f / scaledCameraWidth, 1.0f + 1.0f / scaledCameraHeight))
+            Shader.SetGlobalVector(PerCameraBuffer._ScaledScreenParams, new Vector4(scaledCameraWidth, scaledCameraHeight, 1.0f + 1.0f / scaledCameraWidth, 1.0f + 1.0f / scaledCameraHeight));
             Shader.SetGlobalVector(PerCameraBuffer._WorldSpaceCameraPos, camera.transform.position);
             float cameraWidth = (float)cameraData.camera.pixelWidth;
             float cameraHeight = (float)cameraData.camera.pixelHeight;
