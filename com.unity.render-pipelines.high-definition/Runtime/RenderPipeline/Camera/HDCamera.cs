@@ -63,6 +63,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public bool volumetricHistoryIsValid   = false; // Contains garbage otherwise
         public int  colorPyramidHistoryMipCount = 0;
         public VolumetricLightingSystem.VBufferParameters[] vBufferParams; // Double-buffered
+        
+        public bool sceneLightingWasDisabledForCamera = false;
 
         // XR multipass and instanced views are supported (see XRSystem)
         XRPass m_XRPass;
