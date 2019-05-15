@@ -25,6 +25,14 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             // Using Contains to include the Tessellation variants
             bool isBuiltInLit = shader.name.Contains("HDRP/Lit") || shader.name.Contains("HDRP/LayeredLit") || shader.name.Contains("HDRP/TerrainLit");
 
+            if (shader.IsShaderGraph())
+            {
+                isBuiltInLit |= shader.GetShaderGraphOutputNode() is HDLitMasterNode;
+                isBuiltInLit |= shader.GetShaderGraphOutputNode() is HairMasterNode;
+                isBuiltInLit |= shader.GetShaderGraphOutputNode() is FabricMasterNode;
+                isBuiltInLit |= shader.GetShaderGraphOutputNode() is StackLitMasterNode;
+            }
+
             // When using forward only, we never need GBuffer pass (only Forward)
             // Gbuffer Pass is suppose to exist only for Lit shader thus why we test the condition here in case another shader generate a GBuffer pass (like VFX)
             if (hdrpAsset.currentPlatformRenderPipelineSettings.supportedLitShaderMode == RenderPipelineSettings.SupportedLitShaderMode.ForwardOnly && isGBufferPass)
