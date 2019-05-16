@@ -911,16 +911,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         {
             return subsurfaceScattering.isOn;
         }
-    
-        public override void SetPreviewView(MasterPreviewView previewView)
-        {
-            var previewMaterial = previewView.previewManager.masterRenderData.shaderData.mat;
-            previewView.previewManager.onPrimaryMasterChanged += () => SetupPreviewMaterial(previewMaterial);
-            previewView.onMasterPreviewMaterialUpdated += (shaderData) => SetupPreviewMaterial(shaderData.mat);
-            SetupPreviewMaterial(previewMaterial);
-        }
 
-        void SetupPreviewMaterial(Material previewMaterial)
+        public override void ProcessPreviewMaterial(Material previewMaterial)
         {
             // Fixup the material settings:
             previewMaterial.SetFloat("_SurfaceType", (int)(SurfaceType)surfaceType);
