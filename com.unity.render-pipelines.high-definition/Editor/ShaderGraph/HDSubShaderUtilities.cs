@@ -1015,7 +1015,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             collector.AddIntProperty("_StencilRefGBuffer", 2); // StencilLightingUsage.RegularLighting
         }
 
-        public static void AddBlendingStatesShaderProperties(PropertyCollector collector, SurfaceType surface, BlendMode blend, int sortingPriority)
+        public static void AddBlendingStatesShaderProperties(PropertyCollector collector, SurfaceType surface, BlendMode blend, int sortingPriority, bool zWrite)
         {
             collector.AddFloatProperty("_SurfaceType", (int)surface);
             collector.AddFloatProperty("_BlendMode", (int)blend);
@@ -1025,7 +1025,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             collector.AddFloatProperty("_DstBlend", 0.0f);
             collector.AddFloatProperty("_AlphaSrcBlend", 1.0f);
             collector.AddFloatProperty("_AlphaDstBlend", 0.0f);
-            collector.AddFloatProperty("_ZWrite", 1.0f);
+            collector.AddToggleProperty("_ZWrite", zWrite);
             collector.AddFloatProperty("_CullMode", 2.0f);
             collector.AddIntProperty("_TransparentSortPriority", sortingPriority);
             collector.AddFloatProperty("_CullModeForward", 2.0f);

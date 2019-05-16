@@ -128,5 +128,10 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         {
             return material.HasProperty(kLayerCount) ? material.GetInt(kLayerCount) : 1;
         }
+
+        public static bool          GetZWrite(this Material material)
+        {
+            return material.HasProperty(kZWrite) ? material.GetInt(kZWrite) == 1 : false;
+        }
     }
 }

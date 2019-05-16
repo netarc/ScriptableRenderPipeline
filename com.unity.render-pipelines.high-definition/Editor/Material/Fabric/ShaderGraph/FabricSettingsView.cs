@@ -81,6 +81,16 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline.Drawing
                         field.RegisterValueChangedCallback(ChangeSortPriority);
                     });
                 });
+
+                ps.Add(new PropertyRow(CreateLabel("ZWrite", indentLevel)), (row) =>
+                {
+                    row.Add(new Toggle(), (toggle) =>
+                    {
+                        toggle.value = m_Node.zWrite.isOn;
+                        toggle.OnToggleChanged(ChangeZWrite);
+                    });
+                });
+
                 --indentLevel;
             }
 
@@ -300,6 +310,14 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline.Drawing
                 return;
 
             m_Node.owner.owner.RegisterCompleteObjectUndo("Sort Priority Change");
+        }
+
+        void ChangeZWrite(ChangeEvent<bool> evt)
+        {
+            m_Node.owner.owner.RegisterCompleteObjectUndo("ZWrite Change");
+            ToggleData td = m_Node.zWrite;
+            td.isOn = evt.newValue;
+            m_Node.zWrite = td;
         }
 
         void ChangeAlphaTest(ChangeEvent<bool> evt)

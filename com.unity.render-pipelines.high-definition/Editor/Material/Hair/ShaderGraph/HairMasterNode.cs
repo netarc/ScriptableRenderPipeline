@@ -511,6 +511,22 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             }
         }
 
+        [SerializeField]
+        bool m_ZWrite;
+
+        public ToggleData zWrite
+        {
+            get { return new ToggleData(m_ZWrite); }
+            set
+            {
+                if (m_ZWrite == value.isOn)
+                    return;
+                m_ZWrite = value.isOn;
+                UpdateNodeAfterDeserialization();
+                Dirty(ModificationScope.Graph);
+            }
+        }
+
         public HairMasterNode()
         {
             UpdateNodeAfterDeserialization();
@@ -714,7 +730,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         {
             var previewMaterial = previewView.previewManager.masterRenderData.shaderData.mat;
             previewView.previewManager.onPrimaryMasterChanged += () => SetupPreviewMaterial(previewMaterial);
-            previewView.onMasterPreviewMaterialUpdated += (shaderData) => SetupPreviewMaterial(shaderData.mat);
+            // previewView.onMasterPreviewMaterialUpdated += (shaderData) => SetupPreviewMaterial(shaderData.mat);
             SetupPreviewMaterial(previewMaterial);
         }
 
@@ -754,7 +770,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 collector,
                 surfaceType,
                 HDSubShaderUtilities.ConvertAlphaModeToBlendMode(alphaMode),
-                sortPriority
+                sortPriority,
+                zWrite.isOn
             );
             HDSubShaderUtilities.AddAlphaCutoffShaderProperties(collector, alphaTest.isOn, alphaTestShadow.isOn);
             HDSubShaderUtilities.AddDoubleSidedProperty(collector, doubleSidedMode);

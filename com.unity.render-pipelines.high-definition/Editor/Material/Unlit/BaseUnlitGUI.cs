@@ -60,12 +60,12 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 material.SetOverrideTag("RenderType", alphaTestEnable ? "TransparentCutout" : "");
                 material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                 material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-                material.SetInt("_ZWrite", 1);
+                material.SetInt(kZWrite, 1);
             }
             else
             {
                 material.SetOverrideTag("RenderType", "Transparent");
-                material.SetInt("_ZWrite", 0);
+                material.SetInt(kZWrite, material.GetZWrite() ? 1 : 0);
 
                 if (material.HasProperty(kBlendMode))
                 {

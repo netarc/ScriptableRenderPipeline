@@ -723,6 +723,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public const string kStencilWriteMaskMV = "_StencilWriteMaskMV";
         public const string kStencilRefDistortionVec = "_StencilRefDistortionVec";
         public const string kStencilWriteMaskDistortionVec = "_StencilWriteMaskDistortionVec";
+        
+        public const string kZWrite = "_ZWrite";
 
         public const string kEmissiveColorMap = "_EmissiveColorMap";
 
