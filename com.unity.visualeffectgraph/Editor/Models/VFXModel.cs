@@ -233,7 +233,7 @@ namespace UnityEditor.VFX
 
         public object GetSettingValue(string name)
         {
-            var setting = GetSettingField();
+            var setting = GetSetting(name);
             if (setting.field == null)
             {
                 throw new ArgumentException(string.Format("Unable to find field {0} in {1}", name, GetType().ToString()));
@@ -248,7 +248,7 @@ namespace UnityEditor.VFX
 
         protected void SetSettingValue(string name, object value, bool notify)
         {
-            var setting = GetSettingField();
+            var setting = GetSetting(name);
             if (setting.field == null)
             {
                 throw new ArgumentException(string.Format("Unable to find field {0} in {1}", name, GetType().ToString()));
@@ -265,7 +265,7 @@ namespace UnityEditor.VFX
             }
         }
 
-        public virtual VFXSetting GetSettingField()
+        public virtual VFXSetting GetSetting(string  name)
         {
             return new VFXSetting(GetType().GetField(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance), this);
         }

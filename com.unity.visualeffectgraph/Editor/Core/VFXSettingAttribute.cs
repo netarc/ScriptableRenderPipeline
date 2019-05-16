@@ -37,6 +37,8 @@ namespace UnityEditor.VFX
             this.instance = instance;
         }
 
+        public bool valid => field != null && instance != null;
+
         public object value
         {
             get

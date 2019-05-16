@@ -49,6 +49,14 @@ namespace UnityEditor.VFX
                 data.CollectDependencies(objs);
         }
 
+        public override VFXSetting GetSetting(string name)
+        {
+            VFXSetting setting = base.GetSetting(name);
+            if (!setting.valid && currentSrpData != null)
+                setting = currentSrpData.GetSetting(name);
+            return setting;
+        }
+
         public override IEnumerable<VFXSetting> GetSettings(bool listHidden, VFXSettingAttribute.VisibleFlags flags)
         {
             var settings = base.GetSettings(listHidden, flags);
