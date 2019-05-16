@@ -7,7 +7,7 @@ namespace UnityEditor.VFX.HDRP
     class VFXHDRPBinder : VFXSRPBinder
     {
         public override string templatePath     { get { return "Packages/com.unity.visualeffectgraph/Shaders/RenderPipeline/HDRP"; } }
-        public override Type SRPAssetType       { get { return typeof(HDRenderPipelineAsset); } }
+        public override string SRPAssetTypeStr  { get { return typeof(HDRenderPipelineAsset).Name; } }
         public override Type SRPOutputDataType  { get { return typeof(VFXHDRPOutputData); } }
     }
 }

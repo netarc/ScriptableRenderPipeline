@@ -158,9 +158,17 @@ namespace UnityEditor.VFX
     abstract class VFXSRPBinder
     {
         abstract public string templatePath { get; }
-        abstract public Type SRPAssetType { get; }
+        abstract public string SRPAssetTypeStr { get; }
         abstract public Type SRPOutputDataType { get; }
-    } 
+    }
+
+    // Not in LWRP package because we dont want to add a dependency on VFXGraph
+    class VFXLWRPBinder : VFXSRPBinder
+    {
+        public override string templatePath { get { return "Packages/com.unity.visualeffectgraph/Shaders/RenderPipeline/LWRP"; } }
+        public override string SRPAssetTypeStr { get { return "LightweightRenderPipelineAsset"; } }
+        public override Type SRPOutputDataType { get { return null; } }
+    }
 
     static class VFXLibrary
     {
@@ -393,28 +401,26 @@ namespace UnityEditor.VFX
             return types.Where(type => attributeType == null || type.GetCustomAttributes(attributeType, false).Length == 1);
         }
 
-        private static Dictionary<Type, VFXSRPBinder> srpBinders = null;
+        private static Dictionary<string, VFXSRPBinder> srpBinders = null;
 
         private static void LoadSRPBindersIfNeeded()
         {
             if (srpBinders != null)
                 return;
 
-            srpBinders = new Dictionary<Type, VFXSRPBinder>();
+            srpBinders = new Dictionary<string, VFXSRPBinder>();
 
             foreach (var binderType in FindConcreteSubclasses(typeof(VFXSRPBinder)))
             {
                 try
                 {
                     VFXSRPBinder binder = (VFXSRPBinder)Activator.CreateInstance(binderType);
-                    Type SRPAssetType = binder.SRPAssetType;
-                    if (!SRPAssetType.IsSubclassOf(typeof(RenderPipelineAsset)))
-                        throw new Exception(string.Format("The type of the RenderpipelineAsset provided by {0} is invalid ({1})", binderType, SRPAssetType));
-                    if (srpBinders.ContainsKey(SRPAssetType))
-                        throw new Exception(string.Format("The SRP of asset type {0} is already registered ({1})", SRPAssetType, srpBinders[SRPAssetType].GetType()));
-                    srpBinders[SRPAssetType] = binder;
+                    string SRPAssetTypeStr = binder.SRPAssetTypeStr;
+                    if (srpBinders.ContainsKey(SRPAssetTypeStr))
+                        throw new Exception(string.Format("The SRP of asset type {0} is already registered ({1})", SRPAssetTypeStr, srpBinders[SRPAssetTypeStr].GetType()));
+                    srpBinders[SRPAssetTypeStr] = binder;
 
-                    Debug.Log(string.Format("Register {0} SRP for VFX", SRPAssetType));
+                    Debug.Log(string.Format("Register {0} SRP for VFX", SRPAssetTypeStr));
                 }
                 catch(Exception e)
                 {
@@ -432,7 +438,7 @@ namespace UnityEditor.VFX
 
                 LoadSRPBindersIfNeeded();
                 VFXSRPBinder binder = null;
-                srpBinders.TryGetValue(GraphicsSettings.renderPipelineAsset.GetType(), out binder);
+                srpBinders.TryGetValue(GraphicsSettings.renderPipelineAsset.GetType().Name, out binder);
 
                 if (binder == null)
                     throw new NullReferenceException("The SRP was not registered in VFX: " + GraphicsSettings.renderPipelineAsset.GetType());
