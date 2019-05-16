@@ -170,6 +170,6 @@ namespace UnityEditor.ShaderGraph
             return null;
         }
 
-        public virtual void SetPreviewView(MasterPreviewView previewView) {}
+        public virtual void ProcessPreviewMaterial(Material Material) {}
     }
 }
