@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.HDPipeline;
 
+// Include material common properties names
+using static UnityEngine.Experimental.Rendering.HDPipeline.HDMaterialProperties;
+
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
     public class RefractionUIBlock : MaterialUIBlock
@@ -19,21 +22,17 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             public static GUIContent atDistanceText = new GUIContent("Transmittance Absorption Distance", "Sets the absorption distance reference in meters.");
         }
 
-        // TODO: share this property
-        protected const int kMaxLayerCount = 4;
-
-        // TODO: material strings as a internal static class (so other UIBlocks can have access to it)
         protected MaterialProperty refractionModel = null;
         protected const string kRefractionModel = "_RefractionModel";
         protected MaterialProperty ssrefractionProjectionModel = null;
         protected const string kSSRefractionProjectionModel = "_SSRefractionProjectionModel";
         protected MaterialProperty atDistance = null;
         protected const string kATDistance = "_ATDistance";
-        protected MaterialProperty[] thickness = new MaterialProperty[kMaxLayerCount];
+        protected MaterialProperty[] thickness = null;
         protected const string kThickness = "_Thickness";
         protected MaterialProperty thicknessMultiplier = null;
         protected const string kThicknessMultiplier = "_ThicknessMultiplier";
-        protected MaterialProperty[] thicknessMap = new MaterialProperty[kMaxLayerCount];
+        protected MaterialProperty[] thicknessMap = null;
         protected const string kThicknessMap = "_ThicknessMap";
         protected MaterialProperty ior = null;
         protected const string kIor = "_Ior";
@@ -42,8 +41,11 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         protected MaterialProperty transmittanceColor = null;
         protected const string kTransmittanceColor = "_TransmittanceColor";
 
-        public RefractionUIBlock()
+        int m_LayerCount;
+
+        public RefractionUIBlock(int layerCount)
         {
+            m_LayerCount = layerCount;
         }
 
         public override void LoadMaterialProperties()
@@ -54,6 +56,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             thicknessMultiplier = FindProperty(kThicknessMultiplier, false);
             transmittanceColorMap = FindProperty(kTransmittanceColorMap, false);
             transmittanceColor = FindProperty(kTransmittanceColor, false);
+            thicknessMap = FindPropertyLayered(kThicknessMap, m_LayerCount, false);
+            thickness = FindPropertyLayered(kThickness, m_LayerCount, false);
             ior = FindProperty(kIor, false);
         }
 

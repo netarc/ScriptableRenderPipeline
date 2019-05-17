@@ -30,7 +30,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
         MaterialUIBlockList transparencyBlocks = new MaterialUIBlockList
         {
-            new RefractionUIBlock(),
+            new RefractionUIBlock(1), // This block will not be used in by a layered shader so we can safely set the layer count to 1
             new DistortionUIBlock(),
         };
 

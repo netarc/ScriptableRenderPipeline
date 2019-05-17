@@ -26,13 +26,6 @@ namespace UnityEditor.ShaderGraph.Drawing.Inspector
             get { return m_PreviewTextureView; }
         }
 
-        public PreviewManager previewManager => m_PreviewManager;
-
-        /// <summary>
-        /// Called every time the preview material is updated (i.e shader compilation events)
-        /// </summary>
-        public OnPreviewShaderUpdated onMasterPreviewMaterialUpdated;
-
         Vector2 m_PreviewScrollPosition;
         ObjectField m_PreviewMeshPicker;
 
@@ -84,8 +77,6 @@ namespace UnityEditor.ShaderGraph.Drawing.Inspector
             m_PreviewManager = previewManager;
             m_Graph = graph;
 
-            previewManager.onShaderUpdated += PreviewMaterialUpdated;
-
             styleSheets.Add(Resources.Load<StyleSheet>("Styles/MasterPreviewView"));
 
             m_PreviewRenderHandle = previewManager.masterRenderData;
@@ -123,14 +114,6 @@ namespace UnityEditor.ShaderGraph.Drawing.Inspector
             m_ExpandedPreviewSize = new Vector2(256f, 256f);
             m_RecalculateLayout = false;
             previewTextureView.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
-        }
-
-        void PreviewMaterialUpdated(PreviewShaderData shaderData)
-        {
-            if (shaderData.node == m_Graph.outputNode)
-            {
-                onMasterPreviewMaterialUpdated?.Invoke(shaderData);
-            }
         }
 
         Image CreatePreview(Texture texture)

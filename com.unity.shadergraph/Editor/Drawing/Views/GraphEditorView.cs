@@ -221,8 +221,6 @@ namespace UnityEditor.ShaderGraph.Drawing
             m_MasterPreviewView.AddManipulator(masterPreviewViewDraggable);
             m_GraphView.Add(m_MasterPreviewView);
 
-            (m_Graph.outputNode as IMasterNode)?.SetPreviewView(m_MasterPreviewView);
-
             masterPreviewViewDraggable.OnDragFinished += UpdateSerializedWindowLayout;
             m_MasterPreviewView.previewResizeBorderFrame.OnResizeFinished += UpdateSerializedWindowLayout;
             m_MasterPreviewView.visible = m_ToggleSettings.isPreviewVisible;

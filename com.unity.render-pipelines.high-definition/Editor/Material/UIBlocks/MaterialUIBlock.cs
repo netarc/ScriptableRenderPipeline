@@ -14,7 +14,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
         MaterialUIBlockList             parent;
 
-        //Be sure to end before after last LayeredLitGUI.LayerExpendable
         [Flags]
         public enum Expandable : uint
         {
@@ -74,7 +73,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             // ShaderGUI.FindProperty is a protected member of ShaderGUI so we can't call it here:
             // return ShaderGUI.FindProperty(propertyName, properties, isMandatory);
 
-            // TODO: move this to a map
+            // TODO: move this to a map since this is done at every editor frame
             foreach (var prop in properties)
                 if (prop.name == propertyName)
                     return prop;
