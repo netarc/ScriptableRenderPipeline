@@ -76,6 +76,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             useEmissiveIntensity = FindProperty(kUseEmissiveIntensity);
             albedoAffectEmissive = FindProperty(kAlbedoAffectEmissive);
             UVEmissive = FindProperty(kUVEmissive);
+            TexWorldScaleEmissive = FindProperty(kTexWorldScaleEmissive);
+            UVMappingMaskEmissive = FindProperty(kUVMappingMaskEmissive);
         }
 
         public override void OnGUI()
