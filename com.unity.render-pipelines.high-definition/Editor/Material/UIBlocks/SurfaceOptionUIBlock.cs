@@ -57,6 +57,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
             public static GUIContent transparentSortPriorityText = new GUIContent("Sorting Priority", "Sets the sort priority (from -100 to 100) of transparent meshes using this Material. HDRP uses this value to calculate the sorting order of all transparent meshes on screen.");
             public static GUIContent enableTransparentFogText = new GUIContent("Receive fog", "When enabled, this Material can receive fog.");
+            public static GUIContent transparentCullModeText = new GUIContent("Cull Mode", "For transparent objects, change the cull mode of the object.");
             public static GUIContent enableBlendModePreserveSpecularLightingText = new GUIContent("Preserve specular lighting", "When enabled, blending only affects diffuse lighting, allowing for correct specular lighting on transparent meshes that use this Material.");
 
             // Lit properties
@@ -156,44 +157,45 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         const string kInvPrimScale = "_InvPrimScale";
 
         // SSR
-        protected MaterialProperty receivesSSR = null;
-        protected const string kReceivesSSR = "_ReceivesSSR";
+        MaterialProperty receivesSSR = null;
+        const string kReceivesSSR = "_ReceivesSSR";
 
-        protected MaterialProperty displacementMode = null;
-        protected const string kDisplacementMode = "_DisplacementMode";
-        protected MaterialProperty displacementLockObjectScale = null;
-        protected const string kDisplacementLockObjectScale = "_DisplacementLockObjectScale";
-        protected MaterialProperty displacementLockTilingScale = null;
-        protected const string kDisplacementLockTilingScale = "_DisplacementLockTilingScale";
+        MaterialProperty displacementMode = null;
+        const string kDisplacementMode = "_DisplacementMode";
+        MaterialProperty displacementLockObjectScale = null;
+        const string kDisplacementLockObjectScale = "_DisplacementLockObjectScale";
+        MaterialProperty displacementLockTilingScale = null;
+        const string kDisplacementLockTilingScale = "_DisplacementLockTilingScale";
 
-        protected MaterialProperty depthOffsetEnable = null;
-        protected const string kDepthOffsetEnable = "_DepthOffsetEnable";
+        MaterialProperty depthOffsetEnable = null;
+        const string kDepthOffsetEnable = "_DepthOffsetEnable";
 
-        protected MaterialProperty tessellationMode = null;
-        protected const string kTessellationMode = "_TessellationMode";
+        MaterialProperty tessellationMode = null;
+        const string kTessellationMode = "_TessellationMode";
 
-        protected MaterialProperty[] heightMap = new MaterialProperty[kMaxLayerCount];
-        protected const string kHeightMap = "_HeightMap";
-        protected MaterialProperty[] heightAmplitude = new MaterialProperty[kMaxLayerCount];
-        protected const string kHeightAmplitude = "_HeightAmplitude";
-        protected MaterialProperty[] heightCenter = new MaterialProperty[kMaxLayerCount];
-        protected const string kHeightCenter = "_HeightCenter";
-        protected MaterialProperty[] heightPoMAmplitude = new MaterialProperty[kMaxLayerCount];
-        protected const string kHeightPoMAmplitude = "_HeightPoMAmplitude";
-        protected MaterialProperty[] heightTessCenter = new MaterialProperty[kMaxLayerCount];
-        protected const string kHeightTessCenter = "_HeightTessCenter";
-        protected MaterialProperty[] heightTessAmplitude = new MaterialProperty[kMaxLayerCount];
-        protected const string kHeightTessAmplitude = "_HeightTessAmplitude";
-        protected MaterialProperty[] heightMin = new MaterialProperty[kMaxLayerCount];
-        protected const string kHeightMin = "_HeightMin";
-        protected MaterialProperty[] heightMax = new MaterialProperty[kMaxLayerCount];
-        protected const string kHeightMax = "_HeightMax";
-        protected MaterialProperty[] heightOffset = new MaterialProperty[kMaxLayerCount];
-        protected const string kHeightOffset = "_HeightOffset";
-        protected MaterialProperty[] heightParametrization = new MaterialProperty[kMaxLayerCount];
-        protected const string kHeightParametrization = "_HeightMapParametrization";
+        MaterialProperty[] heightMap = new MaterialProperty[kMaxLayerCount];
+        const string kHeightMap = "_HeightMap";
+        MaterialProperty[] heightAmplitude = new MaterialProperty[kMaxLayerCount];
+        const string kHeightAmplitude = "_HeightAmplitude";
+        MaterialProperty[] heightCenter = new MaterialProperty[kMaxLayerCount];
+        const string kHeightCenter = "_HeightCenter";
+        MaterialProperty[] heightPoMAmplitude = new MaterialProperty[kMaxLayerCount];
+        const string kHeightPoMAmplitude = "_HeightPoMAmplitude";
+        MaterialProperty[] heightTessCenter = new MaterialProperty[kMaxLayerCount];
+        const string kHeightTessCenter = "_HeightTessCenter";
+        MaterialProperty[] heightTessAmplitude = new MaterialProperty[kMaxLayerCount];
+        const string kHeightTessAmplitude = "_HeightTessAmplitude";
+        MaterialProperty[] heightMin = new MaterialProperty[kMaxLayerCount];
+        const string kHeightMin = "_HeightMin";
+        MaterialProperty[] heightMax = new MaterialProperty[kMaxLayerCount];
+        const string kHeightMax = "_HeightMax";
+        MaterialProperty[] heightOffset = new MaterialProperty[kMaxLayerCount];
+        const string kHeightOffset = "_HeightOffset";
+        MaterialProperty[] heightParametrization = new MaterialProperty[kMaxLayerCount];
+        const string kHeightParametrization = "_HeightMapParametrization";
 
-        protected MaterialProperty zWrite = null;
+        MaterialProperty zWrite = null;
+        MaterialProperty transparentCullMode = null;
 
         SurfaceType defaultSurfaceType { get { return SurfaceType.Opaque; } }
 
@@ -327,6 +329,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             receivesSSR = FindProperty(kReceivesSSR);
 
             zWrite = FindProperty(kZWrite);
+            transparentCullMode = FindProperty(kTransparentCullMode);
         }
 
         public override void OnGUI()
@@ -432,6 +435,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                         renderQueue = HDRenderQueue.ChangeType(HDRenderQueue.GetTypeByRenderQueueValue(renderQueue), offset: (int)transparentSortPriority.floatValue);
                     }
                 }
+
+                if (transparentCullMode != null && doubleSidedEnable.floatValue == 0)
+                    materialEditor.ShaderProperty(transparentCullMode, Styles.transparentCullModeText);
 
                 if (enableFogOnTransparent != null)
                     materialEditor.ShaderProperty(enableFogOnTransparent, Styles.enableTransparentFogText);

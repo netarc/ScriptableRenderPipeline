@@ -6,6 +6,9 @@ using UnityEngine;              // Vector3,4
 using UnityEditor.ShaderGraph;
 using UnityEngine.Experimental.Rendering.HDPipeline;
 
+// Include material common properties names
+using static UnityEngine.Experimental.Rendering.HDPipeline.HDMaterialProperties;
+
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
     internal enum HDRenderTypeTags
@@ -1015,7 +1018,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             collector.AddIntProperty("_StencilRefGBuffer", 2); // StencilLightingUsage.RegularLighting
         }
 
-        public static void AddBlendingStatesShaderProperties(PropertyCollector collector, SurfaceType surface, BlendMode blend, int sortingPriority, bool zWrite)
+        public static void AddBlendingStatesShaderProperties(PropertyCollector collector, SurfaceType surface, BlendMode blend, int sortingPriority, bool zWrite, TransparentCullMode transparentCullMode)
         {
             collector.AddFloatProperty("_SurfaceType", (int)surface);
             collector.AddFloatProperty("_BlendMode", (int)blend);
@@ -1029,6 +1032,13 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             collector.AddFloatProperty("_CullMode", 2.0f);
             collector.AddIntProperty("_TransparentSortPriority", sortingPriority);
             collector.AddFloatProperty("_CullModeForward", 2.0f);
+            collector.AddShaderProperty(new EnumShaderProperty{
+                overrideReferenceName = kTransparentCullMode,
+                value = (int)transparentCullMode,
+                enumNames = {"Front", "Back"},
+                enumValues = {(int)TransparentCullMode.Front, (int)TransparentCullMode.Back},
+                hidden = true,
+            });
         }
 
         public static void AddAlphaCutoffShaderProperties(PropertyCollector collector, bool alphaCutoff, bool shadowThreshold)

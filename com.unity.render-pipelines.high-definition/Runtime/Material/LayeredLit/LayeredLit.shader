@@ -279,6 +279,7 @@ Shader "HDRP/LayeredLit"
 
         [HideInInspector][ToggleUI] _ZWrite ("__zw", Float) = 1.0
         [HideInInspector] _CullMode("__cullmode", Float) = 2.0
+        [Enum(Front, 1, Back, 2)] _TransparentCullMode("_TransparentCullMode", Int) = 2 // Back culling by default
         [HideInInspector] _ZTestDepthEqualForOpaque("_ZTestDepthEqualForOpaque", Int) = 4 // Less equal
         [HideInInspector] _ZTestGBuffer("_ZTestGBuffer", Int) = 4
 

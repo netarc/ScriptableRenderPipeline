@@ -124,6 +124,18 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline.Drawing
                     });
                 });
 
+                if (m_Node.doubleSidedMode == DoubleSidedMode.Disabled)
+                {
+                    ps.Add(new PropertyRow(CreateLabel("Cull Mode", indentLevel)), (row) =>
+                    {
+                        row.Add(new EnumField(m_Node.transparentCullMode), (e) =>
+                        {
+                            e.value = m_Node.transparentCullMode;
+                            e.RegisterValueChangedCallback(ChangeTransparentCullMode);
+                        });
+                    });
+                }
+
                 --indentLevel;
             }
 
@@ -674,6 +686,15 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline.Drawing
             ToggleData td = m_Node.zWrite;
             td.isOn = evt.newValue;
             m_Node.zWrite = td;
+        }
+
+        void ChangeTransparentCullMode(ChangeEvent<Enum> evt)
+        {
+            if (Equals(m_Node.transparentCullMode, evt.newValue))
+                return;
+
+            m_Node.owner.owner.RegisterCompleteObjectUndo("Transparent Cull Mode Change");
+            m_Node.transparentCullMode = m_Node.transparentCullMode;
         }
 
         public AlphaMode GetAlphaMode(StackLitMasterNode.AlphaModeLit alphaModeLit)

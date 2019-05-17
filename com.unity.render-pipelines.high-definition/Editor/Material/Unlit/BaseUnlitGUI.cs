@@ -186,11 +186,13 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 }
             }
 
+            CullMode doubleSidedOffMode = (surfaceType == SurfaceType.Transparent) ? material.GetTransparentCullMode() : CullMode.Back;
+
             bool isBackFaceEnable = material.HasProperty(kTransparentBackfaceEnable) && material.GetFloat(kTransparentBackfaceEnable) > 0.0f && surfaceType == SurfaceType.Transparent;
             bool doubleSidedEnable = material.HasProperty(kDoubleSidedEnable) && material.GetFloat(kDoubleSidedEnable) > 0.0f;
 
             // Disable culling if double sided
-            material.SetInt("_CullMode", doubleSidedEnable ? (int)UnityEngine.Rendering.CullMode.Off : (int)UnityEngine.Rendering.CullMode.Back);
+            material.SetInt("_CullMode", doubleSidedEnable ? (int)UnityEngine.Rendering.CullMode.Off : (int)doubleSidedOffMode);
 
             // We have a separate cullmode (_CullModeForward) for Forward in case we use backface then frontface rendering, need to configure it
             if (isBackFaceEnable)
@@ -199,7 +201,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             }
             else
             {
-                material.SetInt("_CullModeForward", doubleSidedEnable ? (int)UnityEngine.Rendering.CullMode.Off : (int)UnityEngine.Rendering.CullMode.Back);
+                material.SetInt("_CullModeForward", (int)(doubleSidedEnable ? UnityEngine.Rendering.CullMode.Off : doubleSidedOffMode));
             }
 
             CoreUtils.SetKeyword(material, "_DOUBLESIDED_ON", doubleSidedEnable);

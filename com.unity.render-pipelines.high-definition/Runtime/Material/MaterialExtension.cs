@@ -107,6 +107,13 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         Amplitude = 1
     }
 
+    internal enum TransparentCullMode
+    {
+        // Off is double sided and a different setting so we don't have it here
+        Back = CullMode.Back,
+        Front = CullMode.Front,
+    }
+
     public static class MaterialExtension
     {
         public static SurfaceType   GetSurfaceType(this Material material)
@@ -132,6 +139,11 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         public static bool          GetZWrite(this Material material)
         {
             return material.HasProperty(kZWrite) ? material.GetInt(kZWrite) == 1 : false;
+        }
+
+        public static CullMode      GetTransparentCullMode(this Material material)
+        {
+            return material.HasProperty(kTransparentCullMode) ? (CullMode)material.GetInt(kTransparentCullMode) : CullMode.Back;
         }
     }
 }

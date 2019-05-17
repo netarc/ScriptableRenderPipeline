@@ -458,6 +458,22 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 Dirty(ModificationScope.Graph);
             }
         }
+        
+        [SerializeField]
+        TransparentCullMode m_transparentCullMode = TransparentCullMode.Back;
+        public TransparentCullMode transparentCullMode
+        {
+            get => m_transparentCullMode;
+            set
+            {
+                if (m_transparentCullMode == value)
+                    return;
+
+                m_transparentCullMode = value;
+                UpdateNodeAfterDeserialization();
+                Dirty(ModificationScope.Graph);
+            }
+        }
 
         public FabricMasterNode()
         {
@@ -701,7 +717,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 surfaceType,
                 HDSubShaderUtilities.ConvertAlphaModeToBlendMode(alphaMode),
                 sortPriority,
-                zWrite.isOn
+                zWrite.isOn,
+                transparentCullMode
             );
             HDSubShaderUtilities.AddAlphaCutoffShaderProperties(collector, alphaTest.isOn, false);
             HDSubShaderUtilities.AddDoubleSidedProperty(collector, doubleSidedMode);
