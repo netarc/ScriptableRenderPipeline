@@ -40,7 +40,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
         MaterialUIBlockList transparencyBlocks = new MaterialUIBlockList
         {
-            new RefractionUIBlock(),
+            new RefractionUIBlock(kMaxLayerCount),
             new DistortionUIBlock(),
         };
 
