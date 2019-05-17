@@ -9,9 +9,34 @@ namespace UnityEditor.VFX
 {
     abstract class VFXAbstractRenderedOutput : VFXContext
     {
+        public enum BlendMode
+        {
+            Additive,
+            Alpha,
+            Masked,
+            AlphaPremultiplied,
+            Opaque,
+        }
+
+        [VFXSetting, Header("Render States")]
+        public BlendMode blendMode = BlendMode.Alpha;
+
         protected VFXAbstractRenderedOutput(VFXDataType dataType) : base(VFXContextType.kOutput, dataType, VFXDataType.kNone) { }
 
-        public VFXSRPOutputData GetOrCreateSRPData()
+        private static VFXSRPOutputData s_DefaultSRPData = null;
+        public VFXSRPOutputData GetSRPData()
+        {
+            if (currentSrpData == null)
+            {
+                if (s_DefaultSRPData == null)
+                    s_DefaultSRPData = ScriptableObject.CreateInstance<VFXSRPOutputData>();
+                return s_DefaultSRPData;
+            }
+
+            return currentSrpData;
+        }
+
+        private VFXSRPOutputData GetOrCreateSRPData()
         {
             VFXSRPBinder binder = VFXLibrary.currentSRPBinder;
             if (binder == null)
@@ -66,6 +91,16 @@ namespace UnityEditor.VFX
             if (currentSrpData != null)
                 settings = settings.Concat(currentSrpData.GetSettings(listHidden, flags));
             return settings;
+        }
+
+        protected virtual void WriteBlendMode(VFXShaderWriter writer)
+        {
+            if (blendMode == BlendMode.Additive)
+                writer.WriteLine("Blend SrcAlpha One");
+            else if (blendMode == BlendMode.Alpha)
+                writer.WriteLine("Blend SrcAlpha OneMinusSrcAlpha");
+            else if (blendMode == BlendMode.AlphaPremultiplied)
+                writer.WriteLine("Blend One OneMinusSrcAlpha");
         }
 
         [SerializeField]

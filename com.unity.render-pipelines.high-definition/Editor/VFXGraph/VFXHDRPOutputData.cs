@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.HDPipeline;
+using static UnityEditor.VFX.VFXAbstractRenderedOutput;
 
 namespace UnityEditor.VFX
 {

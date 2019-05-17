@@ -1,6 +1,8 @@
+using static UnityEditor.VFX.VFXAbstractRenderedOutput;
+
 namespace UnityEditor.VFX
 {
-    abstract class VFXSRPOutputData : VFXModel
+    class VFXSRPOutputData : VFXModel
     {
     }
 }

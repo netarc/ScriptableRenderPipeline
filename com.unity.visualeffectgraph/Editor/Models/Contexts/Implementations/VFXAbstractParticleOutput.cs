@@ -17,15 +17,6 @@ namespace UnityEditor.VFX
             GradientMapped
         }
 
-        public enum BlendMode
-        {
-            Additive,
-            Alpha,
-            Masked,
-            AlphaPremultiplied,
-            Opaque,
-        }
-
         public enum UVMode
         {
             Simple,
@@ -67,9 +58,6 @@ namespace UnityEditor.VFX
             Off,
             On
         }
-
-        [VFXSetting, SerializeField, Header("Render States")]
-        protected BlendMode blendMode = BlendMode.Alpha;
 
         [VFXSetting(VFXSettingAttribute.VisibleFlags.InInspector), SerializeField]
         protected CullMode cullMode = CullMode.Default;
@@ -353,16 +341,6 @@ namespace UnityEditor.VFX
 
                 yield return new KeyValuePair<string, VFXShaderWriter>("${VFXShaderTags}", shaderTags);
             }
-        }
-
-        protected virtual void WriteBlendMode(VFXShaderWriter writer)
-        {
-            if (blendMode == BlendMode.Additive)
-                writer.WriteLine("Blend SrcAlpha One");
-            else if (blendMode == BlendMode.Alpha)
-                writer.WriteLine("Blend SrcAlpha OneMinusSrcAlpha");
-            else if (blendMode == BlendMode.AlphaPremultiplied)
-                writer.WriteLine("Blend One OneMinusSrcAlpha");
         }
 
         protected virtual VFXShaderWriter renderState
