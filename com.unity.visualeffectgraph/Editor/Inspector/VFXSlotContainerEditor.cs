@@ -16,7 +16,7 @@ using System.Reflection;
 
 [CustomEditor(typeof(VFXModel), true)]
 [CanEditMultipleObjects]
-public class VFXSlotContainerEditor : Editor
+class VFXSlotContainerEditor : Editor
 {
     protected void OnEnable()
     {
@@ -28,6 +28,11 @@ public class VFXSlotContainerEditor : Editor
     {
         //SceneView.onSceneGUIDelegate -= OnSceneGUI;
         SceneView.duringSceneGui -= OnSceneGUI;
+    }
+
+    protected virtual SerializedProperty FindProperty(VFXSetting setting)
+    {
+        return serializedObject.FindProperty(setting.field.Name);
     }
 
     public virtual void DoInspectorGUI()
@@ -42,7 +47,7 @@ public class VFXSlotContainerEditor : Editor
             settingFields = settingFields.Intersect(otherSettingFields);
         }
 
-        foreach (var prop in settingFields.Select(t => new KeyValuePair<FieldInfo, SerializedProperty>(t.field, serializedObject.FindProperty(t.field.Name))).Where(t => t.Value != null))
+        foreach (var prop in settingFields.Select(t => new KeyValuePair<FieldInfo, SerializedProperty>(t.field, FindProperty(t))).Where(t => t.Value != null))
         {
             var attrs = prop.Key.GetCustomAttributes(typeof(StringProviderAttribute), true);
             if (attrs.Length > 0)

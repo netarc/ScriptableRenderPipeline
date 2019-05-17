@@ -11,7 +11,7 @@ namespace UnityEditor.VFX
     {
         protected VFXAbstractRenderedOutput(VFXDataType dataType) : base(VFXContextType.kOutput, dataType, VFXDataType.kNone) { }
 
-        protected VFXSRPOutputData GetOrCreateSRPData()
+        public VFXSRPOutputData GetOrCreateSRPData()
         {
             VFXSRPBinder binder = VFXLibrary.currentSRPBinder;
             if (binder == null)
@@ -21,12 +21,11 @@ namespace UnityEditor.VFX
             if (outputDataType == null)
                 return null;
 
-            var outputData = srpData.FirstOrDefault(d => d.GetType() == outputDataType);
+            var outputData = srpData.FirstOrDefault(d => d != null && d.GetType() == outputDataType);
             if (outputData == null)
             {
                 outputData = (VFXSRPOutputData)ScriptableObject.CreateInstance(outputDataType);
-                //outputData.SetOwner(this);
-                srpData.Append(outputData);
+                srpData.Add(outputData);
             }
 
             return outputData;
@@ -45,8 +44,12 @@ namespace UnityEditor.VFX
         public override void CollectDependencies(HashSet<ScriptableObject> objs)
         {
             base.CollectDependencies(objs);
-            foreach(var data in srpData)
-                data.CollectDependencies(objs);
+            foreach (var data in srpData)
+                if (data != null)
+                {
+                    objs.Add(data);
+                    data.CollectDependencies(objs);
+                }
         }
 
         public override VFXSetting GetSetting(string name)

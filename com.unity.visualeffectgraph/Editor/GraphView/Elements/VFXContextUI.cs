@@ -703,12 +703,11 @@ namespace UnityEditor.VFX.UI
                 if(newContextController.model is VFXPlanarPrimitiveOutput && setting.field.Name == "primitiveType")
                     continue;
                 
-                FieldInfo myField = contextType.GetField(setting.field.Name, BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic);
-                if (myField == null || myField.GetCustomAttributes(typeof(VFXSettingAttribute), true).Length == 0)
+                if (!setting.valid || setting.field.GetCustomAttributes(typeof(VFXSettingAttribute), true).Length == 0)
                     continue;
 
                 object value;
-                if (VFXConverter.TryConvertTo(myField.GetValue(controller.model), setting.field.FieldType, out value))
+                if (VFXConverter.TryConvertTo(setting.value, setting.field.FieldType, out value))
                     newContextController.model.SetSettingValue(setting.field.Name, value);
             }
 
