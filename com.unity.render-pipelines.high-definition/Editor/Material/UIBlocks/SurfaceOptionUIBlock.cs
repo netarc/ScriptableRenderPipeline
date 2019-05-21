@@ -54,6 +54,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             public static GUIContent transparentWritingMotionVecText = new GUIContent("Transparent Writes Motion Vectors", "When enabled, transparent objects write motion vectors, these replace what was previously rendered in the buffer.");
 
             public static GUIContent zWriteEnableText = new GUIContent("Z Write", "When enabled, transparent objects write to the depth buffer.");
+            public static GUIContent transparentZTestText = new GUIContent("Z Test", "Set the comparison function to use during the Z Testing.");
 
             public static GUIContent transparentSortPriorityText = new GUIContent("Sorting Priority", "Sets the sort priority (from -100 to 100) of transparent meshes using this Material. HDRP uses this value to calculate the sorting order of all transparent meshes on screen.");
             public static GUIContent enableTransparentFogText = new GUIContent("Receive fog", "When enabled, this Material can receive fog.");
@@ -195,6 +196,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         const string kHeightParametrization = "_HeightMapParametrization";
 
         MaterialProperty zWrite = null;
+        MaterialProperty zTest = null;
         MaterialProperty transparentCullMode = null;
 
         SurfaceType defaultSurfaceType { get { return SurfaceType.Opaque; } }
@@ -329,6 +331,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             receivesSSR = FindProperty(kReceivesSSR);
 
             zWrite = FindProperty(kZWrite);
+            zTest = FindProperty(kZTestTransparent);
             transparentCullMode = FindProperty(kTransparentCullMode);
         }
 
@@ -456,6 +459,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 
                 if (zWrite != null)
                     materialEditor.ShaderProperty(zWrite, Styles.zWriteEnableText);
+                
+                if (zTest != null)
+                    materialEditor.ShaderProperty(zTest, Styles.transparentZTestText);
 
                 EditorGUI.indentLevel--;
             }

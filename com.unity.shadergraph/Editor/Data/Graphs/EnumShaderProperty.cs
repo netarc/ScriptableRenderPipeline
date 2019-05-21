@@ -7,10 +7,11 @@ using System.Linq;
 
 namespace UnityEditor.ShaderGraph
 {
-    public enum EnumType
+    enum EnumType
     {
         Enum,
-        KeywordEnum,
+        CSharpEnum,
+        KeywordEnum
     }
 
     [Serializable]
@@ -21,49 +22,33 @@ namespace UnityEditor.ShaderGraph
             displayName = "Enum";
         }
 
-        public override PropertyType propertyType
-        {
-            get { return PropertyType.Vector1; }
-        }
+        public override PropertyType propertyType => PropertyType.Vector1;
 
-        public override Vector4 defaultValue
-        {
-            get { return new Vector4(value, value, value, value); }
-        }
+        public override Vector4 defaultValue => new Vector4(value, value, value, value);
 
-        public override bool isBatchable
-        {
-            get { return true; }
-        }
+        public override bool isBatchable => true;
 
-        public override bool isExposable
-        {
-            get { return true; }
-        }
+        public override bool isExposable => true;
 
-        public override bool isRenamable
-        {
-            get { return true; }
-        }
+        public override bool isRenamable => true;
 
         [SerializeField]
-        private EnumType m_EnumType = EnumType.Enum;
+        EnumType m_EnumType = EnumType.Enum;
 
         public EnumType enumType
         {
-            get { return m_EnumType; }
-            set
-            {
-                if (m_EnumType == value)
-                    return;
-                m_EnumType = value;
-            }
+            get => m_EnumType;
+            set => m_EnumType = value;
         }
 
         [SerializeField]
-        private List<string> m_EnumNames = new List<string>();
+        List<string> m_EnumNames = new List<string>();
+        
         [SerializeField]
-        private List<int> m_EnumValues = new List<int>();
+        List<int> m_EnumValues = new List<int>();
+
+        [SerializeField]
+        Type m_CSharpEnumType;
 
         public List<string> enumNames
         {
@@ -76,42 +61,59 @@ namespace UnityEditor.ShaderGraph
             get => m_EnumValues;
             set => m_EnumValues = value;
         }
+
+        public Type cSharpEnumType
+        {
+            get => m_CSharpEnumType;
+            set => m_CSharpEnumType = value;
+        }
         
         [SerializeField]
-        bool    m_Hidden = false;
+        bool m_Hidden = false;
 
         public bool hidden
         {
-            get { return m_Hidden; }
-            set { m_Hidden = value; }
+            get => m_Hidden;
+            set => m_Hidden = value;
         }
 
         public override string GetPropertyBlockString()
         {
             var result = new StringBuilder();
             if (hidden)
+            {
                 result.Append("[HideInInspector] ");
+            }
 
             string enumValuesString = ""; // TODO
-            if (enumType == EnumType.KeywordEnum)
-                enumValuesString = enumNames.Aggregate((s, e) => s + ", " + e);
-            else
+            string enumTypeString = enumType.ToString();
+            switch (enumType)
             {
-                for (int i = 0; i < enumNames.Count; i++)
-                {
-                    int value = (i < enumValues.Count) ? enumValues[i] : i;
-                    enumValuesString += (enumNames[i] + ", " + value + ((i != enumNames.Count - 1) ? ", " : ""));
-                }
+                case EnumType.CSharpEnum:
+                    enumValuesString = m_CSharpEnumType.ToString();
+                    enumTypeString = "Enum";
+                    break;
+                case EnumType.KeywordEnum:
+                    enumValuesString = enumNames.Aggregate((s, e) => s + ", " + e);
+                    break;
+                default:
+                case EnumType.Enum:
+                    for (int i = 0; i < enumNames.Count; i++)
+                    {
+                        int value = (i < enumValues.Count) ? enumValues[i] : i;
+                        enumValuesString += (enumNames[i] + ", " + value + ((i != enumNames.Count - 1) ? ", " : ""));
+                    }
+                    break;
             }
             
-            result.Append($"[{enumType}({enumValuesString})] {referenceName}(\"{displayName}\", Float) = {NodeUtils.FloatToShaderValue(value)}");
+            result.Append($"[{enumTypeString}({enumValuesString})] {referenceName}(\"{displayName}\", Float) = {NodeUtils.FloatToShaderValue(value)}");
 
             return result.ToString();
         }
 
         public override string GetPropertyDeclarationString(string delimiter = ";")
         {
-            return string.Format("float {0}{1}", referenceName, delimiter);
+            return $"float {referenceName}{delimiter}";
         }
 
         public override PreviewProperty GetPreviewMaterialProperty()

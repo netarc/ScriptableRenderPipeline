@@ -8,6 +8,7 @@ using UnityEditor.ShaderGraph.Drawing;
 using UnityEditor.ShaderGraph.Drawing.Controls;
 using UnityEditor.Experimental.Rendering.HDPipeline;
 using UnityEngine.Experimental.Rendering.HDPipeline;
+using UnityEngine.Rendering;
 
 namespace UnityEditor.Experimental.Rendering.HDPipeline.Drawing
 {
@@ -177,6 +178,15 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline.Drawing
                     });
                 }
 
+                ps.Add(new PropertyRow(CreateLabel("Z Test", indentLevel)), (row) =>
+                {
+                    row.Add(new EnumField(m_Node.zTest), (e) =>
+                    {
+                        e.value = m_Node.zTest;
+                        e.RegisterValueChangedCallback(ChangeZTest);
+                    });
+                });
+
                 --indentLevel;
             }
 
@@ -343,7 +353,16 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline.Drawing
                 return;
 
             m_Node.owner.owner.RegisterCompleteObjectUndo("Transparent Cull Mode Change");
-            m_Node.transparentCullMode = m_Node.transparentCullMode;
+            m_Node.transparentCullMode = (TransparentCullMode)evt.newValue;
+        }
+
+        void ChangeZTest(ChangeEvent<Enum> evt)
+        {
+            if (Equals(m_Node.zTest, evt.newValue))
+                return;
+
+            m_Node.owner.owner.RegisterCompleteObjectUndo("ZTest Change");
+            m_Node.zTest = (CompareFunction)evt.newValue;
         }
 
         public AlphaMode GetAlphaMode(HDUnlitMasterNode.AlphaModeLit alphaModeLit)

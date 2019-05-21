@@ -5,6 +5,7 @@ using UnityEditor.Graphing;
 using UnityEngine;              // Vector3,4
 using UnityEditor.ShaderGraph;
 using UnityEngine.Experimental.Rendering.HDPipeline;
+using UnityEngine.Rendering;
 
 // Include material common properties names
 using static UnityEngine.Experimental.Rendering.HDPipeline.HDMaterialProperties;
@@ -930,6 +931,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         public static readonly string zClipShadowCaster = "ZClip [_ZClip]";
         public static readonly string defaultCullMode = "Cull [_CullMode]";
         public static readonly string cullModeForward = "Cull [_CullModeForward]";
+        public static readonly string zTestDepthEqualForOpaque = "ZTest [_ZTestDepthEqualForOpaque]";
 
         public static void SetBlendModeForTransparentBackface(ref Pass pass) => SetBlendModeForForward(ref pass);
         public static void SetBlendModeForForward(ref Pass pass)
@@ -1018,7 +1020,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             collector.AddIntProperty("_StencilRefGBuffer", 2); // StencilLightingUsage.RegularLighting
         }
 
-        public static void AddBlendingStatesShaderProperties(PropertyCollector collector, SurfaceType surface, BlendMode blend, int sortingPriority, bool zWrite, TransparentCullMode transparentCullMode)
+        public static void AddBlendingStatesShaderProperties(PropertyCollector collector, SurfaceType surface, BlendMode blend, int sortingPriority, bool zWrite, TransparentCullMode transparentCullMode, CompareFunction zTest)
         {
             collector.AddFloatProperty("_SurfaceType", (int)surface);
             collector.AddFloatProperty("_BlendMode", (int)blend);
@@ -1029,14 +1031,24 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             collector.AddFloatProperty("_AlphaSrcBlend", 1.0f);
             collector.AddFloatProperty("_AlphaDstBlend", 0.0f);
             collector.AddToggleProperty("_ZWrite", zWrite);
-            collector.AddFloatProperty("_CullMode", 2.0f);
+            collector.AddFloatProperty("_CullMode", (int)CullMode.Back);
             collector.AddIntProperty("_TransparentSortPriority", sortingPriority);
-            collector.AddFloatProperty("_CullModeForward", 2.0f);
+            collector.AddFloatProperty("_CullModeForward", (int)CullMode.Back);
             collector.AddShaderProperty(new EnumShaderProperty{
                 overrideReferenceName = kTransparentCullMode,
                 value = (int)transparentCullMode,
                 enumNames = {"Front", "Back"},
                 enumValues = {(int)TransparentCullMode.Front, (int)TransparentCullMode.Back},
+                hidden = true,
+            });
+
+            // Add ZTest properties:
+            collector.AddIntProperty("_ZTestDepthEqualForOpaque", (int)CompareFunction.LessEqual);
+            collector.AddShaderProperty(new EnumShaderProperty{
+                overrideReferenceName = kZTestTransparent,
+                value = (int)zTest,
+                enumType = EnumType.CSharpEnum,
+                cSharpEnumType = typeof(CompareFunction),
                 hidden = true,
             });
         }

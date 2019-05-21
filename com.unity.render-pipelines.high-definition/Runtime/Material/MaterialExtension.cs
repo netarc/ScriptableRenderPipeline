@@ -145,5 +145,10 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         {
             return material.HasProperty(kTransparentCullMode) ? (CullMode)material.GetInt(kTransparentCullMode) : CullMode.Back;
         }
+
+        public static CompareFunction   GetTransparentZTest(this Material material)
+        {
+            return material.HasProperty(kZTestTransparent) ? (CompareFunction)material.GetInt(kZTestTransparent) : CompareFunction.LessEqual;
+        }
     }
 }

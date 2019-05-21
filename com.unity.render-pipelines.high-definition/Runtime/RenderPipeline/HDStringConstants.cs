@@ -726,6 +726,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         
         public const string kZWrite = "_ZWrite";
         public const string kTransparentCullMode = "_TransparentCullMode";
+        public const string kZTestTransparent = "_ZTestTransparent";
 
         public const string kEmissiveColorMap = "_EmissiveColorMap";
 

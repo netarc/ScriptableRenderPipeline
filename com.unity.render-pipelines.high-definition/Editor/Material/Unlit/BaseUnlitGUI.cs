@@ -52,7 +52,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 if (surfaceType == SurfaceType.Opaque)
                     material.SetInt(kZTestDepthEqualForOpaque, (int)UnityEngine.Rendering.CompareFunction.Equal);
                 else
-                    material.SetInt(kZTestDepthEqualForOpaque, (int)UnityEngine.Rendering.CompareFunction.LessEqual);
+                {
+                    material.SetInt(kZTestDepthEqualForOpaque, (int)material.GetTransparentZTest());
+                }
             }
 
             if (surfaceType == SurfaceType.Opaque)
