@@ -29,7 +29,7 @@ namespace UnityEditor.ShaderGraph.Drawing
         bool m_HasError;
 
         [NonSerialized]
-        public bool reloadSubGraphs;
+        HashSet<string> m_ChangedSubGraphs = new HashSet<string>();
 
         ColorSpace m_ColorSpace;
         RenderPipelineAsset m_RenderPipelineAsset;
@@ -145,17 +145,17 @@ namespace UnityEditor.ShaderGraph.Drawing
                     graphObject.Validate();
                 }
 
-                if (reloadSubGraphs)
+                if (m_ChangedSubGraphs != null)
                 {
                     if (graphObject != null && graphObject.graph != null)
                     {
                         foreach (var subGraphNode in graphObject.graph.GetNodes<SubGraphNode>())
                         {
-                            subGraphNode.Reload();
+                            subGraphNode.Reload(m_ChangedSubGraphs);
                         }
                     }
 
-                    reloadSubGraphs = false;
+                    m_ChangedSubGraphs.Clear();
                 }
 
                 if (graphObject.wasUndoRedoPerformed)
@@ -203,6 +203,14 @@ namespace UnityEditor.ShaderGraph.Drawing
             graphEditorView = null;
         }
 
+        public void ReloadSubGraphs<T>(T changedSubGraphs) where T : class, IEnumerable<string>
+        {
+            foreach (var changedSubGraph in changedSubGraphs)
+            {
+                m_ChangedSubGraphs.Add(changedSubGraph);
+            }
+        }
+
         public void PingAsset()
         {
             if (selectedGuid != null)
@@ -227,6 +235,13 @@ namespace UnityEditor.ShaderGraph.Drawing
                     UpdateShaderGraphOnDisk(path);
 
                 graphObject.isDirty = false;
+                
+                var changedSubGraphs = new [] { path };
+                var windows = Resources.FindObjectsOfTypeAll<MaterialGraphEditWindow>();
+                foreach (var window in windows)
+                {
+                    window.ReloadSubGraphs(changedSubGraphs);
+                }
             }
         }
 
@@ -448,7 +463,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             ds.position = new Rect(middle - new Vector2(100f, 150f), Vector2.zero);
             subGraphNode.drawState = ds;
             graphObject.graph.AddNode(subGraphNode);
-            subGraphNode.subGraphAsset = loadedSubGraph;
+            subGraphNode.asset = loadedSubGraph;
 
             foreach (var edgeMap in externalInputNeedingConnection)
             {
