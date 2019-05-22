@@ -439,9 +439,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     }
                 }
 
-                if (transparentCullMode != null && doubleSidedEnable.floatValue == 0)
-                    materialEditor.ShaderProperty(transparentCullMode, Styles.transparentCullModeText);
-
                 if (enableFogOnTransparent != null)
                     materialEditor.ShaderProperty(enableFogOnTransparent, Styles.enableTransparentFogText);
 
@@ -462,6 +459,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 
                 if (zTest != null)
                     materialEditor.ShaderProperty(zTest, Styles.transparentZTestText);
+
+                if (transparentCullMode != null && doubleSidedEnable.floatValue == 0)
+                    materialEditor.ShaderProperty(transparentCullMode, Styles.transparentCullModeText);
 
                 EditorGUI.indentLevel--;
             }
