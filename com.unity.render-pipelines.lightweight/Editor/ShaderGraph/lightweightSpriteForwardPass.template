@@ -1,7 +1,7 @@
 Pass
 {
-    Name "SpriteUnlit"
-    Tags{"LightMode" = "Lightweight2D"}
+    Name "Sprite Forward"
+    Tags{"LightMode" = "LightweightForward"}
 
 ${Tags}
 ${Blending}

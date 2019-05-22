@@ -13,7 +13,7 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Default"
 
     SubShader
     {
-        Tags { "RenderType" = "Transparent" "RenderPipeline" = "LightweightPipeline" }
+        Tags {"Queue" = "Transparent" "RenderType" = "Transparent" "RenderPipeline" = "LightweightPipeline" }
 
         Blend SrcAlpha OneMinusSrcAlpha
         Cull Off
@@ -21,7 +21,7 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Default"
 
         Pass
         {
-            Tags { "LightMode" = "CombinedShapeLight" }
+            Tags { "LightMode" = "Lightweight2D" }
             HLSLPROGRAM
             #pragma prefer_hlslcc gles
             #pragma vertex CombinedShapeLightVertex
@@ -158,8 +158,51 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Default"
                 float3 normalTS = UnpackNormal(SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, i.uv));
                 return NormalsRenderingShared(mainTex, normalTS, i.tangentWS.xyz, i.bitangentWS.xyz, -i.normalWS.xyz);
             }
+            ENDHLSL
+        }
+        Pass
+        {
+            Tags { "LightMode" = "LightweightForward" "Queue"="Transparent" "RenderType"="Transparent"}
 
+            HLSLPROGRAM
+            #pragma prefer_hlslcc gles
+            #pragma vertex UnlitVertex
+            #pragma fragment UnlitFragment
 
+            struct Attributes
+            {
+                float3 positionOS   : POSITION;
+                float4 color		: COLOR;
+                half2  uv			: TEXCOORD0;
+            };
+
+            struct Varyings
+            {
+                float4  positionCS		: SV_POSITION;
+                float4  color			: COLOR;
+                half2	uv				: TEXCOORD0;
+            };
+
+            TEXTURE2D(_MainTex);
+            SAMPLER(sampler_MainTex);
+            half4 _MainTex_ST;
+
+            Varyings UnlitVertex(Attributes attributes)
+            {
+                Varyings o = (Varyings)0;
+
+                o.positionCS = TransformObjectToHClip(attributes.positionOS);
+                o.uv = TRANSFORM_TEX(attributes.uv, _MainTex);
+                o.uv = attributes.uv;
+                o.color = attributes.color;
+                return o;
+            }
+
+            float4 UnlitFragment(Varyings i) : SV_Target
+            {
+                float4 mainTex = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+                return mainTex;
+            }
             ENDHLSL
         }
     }

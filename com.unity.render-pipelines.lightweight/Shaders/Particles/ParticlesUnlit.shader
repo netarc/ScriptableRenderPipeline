@@ -103,6 +103,34 @@ Shader "Lightweight Render Pipeline/Particles/Unlit"
             
             ENDHLSL
         }
+        Pass
+        {
+            Name "Lightweight2D"
+            Tags{ "LightMode" = "Lightweight2D" }
+
+            Blend[_SrcBlend][_DstBlend]
+            ZWrite[_ZWrite]
+            Cull[_Cull]
+
+            HLSLPROGRAM
+            // Required to compile gles 2.0 with standard srp library
+            #pragma prefer_hlslcc gles
+            #pragma exclude_renderers d3d11_9x
+
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma shader_feature _ALPHATEST_ON
+            #pragma shader_feature _ALPHAPREMULTIPLY_ON
+
+            // -------------------------------------
+            // Unity defined keywords
+            #pragma multi_compile_fog
+            #pragma multi_compile_instancing
+
+            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/UnlitInput.hlsl"
+            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/Utils/FallbackBase2D.hlsl"
+            ENDHLSL
+        }
     }
     CustomEditor "UnityEditor.Rendering.LWRP.ShaderGUI.ParticlesUnlitShader"
 }

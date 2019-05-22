@@ -63,13 +63,15 @@ namespace UnityEngine.Rendering.LWRP
 
             var templatePath = GetTemplatePath("lightweightUnlitPass.template");
             var extraPassesTemplatePath = GetTemplatePath("lightweightUnlitExtraPasses.template");
-            if (!File.Exists(templatePath) || !File.Exists(extraPassesTemplatePath))
+            var lightweight2DTemplatePath = GetTemplatePath("lightweight2DUnlitPass.template");
+            if (!File.Exists(templatePath) || !File.Exists(extraPassesTemplatePath) || !File.Exists(lightweight2DTemplatePath))
                 return string.Empty;
 
             if (sourceAssetDependencyPaths != null)
             {
                 sourceAssetDependencyPaths.Add(templatePath);
                 sourceAssetDependencyPaths.Add(extraPassesTemplatePath);
+                sourceAssetDependencyPaths.Add(lightweight2DTemplatePath);
 
                 var relativePath = "Packages/com.unity.render-pipelines.lightweight/";
                 var fullPath = Path.GetFullPath(relativePath);
@@ -79,6 +81,7 @@ namespace UnityEngine.Rendering.LWRP
 
             string forwardTemplate = File.ReadAllText(templatePath);
             string extraTemplate = File.ReadAllText(extraPassesTemplatePath);
+            string lightweight2DTemplate = File.ReadAllText(lightweight2DTemplatePath);
 
             var unlitMasterNode = masterNode as UnlitMasterNode;
             var pass = m_UnlitPass;
@@ -103,6 +106,12 @@ namespace UnityEngine.Rendering.LWRP
                         extraTemplate,
                         unlitMasterNode,
                         m_DepthShadowPass,
+                        mode,
+                        materialOptions));
+                subShader.AppendLines(GetShaderPassFromTemplate(
+                        lightweight2DTemplate,
+                        unlitMasterNode,
+                        pass,
                         mode,
                         materialOptions));
             }

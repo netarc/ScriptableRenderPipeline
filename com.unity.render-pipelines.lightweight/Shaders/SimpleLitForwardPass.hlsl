@@ -111,6 +111,35 @@ Varyings LitPassVertexSimple(Attributes input)
     return output;
 }
 
+half4 UnlitPassFragmentSimple(Varyings input) : SV_Target
+{
+    UNITY_SETUP_INSTANCE_ID(input);
+    UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+
+    float2 uv = input.uv;
+    half4 diffuseAlpha = SampleAlbedoAlpha(uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap));
+    half3 diffuse = diffuseAlpha.rgb * _BaseColor.rgb;
+
+    half alpha = diffuseAlpha.a * _BaseColor.a;
+    AlphaDiscard(alpha, _Cutoff);
+#ifdef _ALPHAPREMULTIPLY_ON
+    diffuse *= alpha;
+#endif
+
+    half3 normalTS = SampleNormal(uv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap));
+    half3 emission = SampleEmission(uv, _EmissionColor.rgb, TEXTURE2D_ARGS(_EmissionMap, sampler_EmissionMap));
+    half4 specular = SampleSpecularSmoothness(uv, alpha, _SpecColor, TEXTURE2D_ARGS(_SpecGlossMap, sampler_SpecGlossMap));
+    half smoothness = specular.a;
+
+    InputData inputData;
+    InitializeInputData(input, normalTS, inputData);
+
+    half4 color = half4(diffuse, alpha);
+    color.rgb = MixFog(color.rgb, inputData.fogCoord);
+    return color;
+};
+
+
 // Used for StandardSimpleLighting shader
 half4 LitPassFragmentSimple(Varyings input) : SV_Target
 {
