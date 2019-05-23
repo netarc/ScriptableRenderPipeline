@@ -153,7 +153,7 @@ Shader "Lightweight Render Pipeline/Particles/Simple Lit"
             #pragma multi_compile_instancing
 
             #include "Packages/com.unity.render-pipelines.lightweight/Shaders/UnlitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/Utils/FallbackBase2D.hlsl"
+            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/Utils/Lightweight2D.hlsl"
             ENDHLSL
         }
     }

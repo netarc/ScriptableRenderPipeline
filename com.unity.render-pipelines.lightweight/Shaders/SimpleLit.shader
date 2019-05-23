@@ -212,7 +212,7 @@ Shader "Lightweight Render Pipeline/Simple Lit"
             #pragma multi_compile_instancing
 
             #include "UnlitInput.hlsl"
-            #include "Utils/FallbackBase2D.hlsl"
+            #include "Utils/Lightweight2D.hlsl"
             ENDHLSL
         }
     }
