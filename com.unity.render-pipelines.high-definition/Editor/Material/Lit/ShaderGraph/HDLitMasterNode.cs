@@ -11,6 +11,9 @@ using UnityEngine.Experimental.Rendering.HDPipeline;
 using UnityEditor.ShaderGraph.Drawing.Inspector;
 using UnityEngine.Rendering;
 
+// Include material common properties names
+using static UnityEngine.Experimental.Rendering.HDPipeline.HDMaterialProperties;
+
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
     [Serializable]
@@ -947,11 +950,14 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         public override void ProcessPreviewMaterial(Material previewMaterial)
         {
             // Fixup the material settings:
-            previewMaterial.SetFloat("_SurfaceType", (int)(SurfaceType)surfaceType);
-            previewMaterial.SetFloat("_DoubleSidedNormalMode", (int)doubleSidedMode);
-            previewMaterial.SetFloat("_AlphaCutoffEnable", alphaTest.isOn ? 1 : 0);
-            previewMaterial.SetFloat("_BlendMode", (int)HDSubShaderUtilities.ConvertAlphaModeToBlendMode(alphaMode));
-            previewMaterial.SetFloat("_EnableFogOnTransparent", transparencyFog.isOn ? 1.0f : 0.0f);
+            previewMaterial.SetFloat(kSurfaceType, (int)(SurfaceType)surfaceType);
+            previewMaterial.SetFloat(kDoubleSidedNormalMode, (int)doubleSidedMode);
+            previewMaterial.SetFloat(kAlphaCutoffEnabled, alphaTest.isOn ? 1 : 0);
+            previewMaterial.SetFloat(kBlendMode, (int)HDSubShaderUtilities.ConvertAlphaModeToBlendMode(alphaMode));
+            previewMaterial.SetFloat(kEnableFogOnTransparent, transparencyFog.isOn ? 1.0f : 0.0f);
+            previewMaterial.SetFloat(kZTestTransparent, (int)zTest);
+            previewMaterial.SetFloat(kTransparentCullMode, (int)transparentCullMode);
+            previewMaterial.SetFloat(kZWrite, zWrite.isOn ? 1.0f : 0.0f);
             // No sorting priority for shader graph preview
             previewMaterial.renderQueue = (int)HDRenderQueue.ChangeType(renderingPass, offset: 0, alphaTest: alphaTest.isOn);
 
