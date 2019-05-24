@@ -62,7 +62,6 @@ Shader "Lightweight Render Pipeline/Particles/Unlit"
             // Lightmode matches the ShaderPassName set in LightweightRenderPipeline.cs. SRPDefaultUnlit and passes with
             // no LightMode tag are also rendered by Lightweight Render Pipeline
             Name "ForwardLit"
-            Tags {"LightMode" = "LightweightForward"}
             
             BlendOp[_BlendOp]
             Blend[_SrcBlend][_DstBlend]
@@ -101,30 +100,6 @@ Shader "Lightweight Render Pipeline/Particles/Unlit"
             #include "Packages/com.unity.render-pipelines.lightweight/Shaders/Particles/ParticlesUnlitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.lightweight/Shaders/Particles/ParticlesUnlitForwardPass.hlsl"
             
-            ENDHLSL
-        }
-        Pass
-        {
-            Name "Lightweight2D"
-            Tags{ "LightMode" = "Lightweight2D" }
-
-            Blend[_SrcBlend][_DstBlend]
-            ZWrite[_ZWrite]
-            Cull[_Cull]
-
-            HLSLPROGRAM
-            // Required to compile gles 2.0 with standard srp library
-            #pragma prefer_hlslcc gles
-            #pragma exclude_renderers d3d11_9x
-
-            #pragma vertex vert
-            #pragma fragment frag
-            #pragma shader_feature _ALPHATEST_ON
-            #pragma shader_feature _ALPHAPREMULTIPLY_ON
-
-
-            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/UnlitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/Utils/Lightweight2D.hlsl"
             ENDHLSL
         }
     }
