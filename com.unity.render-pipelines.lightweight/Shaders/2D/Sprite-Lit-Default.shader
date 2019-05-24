@@ -35,18 +35,18 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Default"
             {
                 float3 positionOS   : POSITION;
                 float4 color        : COLOR;
-                half2  uv           : TEXCOORD0;
+                float2  uv           : TEXCOORD0;
             };
 
             struct Varyings
             {
                 float4  positionCS  : SV_POSITION;
                 float4  color       : COLOR;
-                half2	uv          : TEXCOORD0;
-                half2	lightingUV  : TEXCOORD1;
+                float2	uv          : TEXCOORD0;
+                float2	lightingUV  : TEXCOORD1;
             };
 
-            #include "Include/LightingUtility.hlsl"
+            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/2D/Include/LightingUtility.hlsl"
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
@@ -90,7 +90,7 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Default"
                 return o;
             }
 
-            #include "Include/CombinedShapeLightShared.hlsl"
+            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/2D/Include/CombinedShapeLightShared.hlsl"
 
             half4 CombinedShapeLightFragment(Varyings i) : SV_Target
             {
@@ -114,14 +114,14 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Default"
             {
                 float3 positionOS   : POSITION;
                 float4 color		: COLOR;
-                half2  uv			: TEXCOORD0;
+                float2 uv			: TEXCOORD0;
             };
 
             struct Varyings
             {
                 float4  positionCS		: SV_POSITION;
                 float4  color			: COLOR;
-                half2	uv				: TEXCOORD0;
+                float2	uv				: TEXCOORD0;
                 float3  normalWS		: TEXCOORD1;
                 float3  tangentWS		: TEXCOORD2;
                 float3  bitangentWS		: TEXCOORD3;
@@ -150,7 +150,7 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Default"
                 return o;
             }
 
-            #include "Include/NormalsRenderingShared.hlsl"
+            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/2D/Include/NormalsRenderingShared.hlsl"
 
             float4 NormalsRenderingFragment(Varyings i) : SV_Target
             {
@@ -173,19 +173,19 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Default"
             {
                 float3 positionOS   : POSITION;
                 float4 color		: COLOR;
-                half2  uv			: TEXCOORD0;
+                float2 uv			: TEXCOORD0;
             };
 
             struct Varyings
             {
                 float4  positionCS		: SV_POSITION;
                 float4  color			: COLOR;
-                half2	uv				: TEXCOORD0;
+                float2	uv				: TEXCOORD0;
             };
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
-            half4 _MainTex_ST;
+            float4 _MainTex_ST;
 
             Varyings UnlitVertex(Attributes attributes)
             {

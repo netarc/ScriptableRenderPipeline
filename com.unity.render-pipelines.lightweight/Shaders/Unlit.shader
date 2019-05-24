@@ -130,8 +130,8 @@ Shader "Lightweight Render Pipeline/Unlit"
             // GPU Instancing
             #pragma multi_compile_instancing
 
-            #include "UnlitInput.hlsl"
-            #include "DepthOnlyPass.hlsl"
+            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/UnlitInput.hlsl"
+            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/DepthOnlyPass.hlsl"
             ENDHLSL
         }
 
@@ -150,8 +150,8 @@ Shader "Lightweight Render Pipeline/Unlit"
             #pragma vertex LightweightVertexMeta
             #pragma fragment LightweightFragmentMetaUnlit
 
-            #include "UnlitInput.hlsl"
-            #include "UnlitMetaPass.hlsl"
+            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/UnlitInput.hlsl"
+            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/UnlitMetaPass.hlsl"
 
             ENDHLSL
         }
@@ -171,13 +171,8 @@ Shader "Lightweight Render Pipeline/Unlit"
             #pragma shader_feature _ALPHATEST_ON
             #pragma shader_feature _ALPHAPREMULTIPLY_ON
 
-            // -------------------------------------
-            // Unity defined keywords
-            #pragma multi_compile_fog
-            #pragma multi_compile_instancing
-
-            #include "UnlitInput.hlsl"
-            #include "Utils/Lightweight2D.hlsl"
+            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/UnlitInput.hlsl"
+            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/Utils/Lightweight2D.hlsl"
             ENDHLSL
         }
     }

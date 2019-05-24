@@ -14,21 +14,7 @@ ${ZWrite}
     #pragma prefer_hlslcc gles
     #pragma exclude_renderers d3d11_9x
     #pragma target 2.0
-
-    // -------------------------------------
-    // Lightweight Pipeline keywords
-    #pragma shader_feature _SAMPLE_GI
-
-    // -------------------------------------
-    // Unity defined keywords
-    #pragma multi_compile _ DIRLIGHTMAP_COMBINED
-    #pragma multi_compile _ LIGHTMAP_ON
-    #pragma multi_compile_fog
-
-    //--------------------------------------
-    // GPU Instancing
-    #pragma multi_compile_instancing
-    
+   
     #pragma vertex vert
     #pragma fragment frag
 
@@ -48,17 +34,13 @@ ${Graph}
 
         // Interpolators defined by graph
 ${VertexOutputStruct}
-        UNITY_VERTEX_INPUT_INSTANCE_ID
         UNITY_VERTEX_OUTPUT_STEREO
     };
 
     GraphVertexOutput vert (GraphVertexInput v)
     {
         GraphVertexOutput o = (GraphVertexOutput)0;
-        UNITY_SETUP_INSTANCE_ID(v);
-        UNITY_TRANSFER_INSTANCE_ID(v, o);
         UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
-
         // Vertex transformations performed by graph
 ${VertexShader}
         VertexDescriptionInputs vdi = (VertexDescriptionInputs)0;
@@ -76,8 +58,7 @@ ${VertexShaderOutputs}
 
     half4 frag (GraphVertexOutput IN ${FaceSign}) : SV_Target
     {
-        UNITY_SETUP_INSTANCE_ID(IN);
-		UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
+        UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
 
         // Pixel transformations performed by graph
 ${PixelShader}
