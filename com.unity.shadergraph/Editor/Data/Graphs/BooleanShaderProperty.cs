@@ -35,7 +35,7 @@ namespace UnityEditor.ShaderGraph
         }
 
         [SerializeField]
-        bool    m_Hidden = false;
+        bool m_Hidden = false;
 
         public bool hidden
         {
@@ -52,7 +52,9 @@ namespace UnityEditor.ShaderGraph
         {
             var result = new StringBuilder();
             if (hidden)
+            {
                 result.Append("[HideInInspector] ");
+            }
             result.Append("[ToggleUI] ");
             result.Append(referenceName);
             result.Append("(\"");
