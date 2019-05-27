@@ -267,6 +267,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             ColorMaskOverride = "ColorMask [_ColorMaskTransparentVel] 1",
             ExtraDefines = HDSubShaderUtilities.s_ExtraDefinesForwardTransparent,
             ZTestOverride = HDSubShaderUtilities.zTestTransparent,
+            ZWriteOverride = HDSubShaderUtilities.ZWriteDefault,
             Includes = new List<string>()
             {
                 "#include \"Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassForward.hlsl\"",
@@ -309,7 +310,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             OnGeneratePassImpl = (IMasterNode node, ref Pass pass) =>
             {
                 HDSubShaderUtilities.SetBlendModeForTransparentBackface(ref pass);
-                HDSubShaderUtilities.SetZWrite(ref pass);
             }
         };
 
@@ -321,6 +321,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             MaterialName = "Hair",
             ShaderPassName = "SHADERPASS_FORWARD",
             CullOverride = HDSubShaderUtilities.cullModeForward,
+            ZWriteOverride = HDSubShaderUtilities.ZWriteDefault,
             ZTestOverride = HDSubShaderUtilities.zTestDepthEqualForOpaque,
             // ExtraDefines are set when the pass is generated
             Includes = new List<string>()
@@ -381,7 +382,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 var masterNode = node as HairMasterNode;
                 HDSubShaderUtilities.SetStencilStateForForward(ref pass);
                 HDSubShaderUtilities.SetBlendModeForForward(ref pass);
-                HDSubShaderUtilities.SetZWrite(ref pass);
 
                 pass.ExtraDefines.Remove("#ifndef DEBUG_DISPLAY\n#define SHADERPASS_FORWARD_BYPASS_ALPHA_TEST\n#endif");
                 pass.ColorMaskOverride = "ColorMask [_ColorMaskTransparentVel] 1";

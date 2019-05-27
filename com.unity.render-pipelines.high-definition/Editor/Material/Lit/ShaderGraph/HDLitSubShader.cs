@@ -15,7 +15,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             TemplateName = "HDLitPass.template",
             MaterialName = "Lit",
             ShaderPassName = "SHADERPASS_GBUFFER",
-
+            ZTestOverride = HDSubShaderUtilities.zTestGBuffer,
             ExtraDefines = new List<string>()
             {
                 "#pragma multi_compile _ DEBUG_DISPLAY",
@@ -77,14 +77,13 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             {
                 var masterNode = node as HDLitMasterNode;
                 HDSubShaderUtilities.SetStencilStateForGBuffer(ref pass);
-                HDSubShaderUtilities.SetZTestForGBuffer(ref pass);
 
                 // When we have alpha test, we will force a depth prepass so we always bypass the clip instruction in the GBuffer
                 // Don't do it with debug display mode as it is possible there is no depth prepass in this case
                 // This remove is required otherwise the code generate several time the define...
                 pass.ExtraDefines.Remove("#ifndef DEBUG_DISPLAY\n#define SHADERPASS_GBUFFER_BYPASS_ALPHA_TEST\n#endif");
                 
-                if (masterNode.surfaceType == SurfaceType.Opaque && masterNode.alphaTest.isOn)
+                if (masterNode.alphaTest.isOn)
                     pass.ExtraDefines.Add("#ifndef DEBUG_DISPLAY\n#define SHADERPASS_GBUFFER_BYPASS_ALPHA_TEST\n#endif");
             }
         };
@@ -154,6 +153,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             ColorMaskOverride = "ColorMask 0",
             ZClipOverride = HDSubShaderUtilities.zClipShadowCaster,
             CullOverride = HDSubShaderUtilities.defaultCullMode,
+            ZWriteOverride = HDSubShaderUtilities.zWriteOn,
             Includes = new List<string>()
             {
                 "#include \"Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassDepthOnly.hlsl\"",
@@ -170,10 +170,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 HDLitMasterNode.PositionSlotId
             },
             UseInPreview = false,
-            OnGeneratePassImpl = (IMasterNode node, ref Pass pass) =>
-            {
-                HDSubShaderUtilities.SetZWriteOn(ref pass);
-            }
         };
 
         Pass m_SceneSelectionPass = new Pass()
@@ -215,6 +211,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             ShaderPassName = "SHADERPASS_DEPTH_ONLY",
             CullOverride = HDSubShaderUtilities.defaultCullMode,
             ExtraDefines = HDSubShaderUtilities.s_ExtraDefinesDepthOrMotion,            
+            ZWriteOverride = HDSubShaderUtilities.zWriteOn,
 
             Includes = new List<string>()
             {
@@ -257,7 +254,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             {
                 var masterNode = node as HDLitMasterNode;
                 HDSubShaderUtilities.SetStencilStateForDepth(ref pass);
-                HDSubShaderUtilities.SetZWriteOn(ref pass);
             }
         };
 
@@ -270,6 +266,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             ShaderPassName = "SHADERPASS_MOTION_VECTORS",
             ExtraDefines = HDSubShaderUtilities.s_ExtraDefinesDepthOrMotion,
             CullOverride = HDSubShaderUtilities.defaultCullMode,
+            ZWriteOverride = HDSubShaderUtilities.zWriteOn,
             Includes = new List<string>()
             {
                 "#include \"Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassMotionVectors.hlsl\"",
@@ -310,7 +307,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             {
                 var masterNode = node as HDLitMasterNode;
                 HDSubShaderUtilities.SetStencilStateForMotionVector(ref pass);
-                HDSubShaderUtilities.SetZWriteOn(ref pass);
             }
         };
 
@@ -321,7 +317,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             TemplateName = "HDLitPass.template",
             MaterialName = "Lit",
             ShaderPassName = "SHADERPASS_DISTORTION",
-            ZWriteOverride = "ZWrite Off",
+            ZWriteOverride = HDSubShaderUtilities.zWriteOff,
             Includes = new List<string>()
             {
                 "#include \"Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassDistortion.hlsl\"",
@@ -353,7 +349,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             OnGeneratePassImpl = (IMasterNode node, ref Pass pass) =>
             {
                 HDSubShaderUtilities.SetStencilStateForDistortionVector(ref pass);
-                HDSubShaderUtilities.SetZWriteOff(ref pass);
                 var masterNode = node as HDLitMasterNode;
                 if (masterNode.distortionDepthTest.isOn)
                 {
@@ -425,6 +420,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             ExtraDefines = HDSubShaderUtilities.s_ExtraDefinesForwardTransparent,
             ZTestOverride = HDSubShaderUtilities.zTestTransparent,
             ColorMaskOverride = "ColorMask [_ColorMaskTransparentVel] 1",
+            ZWriteOverride = HDSubShaderUtilities.ZWriteDefault,
             Includes = new List<string>()
             {
                 "#include \"Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassForward.hlsl\"",
@@ -472,7 +468,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             OnGeneratePassImpl = (IMasterNode node, ref Pass pass) =>
             {
                 HDSubShaderUtilities.SetBlendModeForTransparentBackface(ref pass);
-                HDSubShaderUtilities.SetZWrite(ref pass);
             }
         };
 
@@ -485,6 +480,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             ShaderPassName = "SHADERPASS_FORWARD",
             CullOverride = HDSubShaderUtilities.cullModeForward,
             ZTestOverride = HDSubShaderUtilities.zTestDepthEqualForOpaque,
+            ZWriteOverride = HDSubShaderUtilities.ZWriteDefault,
             // ExtraDefines are set when the pass is generated
             Includes = new List<string>()
             {
@@ -538,7 +534,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 var masterNode = node as HDLitMasterNode;
                 HDSubShaderUtilities.SetStencilStateForForward(ref pass);
                 HDSubShaderUtilities.SetBlendModeForForward(ref pass);
-                HDSubShaderUtilities.SetZWrite(ref pass);
 
                 pass.ExtraDefines.Remove("#ifndef DEBUG_DISPLAY\n#define SHADERPASS_FORWARD_BYPASS_ALPHA_TEST\n#endif");
 

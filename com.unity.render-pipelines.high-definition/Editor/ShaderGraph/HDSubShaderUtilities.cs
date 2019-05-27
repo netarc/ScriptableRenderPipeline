@@ -933,6 +933,10 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         public static readonly string cullModeForward = "Cull [_CullModeForward]";
         public static readonly string zTestDepthEqualForOpaque = "ZTest [_ZTestDepthEqualForOpaque]";
         public static readonly string zTestTransparent = "ZTest [_ZTestTransparent]";
+        public static readonly string zTestGBuffer = "ZTest [_ZTestGBuffer]";
+        public static readonly string zWriteOn = "ZWrite On";
+        public static readonly string zWriteOff = "ZWrite Off";
+        public static readonly string ZWriteDefault = "ZWrite [_ZWrite]";
 
         public static void SetBlendModeForTransparentBackface(ref Pass pass) => SetBlendModeForForward(ref pass);
         public static void SetBlendModeForForward(ref Pass pass)
@@ -940,14 +944,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             pass.BlendOverride = "Blend [_SrcBlend] [_DstBlend], [_AlphaSrcBlend] [_AlphaDstBlend]";
         }
 
-        public static void SetZWrite(ref Pass pass) => pass.ZWriteOverride = "ZWrite [_ZWrite]";
-
-        public static void SetZWriteOff(ref Pass pass) => pass.ZWriteOverride = "ZWrite Off";
-
-        public static void SetZWriteOn(ref Pass pass) => pass.ZWriteOverride = "ZWrite On";
-
-        public static void SetZTestForGBuffer(ref Pass pass) => pass.ZWriteOverride = "ZTest [_ZTestGBuffer]";
-        
         public static void AddTags(ShaderGenerator generator, string pipeline, HDRenderTypeTags renderType)
         {
             ShaderStringBuilder builder = new ShaderStringBuilder();
@@ -1019,6 +1015,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             // Gbuffer
             collector.AddIntProperty("_StencilWriteMaskGBuffer", 3); // StencilMask.Lighting
             collector.AddIntProperty("_StencilRefGBuffer", 2); // StencilLightingUsage.RegularLighting
+            collector.AddIntProperty("_ZTestGBuffer", 4);
+
         }
 
         public static void AddBlendingStatesShaderProperties(PropertyCollector collector, SurfaceType surface, BlendMode blend, int sortingPriority, bool zWrite, TransparentCullMode transparentCullMode, CompareFunction zTest)

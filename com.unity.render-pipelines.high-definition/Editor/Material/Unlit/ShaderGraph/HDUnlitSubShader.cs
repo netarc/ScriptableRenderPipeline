@@ -52,6 +52,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             ShaderPassName = "SHADERPASS_DEPTH_ONLY",
             ColorMaskOverride = "ColorMask 0",
             CullOverride = HDSubShaderUtilities.defaultCullMode,
+            ZWriteOverride = HDSubShaderUtilities.zWriteOn,
             ExtraDefines = new List<string>()
             {
                 "#define SCENESELECTIONPASS",
@@ -71,10 +72,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 HDUnlitMasterNode.PositionSlotId
             },
             UseInPreview = false,
-            OnGeneratePassImpl = (IMasterNode node, ref Pass pass) =>
-            {
-                HDSubShaderUtilities.SetZWriteOn(ref pass);
-            }
         };
 
         Pass m_PassDepthForwardOnly = new Pass()
@@ -84,7 +81,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             TemplateName = "HDUnlitPass.template",
             MaterialName = "Unlit",
             ShaderPassName = "SHADERPASS_DEPTH_ONLY",
-            ZWriteOverride = "ZWrite On",
+            ZWriteOverride = HDSubShaderUtilities.zWriteOn,
             // Caution: When using MSAA we have normal and depth buffer bind.
             // Mean unlit object need to not write in it (or write 0) - Disable color mask for this RT
             // This is not a problem in no MSAA mode as there is no buffer bind
@@ -116,7 +113,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             OnGeneratePassImpl = (IMasterNode node, ref Pass pass) =>
             {
                 HDSubShaderUtilities.SetStencilStateForDepth(ref pass);
-                HDSubShaderUtilities.SetZWriteOn(ref pass);
             }
         };
 
@@ -128,6 +124,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             MaterialName = "Unlit",
             ShaderPassName = "SHADERPASS_MOTION_VECTORS",
             CullOverride = HDSubShaderUtilities.defaultCullMode,
+            ZWriteOverride = HDSubShaderUtilities.zWriteOn,
             // Caution: When using MSAA we have motion vector, normal and depth buffer bind.
             // Mean unlit object need to not write in it (or write 0) - Disable color mask for this RT
             // This is not a problem in no MSAA mode as there is no buffer bind
@@ -160,7 +157,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             OnGeneratePassImpl = (IMasterNode node, ref Pass pass) =>
             {
                 HDSubShaderUtilities.SetStencilStateForMotionVector(ref pass);
-                HDSubShaderUtilities.SetZWriteOn(ref pass);
             }
         };
 
@@ -172,6 +168,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             MaterialName = "Unlit",
             ShaderPassName = "SHADERPASS_DISTORTION",
             CullOverride = HDSubShaderUtilities.defaultCullMode,
+            ZWriteOverride = HDSubShaderUtilities.zWriteOff,
             Includes = new List<string>()
             {
                 "#include \"Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassDistortion.hlsl\"",
@@ -192,7 +189,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             OnGeneratePassImpl = (IMasterNode node, ref Pass pass) =>
             {
                 HDSubShaderUtilities.SetStencilStateForDistortionVector(ref pass);
-                HDSubShaderUtilities.SetZWriteOff(ref pass);
                 var masterNode = node as HDUnlitMasterNode;
                 if (masterNode.distortionDepthTest.isOn)
                 {
@@ -230,6 +226,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             ColorMaskOverride = "ColorMask 0",
             ZClipOverride = HDSubShaderUtilities.zClipShadowCaster,
             CullOverride = HDSubShaderUtilities.defaultCullMode,
+            ZWriteOverride = HDSubShaderUtilities.zWriteOn,
             Includes = new List<string>()
             {
                 "#include \"Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassDepthOnly.hlsl\"",
@@ -244,10 +241,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 HDUnlitMasterNode.PositionSlotId
             },
             UseInPreview = false,
-            OnGeneratePassImpl = (IMasterNode node, ref Pass pass) =>
-            {
-                HDSubShaderUtilities.SetZWriteOn(ref pass);
-            }
         };
 
         Pass m_PassForwardOnly = new Pass()
@@ -259,6 +252,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             ShaderPassName = "SHADERPASS_FORWARD_UNLIT",
             CullOverride = HDSubShaderUtilities.defaultCullMode,
             ZTestOverride = HDSubShaderUtilities.zTestTransparent,
+            ZWriteOverride = HDSubShaderUtilities.ZWriteDefault,
             ExtraDefines = new List<string>()
             {
                 "#pragma multi_compile _ DEBUG_DISPLAY"
@@ -284,7 +278,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             {
                 HDSubShaderUtilities.SetStencilStateForForward(ref pass);
                 HDSubShaderUtilities.SetBlendModeForForward(ref pass);
-                HDSubShaderUtilities.SetZWrite(ref pass);
             }
         };
 

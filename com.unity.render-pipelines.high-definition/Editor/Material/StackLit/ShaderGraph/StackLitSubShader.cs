@@ -322,6 +322,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             ShaderPassName = "SHADERPASS_FORWARD",
             CullOverride = HDSubShaderUtilities.cullModeForward,
             ZTestOverride = HDSubShaderUtilities.zTestDepthEqualForOpaque,
+            ZWriteOverride = HDSubShaderUtilities.ZWriteDefault,
             // ExtraDefines are set when the pass is generated
             Includes = new List<string>()
             {
@@ -393,7 +394,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 var masterNode = node as StackLitMasterNode;
                 HDSubShaderUtilities.SetStencilStateForForward(ref pass);
                 HDSubShaderUtilities.SetBlendModeForForward(ref pass);
-                HDSubShaderUtilities.SetZWrite(ref pass);
 
                 pass.ExtraDefines.Remove("#ifndef DEBUG_DISPLAY\n#define SHADERPASS_FORWARD_BYPASS_ALPHA_TEST\n#endif");
 
