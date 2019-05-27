@@ -632,6 +632,7 @@ Shader "HDRP/Lit"
             ZWrite [_ZWrite]
             Cull Front
             ColorMask [_ColorMaskTransparentVel] 1
+            ZTest [_ZTestTransparent]
 
             HLSLPROGRAM
 
