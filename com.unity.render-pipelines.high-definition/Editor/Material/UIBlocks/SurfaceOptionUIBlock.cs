@@ -460,7 +460,10 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 if (zTest != null)
                     materialEditor.ShaderProperty(zTest, Styles.transparentZTestText);
 
-                if (transparentCullMode != null && doubleSidedEnable.floatValue == 0)
+                bool showTransparentCullMode = transparentCullMode != null && doubleSidedEnable.floatValue == 0;
+                if (transparentBackfaceEnable != null)
+                    showTransparentCullMode &= transparentBackfaceEnable.floatValue == 0;
+                if (showTransparentCullMode)
                     materialEditor.ShaderProperty(transparentCullMode, Styles.transparentCullModeText);
 
                 EditorGUI.indentLevel--;
