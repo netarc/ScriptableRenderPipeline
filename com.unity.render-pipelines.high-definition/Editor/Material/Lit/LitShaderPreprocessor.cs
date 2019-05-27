@@ -1,6 +1,7 @@
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.HDPipeline;
+using UnityEditor.ShaderGraph;
 
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
@@ -27,10 +28,11 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
             if (shader.IsShaderGraph())
             {
-                isBuiltInLit |= shader.GetShaderGraphOutputNode() is HDLitMasterNode;
-                isBuiltInLit |= shader.GetShaderGraphOutputNode() is HairMasterNode;
-                isBuiltInLit |= shader.GetShaderGraphOutputNode() is FabricMasterNode;
-                isBuiltInLit |= shader.GetShaderGraphOutputNode() is StackLitMasterNode;
+                string shaderPath = AssetDatabase.GetAssetPath(shader);
+                isBuiltInLit |= GraphUtil.GetOutputNodeType(shaderPath) == typeof(HDLitMasterNode);
+                isBuiltInLit |= GraphUtil.GetOutputNodeType(shaderPath) == typeof(HairMasterNode);
+                isBuiltInLit |= GraphUtil.GetOutputNodeType(shaderPath) == typeof(FabricMasterNode);
+                isBuiltInLit |= GraphUtil.GetOutputNodeType(shaderPath) == typeof(StackLitMasterNode);
             }
 
             // When using forward only, we never need GBuffer pass (only Forward)

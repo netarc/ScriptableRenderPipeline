@@ -10,20 +10,6 @@ using UnityEditor.ShaderGraph;
 
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
-    public static class Test
-    {
-        internal static bool IsShaderGraph(this Shader shader)
-        {
-            AssetImporter shaderImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(shader));
-            return shaderImporter is ShaderGraphImporter;
-        }
-
-        internal static AbstractMaterialNode GetShaderGraphOutputNode(this Shader shader)
-        {
-            return ShaderGraphImporter.GetOutputNode(AssetDatabase.GetAssetPath(shader));
-        }
-    }
-
     public class HDEditorUtils
     {
         static readonly Action<SerializedProperty, GUIContent> k_DefaultDrawer = (p, l) => EditorGUILayout.PropertyField(p, l);
@@ -62,7 +48,13 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             // For shader graphs, we retrieve the master node type to get the materials resetter
             if (material.shader.IsShaderGraph())
             {
-                var masterNodeType = material.shader.GetShaderGraphOutputNode()?.GetType();
+                Type masterNodeType = null;
+                try
+                {
+                    // GraphUtil.GetOutputNodeType can throw if it's not able to parse the graph
+                    masterNodeType = GraphUtil.GetOutputNodeType(AssetDatabase.GetAssetPath(material.shader));
+                } catch {}
+
                 if (masterNodeType != null)
                 {
                     k_ShaderGraphMaterialResetters.TryGetValue(masterNodeType, out resetter);

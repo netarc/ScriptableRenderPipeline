@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.HDPipeline;
 using UnityEngine.Rendering;
+using UnityEditor.ShaderGraph;
 
 // Include material common properties names
 using static UnityEngine.Experimental.Rendering.HDPipeline.HDMaterialProperties;

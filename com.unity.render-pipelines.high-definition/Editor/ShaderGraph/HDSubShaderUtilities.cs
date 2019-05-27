@@ -944,7 +944,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             pass.BlendOverride = "Blend [_SrcBlend] [_DstBlend], [_AlphaSrcBlend] [_AlphaDstBlend]";
         }
 
-        public static void AddTags(ShaderGenerator generator, string pipeline, HDRenderTypeTags renderType)
+        public static void AddTags(ShaderGenerator generator, string pipeline, HDRenderTypeTags renderType, int queue)
         {
             ShaderStringBuilder builder = new ShaderStringBuilder();
             builder.AppendLine("Tags");
@@ -952,6 +952,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             {
                 builder.AppendLine("\"RenderPipeline\"=\"{0}\"", pipeline);
                 builder.AppendLine("\"RenderType\"=\"{0}\"", renderType);
+                builder.AppendLine("\"Queue\" = \"{0}\"", HDRenderQueue.GetShaderTagValue(queue));
             }
 
             generator.AddShaderChunk(builder.ToString());
