@@ -1035,8 +1035,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             collector.AddFloatProperty("_CullMode", (int)CullMode.Back);
             collector.AddIntProperty("_TransparentSortPriority", sortingPriority);
             collector.AddFloatProperty("_CullModeForward", (int)CullMode.Back);
-            collector.AddShaderProperty(new EnumShaderProperty{
+            collector.AddShaderProperty(new Vector1ShaderProperty{
                 overrideReferenceName = kTransparentCullMode,
+                floatType = FloatType.Enum,
                 value = (int)transparentCullMode,
                 enumNames = {"Front", "Back"},
                 enumValues = {(int)TransparentCullMode.Front, (int)TransparentCullMode.Back},
@@ -1045,8 +1046,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
             // Add ZTest properties:
             collector.AddIntProperty("_ZTestDepthEqualForOpaque", (int)CompareFunction.LessEqual);
-            collector.AddShaderProperty(new EnumShaderProperty{
+            collector.AddShaderProperty(new Vector1ShaderProperty{
                 overrideReferenceName = kZTestTransparent,
+                floatType = FloatType.Enum,
                 value = (int)zTest,
                 enumType = EnumType.CSharpEnum,
                 cSharpEnumType = typeof(CompareFunction),
