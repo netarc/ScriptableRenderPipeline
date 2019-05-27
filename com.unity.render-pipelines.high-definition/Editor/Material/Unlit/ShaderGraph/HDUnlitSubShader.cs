@@ -257,6 +257,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             MaterialName = "Unlit",
             ShaderPassName = "SHADERPASS_FORWARD_UNLIT",
             CullOverride = HDSubShaderUtilities.defaultCullMode,
+            ZTestOverride = HDSubShaderUtilities.zTestTransparent,
             ExtraDefines = new List<string>()
             {
                 "#pragma multi_compile _ DEBUG_DISPLAY"

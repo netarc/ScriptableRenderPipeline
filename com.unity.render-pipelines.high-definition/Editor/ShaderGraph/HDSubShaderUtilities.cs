@@ -932,6 +932,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         public static readonly string defaultCullMode = "Cull [_CullMode]";
         public static readonly string cullModeForward = "Cull [_CullModeForward]";
         public static readonly string zTestDepthEqualForOpaque = "ZTest [_ZTestDepthEqualForOpaque]";
+        public static readonly string zTestTransparent = "ZTest [_ZTestTransparent]";
 
         public static void SetBlendModeForTransparentBackface(ref Pass pass) => SetBlendModeForForward(ref pass);
         public static void SetBlendModeForForward(ref Pass pass)
