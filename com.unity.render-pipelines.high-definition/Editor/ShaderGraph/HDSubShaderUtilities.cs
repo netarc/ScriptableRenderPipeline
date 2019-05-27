@@ -1072,8 +1072,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         public static void AddDoubleSidedProperty(PropertyCollector collector, DoubleSidedMode mode = DoubleSidedMode.Enabled)
         {
             collector.AddToggleProperty("_DoubleSidedEnable", mode != DoubleSidedMode.Disabled);
-            collector.AddShaderProperty(new EnumShaderProperty{
+            collector.AddShaderProperty(new Vector1ShaderProperty{
                 enumNames = {"Flip", "Mirror", "None"}, // values will be 0, 1 and 2
+                floatType = FloatType.Enum,
                 overrideReferenceName = "_DoubleSidedNormalMode",
                 hidden = true,
                 value = (int)mode
