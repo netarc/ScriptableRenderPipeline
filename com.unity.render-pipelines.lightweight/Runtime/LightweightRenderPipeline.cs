@@ -163,8 +163,13 @@ namespace UnityEngine.Rendering.LWRP
                 return;
             }
 
-            CommandBuffer cmd = CommandBufferPool.Get(k_RenderCameraTag);
-            using (new ProfilingSample(cmd, k_RenderCameraTag))
+#if UNITY_EDITOR
+            string tag = camera.name;
+#else
+            string tag = k_RenderCameraTag;
+#endif
+            CommandBuffer cmd = CommandBufferPool.Get(tag);
+            using (new ProfilingSample(cmd, tag))
             {
                 renderer.Clear();
                 renderer.SetupCullingParameters(ref cullingParameters, ref cameraData);
