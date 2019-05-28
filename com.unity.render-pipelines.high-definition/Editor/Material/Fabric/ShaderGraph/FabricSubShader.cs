@@ -352,6 +352,11 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 {
                     activeFields.Add("AlphaFog");
                 }
+
+                if (masterNode.blendPreserveSpecular.isOn)
+                {
+                    activeFields.Add("BlendMode.PreserveSpecular");
+                }
             }
 
             if (!masterNode.receiveDecals.isOn)

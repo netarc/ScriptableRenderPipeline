@@ -859,6 +859,11 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 {
                     activeFields.Add("TransparentWritesMotionVec");
                 }
+
+                if (masterNode.blendPreserveSpecular.isOn)
+                {
+                    activeFields.Add("BlendMode.PreserveSpecular");
+                }
             }
 
             if (!masterNode.receiveDecals.isOn)

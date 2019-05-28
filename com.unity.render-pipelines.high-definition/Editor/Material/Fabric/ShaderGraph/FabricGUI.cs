@@ -12,7 +12,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
     /// </summary>
     class FabricGUI : HDShaderGUI
     {
-        // For surface option shader graph we only want all unlit features but alpha clip and back then front rendering
+        // For surface option shader graph we only want all unlit features but alpha clip, back then front rendering and SSR
         const SurfaceOptionUIBlock.Features   surfaceOptionFeatures = SurfaceOptionUIBlock.Features.Unlit
             ^ SurfaceOptionUIBlock.Features.AlphaCutoff
             ^ SurfaceOptionUIBlock.Features.BackThenFrontRendering;

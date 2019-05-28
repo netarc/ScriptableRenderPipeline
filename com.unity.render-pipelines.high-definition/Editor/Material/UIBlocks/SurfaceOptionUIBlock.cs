@@ -22,6 +22,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             AlphaCutoffShadowThreshold  = 1 << 5,
             DoubleSidedNormalMode       = 1 << 6,
             BackThenFrontRendering      = 1 << 7,
+            ReceiveSSR                  = 1 << 8,
             Unlit                       = Surface | BlendMode | DoubleSided | DoubleSidedNormalMode | AlphaCutoff | AlphaCutoffShadowThreshold | AlphaCutoffThreshold | BackThenFrontRendering,
             Lit                         = All,
             All                         = ~0,
@@ -124,7 +125,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         MaterialProperty blendMode = null;
         const string kBlendMode = "_BlendMode";
         MaterialProperty enableBlendModePreserveSpecularLighting = null;
-        const string kEnableBlendModePreserveSpecularLighting = "_EnableBlendModePreserveSpecularLighting";
         MaterialProperty enableFogOnTransparent = null;
         const string kEnableFogOnTransparent = "_EnableFogOnTransparent";
 
@@ -330,7 +330,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             specularAAThreshold = FindProperty(kSpecularAAThreshold);
 
             // SSR
-            receivesSSR = FindProperty(kReceivesSSR);
+            if ((m_Features & Features.ReceiveSSR) != 0)
+                receivesSSR = FindProperty(kReceivesSSR);
 
             zWrite = FindProperty(kZWrite);
             zTest = FindProperty(kZTestTransparent);
