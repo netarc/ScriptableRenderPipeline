@@ -724,6 +724,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public const string kStencilWriteMaskMV = "_StencilWriteMaskMV";
         public const string kStencilRefDistortionVec = "_StencilRefDistortionVec";
         public const string kStencilWriteMaskDistortionVec = "_StencilWriteMaskDistortionVec";
+        public const string kUseSplitLighting = "_RequireSplitLighting";
         
         public const string kZWrite = "_ZWrite";
         public const string kTransparentCullMode = "_TransparentCullMode";
@@ -767,6 +768,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public const string kUVMappingMask = "_UVMappingMask";
         public const string kUVDetail = "_UVDetail";
         public const string kUVDetailsMappingMask = "_UVDetailsMappingMask";
+        public const string kReceivesSSR = "_ReceivesSSR";
     
         public static readonly Color[] kLayerColors =
         {

@@ -204,7 +204,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
         // Material ID
         MaterialProperty materialID  = null;
-        const string kMaterialID = "_MaterialID";
         MaterialProperty transmissionEnable = null;
         const string kTransmissionEnable = "_TransmissionEnable";
 

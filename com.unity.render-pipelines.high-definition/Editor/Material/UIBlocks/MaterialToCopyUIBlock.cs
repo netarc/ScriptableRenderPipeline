@@ -186,7 +186,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             {
                 foreach (var mat in materials)
                 {
-                    // TODO
                     LayeredLitGUI.SetupMaterialKeywordsAndPass(mat);
                 }
 

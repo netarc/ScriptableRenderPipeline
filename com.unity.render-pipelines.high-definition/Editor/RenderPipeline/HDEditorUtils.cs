@@ -29,11 +29,10 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         static Dictionary<Type, MaterialResetter> k_ShaderGraphMaterialResetters = new Dictionary<Type, MaterialResetter>
         {
             { typeof(HDUnlitMasterNode), UnlitGUI.SetupUnlitMaterialKeywordsAndPass },
-            { typeof(HDLitMasterNode), LitGUI.SetupMaterialKeywordsAndPass },
-            // Currently we don't have different keyword setup functions for hair, fabric and stacklit so we use the lit setup function
-            { typeof(FabricMasterNode), LitGUI.SetupMaterialKeywordsAndPass },
-            { typeof(HairMasterNode), LitGUI.SetupMaterialKeywordsAndPass },
-            { typeof(StackLitMasterNode), LitGUI.SetupMaterialKeywordsAndPass },
+            { typeof(HDLitMasterNode), HDLitGUI.SetupMaterialKeywordsAndPass },
+            { typeof(FabricMasterNode), FabricGUI.SetupMaterialKeywordsAndPass },
+            { typeof(HairMasterNode), HairGUI.SetupMaterialKeywordsAndPass },
+            { typeof(StackLitMasterNode), StackLitGUI.SetupMaterialKeywordsAndPass },
         };
 
         public static T LoadAsset<T>(string relativePath) where T : UnityEngine.Object

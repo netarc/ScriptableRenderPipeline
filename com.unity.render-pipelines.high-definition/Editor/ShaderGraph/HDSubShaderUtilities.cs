@@ -999,7 +999,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             });
         }
 
-        public static void AddStencilShaderProperties(PropertyCollector collector)
+        public static void AddStencilShaderProperties(PropertyCollector collector, bool splitLighting, bool receiveSSR)
         {
             // All these properties values will be patched with the material keyword update
             collector.AddIntProperty("_StencilRef", 0); // StencilLightingUsage.NoLighting
@@ -1017,6 +1017,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             collector.AddIntProperty("_StencilWriteMaskGBuffer", 3); // StencilMask.Lighting
             collector.AddIntProperty("_StencilRefGBuffer", 2); // StencilLightingUsage.RegularLighting
             collector.AddIntProperty("_ZTestGBuffer", 4);
+
+            collector.AddToggleProperty(kUseSplitLighting, splitLighting);
+            collector.AddToggleProperty(kReceivesSSR, receiveSSR);
 
         }
 

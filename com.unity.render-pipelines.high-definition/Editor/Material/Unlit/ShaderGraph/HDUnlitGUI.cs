@@ -39,6 +39,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             }
         }
 
-        protected override void SetupMaterialKeywordsAndPassInternal(Material material) => UnlitGUI.SetupUnlitMaterialKeywordsAndPass(material);
+        public static void SetupMaterialKeywordsAndPass(Material material) => UnlitGUI.SetupUnlitMaterialKeywordsAndPass(material);
+
+        protected override void SetupMaterialKeywordsAndPassInternal(Material material) => SetupMaterialKeywordsAndPass(material);
     }
 }

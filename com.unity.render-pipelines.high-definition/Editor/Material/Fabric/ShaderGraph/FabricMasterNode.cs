@@ -701,7 +701,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             var renderingPass = surfaceType == SurfaceType.Opaque ? HDRenderQueue.RenderQueueType.Opaque : HDRenderQueue.RenderQueueType.Transparent;
             previewMaterial.renderQueue = (int)HDRenderQueue.ChangeType(renderingPass, offset: 0, alphaTest: alphaTest.isOn);
 
-            LitGUI.SetupMaterialKeywordsAndPass(previewMaterial);
+            FabricGUI.SetupMaterialKeywordsAndPass(previewMaterial);
         }
 
         public override void CollectShaderProperties(PropertyCollector collector, GenerationMode generationMode)
@@ -719,7 +719,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             });
 
             // Add all shader properties required by the inspector
-            HDSubShaderUtilities.AddStencilShaderProperties(collector);
+            HDSubShaderUtilities.AddStencilShaderProperties(collector, RequiresSplitLighting(), receiveSSR.isOn);
             HDSubShaderUtilities.AddBlendingStatesShaderProperties(
                 collector,
                 surfaceType,

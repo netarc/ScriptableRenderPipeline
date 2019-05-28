@@ -42,14 +42,15 @@ public class ResetMaterialProperties : MonoBehaviour
                 var defaultProperties = new Material(mat.shader);
 
                 foreach (var floatToReset in floatPropertiesToReset)
-                    mat.SetFloat(floatToReset, defaultProperties.GetFloat(floatToReset));
+                    if (mat.HasProperty(floatToReset))
+                        mat.SetFloat(floatToReset, defaultProperties.GetFloat(floatToReset));
                 foreach (var vectorToReset in vectorPropertiesToReset)
-                    mat.SetVector(vectorToReset, defaultProperties.GetVector(vectorToReset));
+                    if (mat.HasProperty(vectorToReset))
+                        mat.SetVector(vectorToReset, defaultProperties.GetVector(vectorToReset));
 
                 HDEditorUtils.ResetMaterialKeywords(mat);
 
                 mat.renderQueue = mat.shader.renderQueue;
-                Debug.Log("Shader Queue: " + mat.shader + ": " + mat.shader.renderQueue);
 
                 defaultProperties = null;
             }

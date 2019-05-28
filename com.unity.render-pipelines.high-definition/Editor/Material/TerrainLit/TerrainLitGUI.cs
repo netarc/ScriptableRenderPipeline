@@ -136,6 +136,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         {
             BaseLitGUI.SetupBaseLitKeywords(material);
             BaseLitGUI.SetupBaseLitMaterialPass(material);
+            BaseLitGUI.SetupStencil(material, material.GetInt(kReceivesSSR) != 0, material.GetMaterialId() == MaterialId.LitSSS);
 
             // TODO: planar/triplannar support
             //SetupLayersMappingKeywords(material);

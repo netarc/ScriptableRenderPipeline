@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.Experimental.Rendering.HDPipeline;
 using System.Linq;
 
+// Include material common properties names
+using static UnityEngine.Experimental.Rendering.HDPipeline.HDMaterialProperties;
+
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
     /// <summary>
@@ -35,7 +38,13 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             }
         }
 
+        public static void SetupMaterialKeywordsAndPass(Material material)
+        {
+            BaseLitGUI.SetupBaseLitKeywords(material);
+            BaseLitGUI.SetupStencil(material, material.GetInt(kReceivesSSR) != 0, material.GetInt(kUseSplitLighting) != 0);
+        }
+
         // Currently Lit material keyword setup is enough for fabric so we don't have a function for it
-        protected override void SetupMaterialKeywordsAndPassInternal(Material material) => LitGUI.SetupMaterialKeywordsAndPass(material);
+        protected override void SetupMaterialKeywordsAndPassInternal(Material material) => SetupMaterialKeywordsAndPass(material);
     }
 }

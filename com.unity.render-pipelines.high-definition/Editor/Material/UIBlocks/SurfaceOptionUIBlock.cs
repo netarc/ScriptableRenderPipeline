@@ -132,7 +132,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         MaterialProperty doubleSidedNormalMode = null;
         const string kDoubleSidedNormalMode = "_DoubleSidedNormalMode";
         MaterialProperty materialID  = null;
-        const string kMaterialID = "_MaterialID";
         MaterialProperty supportDecals = null;
         const string kSupportDecals = "_SupportDecals";
         MaterialProperty enableGeometricSpecularAA = null;

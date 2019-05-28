@@ -961,7 +961,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             // No sorting priority for shader graph preview
             previewMaterial.renderQueue = (int)HDRenderQueue.ChangeType(renderingPass, offset: 0, alphaTest: alphaTest.isOn);
 
-            LitGUI.SetupMaterialKeywordsAndPass(previewMaterial);
+            HDLitGUI.SetupMaterialKeywordsAndPass(previewMaterial);
         }
 
         public override void CollectShaderProperties(PropertyCollector collector, GenerationMode generationMode)
@@ -986,7 +986,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             });
 
             // Add all shader properties required by the inspector
-            HDSubShaderUtilities.AddStencilShaderProperties(collector);
+            HDSubShaderUtilities.AddStencilShaderProperties(collector, RequiresSplitLighting(), receiveSSR.isOn);
             HDSubShaderUtilities.AddBlendingStatesShaderProperties(
                 collector,
                 surfaceType,
