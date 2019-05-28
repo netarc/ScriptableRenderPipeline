@@ -69,12 +69,12 @@ namespace UnityEditor.VFX
         {
         }
 
-        public virtual void CollectDependencies(HashSet<ScriptableObject> objs, bool compileOnly = false)
+        public virtual void CollectDependencies(HashSet<ScriptableObject> objs, bool ownedOnly = true)
         {
             foreach (var child in children)
             {
                 objs.Add(child);
-                child.CollectDependencies(objs, compileOnly);
+                child.CollectDependencies(objs, ownedOnly);
             }
         }
 

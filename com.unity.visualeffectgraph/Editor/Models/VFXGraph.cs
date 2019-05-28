@@ -272,14 +272,14 @@ namespace UnityEditor.VFX
             m_DependentDirty = true;
         }
 
-        public override void CollectDependencies(HashSet<ScriptableObject> objs, bool compileOnly = false)
+        public override void CollectDependencies(HashSet<ScriptableObject> objs, bool ownedOnly = true)
         {
             Profiler.BeginSample("VFXEditor.CollectDependencies");
             try
             {
                 if (m_UIInfos != null)
                     objs.Add(m_UIInfos);
-                base.CollectDependencies(objs,compileOnly);
+                base.CollectDependencies(objs, ownedOnly);
             }
             finally
             {
@@ -562,7 +562,7 @@ namespace UnityEditor.VFX
             VFXContext[] directContexts = children.OfType<VFXContext>().ToArray();
 
             HashSet<ScriptableObject> dependencies = new HashSet<ScriptableObject>();
-            CollectDependencies(dependencies, true);
+            CollectDependencies(dependencies, false);
 
             VFXContext[] allContexts = dependencies.OfType<VFXContext>().ToArray();
 

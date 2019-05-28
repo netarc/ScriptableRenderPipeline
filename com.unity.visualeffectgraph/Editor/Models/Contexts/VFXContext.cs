@@ -147,13 +147,13 @@ namespace UnityEditor.VFX
             hasBeenCompiled = compiled;
         }
 
-        public override void CollectDependencies(HashSet<ScriptableObject> objs, bool compileOnly = false)
+        public override void CollectDependencies(HashSet<ScriptableObject> objs, bool ownedOnly = true)
         {
-            base.CollectDependencies(objs,compileOnly);
+            base.CollectDependencies(objs, ownedOnly);
             if (m_Data != null)
             {
                 objs.Add(m_Data);
-                m_Data.CollectDependencies(objs,compileOnly);
+                m_Data.CollectDependencies(objs, ownedOnly);
             }
         }
 
@@ -435,7 +435,7 @@ namespace UnityEditor.VFX
         public IEnumerable<VFXBlock> activeFlattenedChildrenWithImplicit
         {
             get{
-                return implicitPreBlock.Concat(children.SelectMany(t => t is VFXSubgraphBlock ? (t.enabled ? (t as VFXSubgraphBlock).recusiveSubBlocks : Enumerable.Empty<VFXBlock>()): Enumerable.Repeat(t, 1))).Concat(implicitPostBlock).Where(o => o.enabled);
+                return implicitPreBlock.Concat(children.SelectMany(t => t is VFXSubgraphBlock ? (t.enabled ? (t as VFXSubgraphBlock).recursiveSubBlocks : Enumerable.Empty<VFXBlock>()): Enumerable.Repeat(t, 1))).Concat(implicitPostBlock).Where(o => o.enabled);
             }
         }
 

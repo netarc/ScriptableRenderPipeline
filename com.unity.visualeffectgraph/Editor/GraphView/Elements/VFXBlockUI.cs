@@ -85,7 +85,7 @@ namespace UnityEditor.VFX.UI
             if (settingsContainer != null)
                 settingsContainer.SetEnabled(controller.model.enabled);
 
-            if (controller.model is IValidable && !(controller.model as IValidable).isValid)
+            if (!controller.model.isValid)
                 AddToClassList("invalid");
             else
                 RemoveFromClassList("invalid");

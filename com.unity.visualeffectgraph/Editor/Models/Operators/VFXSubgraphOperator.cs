@@ -115,14 +115,14 @@ namespace UnityEditor.VFX
             return VFXSubgraphUtility.GetParameters(graph.children,predicate);
         }
 
-        public override void CollectDependencies(HashSet<ScriptableObject> objs, bool compileOnly = false)
+        public override void CollectDependencies(HashSet<ScriptableObject> objs, bool ownedOnly = true)
         {
-            base.CollectDependencies(objs, compileOnly);
+            base.CollectDependencies(objs, ownedOnly);
 
-            if (!compileOnly || m_Subgraph == null)
+            if (ownedOnly || m_Subgraph == null)
                 return;
 
-            m_Subgraph.GetResource().GetOrCreateGraph().CollectDependencies(objs, true);
+            m_Subgraph.GetResource().GetOrCreateGraph().CollectDependencies(objs, false);
         }
 
         protected override VFXExpression[] BuildExpression(VFXExpression[] inputExpression)

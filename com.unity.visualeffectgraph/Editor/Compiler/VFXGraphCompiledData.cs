@@ -780,7 +780,7 @@ namespace UnityEditor.VFX
             {
                 EditorUtility.DisplayProgressBar(progressBarTitle, "Collecting dependencies", 0 / nbSteps);
                 var models = new HashSet<ScriptableObject>();
-                m_Graph.CollectDependencies(models,true);
+                m_Graph.CollectDependencies(models,false);
 
                 var contexts = models.OfType<VFXContext>().ToArray();
 

@@ -267,8 +267,7 @@ namespace UnityEditor.VFX.UI
                 }
                 m_TargetController.LightApplyChanges();
                 targetContext.position = sourceContextController.position;
-                targetContext.SetSettingValue("m_SuitableContexts", m_SourceBlockControllers.Select(t=>t.model.compatibleContexts).Aggregate((t,s)=> t & s));
-                targetContext.SetSettingValue("m_SuitableData", m_SourceBlockControllers.First().model.compatibleData);
+                //targetContext.SetSettingValue("m_SuitableContexts", (VFXBlockSubgraphContext.ContextType)m_SourceBlockControllers.Select(t=>t.model.compatibleContexts).Aggregate((t,s)=> t & s) );
                 m_TargetBlocks = new List<VFXBlockController>();
 
                 VFXPaste.PasteBlocks(m_TargetController, copyData, targetContext, 0, m_TargetBlocks);

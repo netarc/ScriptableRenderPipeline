@@ -112,7 +112,7 @@ namespace UnityEditor.VFX
 
             var graph = resource.GetOrCreateGraph();
             HashSet<ScriptableObject> dependencies = new HashSet<ScriptableObject>();
-            graph.CollectDependencies(dependencies, false);
+            graph.CollectDependencies(dependencies);
 
             var duplicated = VFXMemorySerializer.DuplicateObjects(dependencies.ToArray());
             m_SubChildren = duplicated.OfType<VFXModel>().Where(t => t is VFXContext || t is VFXOperator || t is VFXParameter).ToArray();
@@ -306,11 +306,11 @@ namespace UnityEditor.VFX
             get { return m_SubChildren; }
         }
 
-        public override void CollectDependencies(HashSet<ScriptableObject> objs,bool compileOnly = false)
+        public override void CollectDependencies(HashSet<ScriptableObject> objs, bool ownedOnly = true)
         {
-            base.CollectDependencies(objs,compileOnly);
+            base.CollectDependencies(objs, ownedOnly);
 
-            if (m_SubChildren == null || ! compileOnly)
+            if (m_SubChildren == null || ownedOnly)
                 return;
 
             foreach (var child in m_SubChildren)
@@ -320,7 +320,7 @@ namespace UnityEditor.VFX
                     objs.Add(child);
 
                     if (child is VFXModel)
-                        (child as VFXModel).CollectDependencies(objs, true);
+                        (child as VFXModel).CollectDependencies(objs, false);
                 }
             }
         }
