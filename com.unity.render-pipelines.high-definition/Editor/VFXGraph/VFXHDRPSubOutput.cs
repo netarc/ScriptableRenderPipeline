@@ -2,17 +2,19 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.HDPipeline;
+
 using static UnityEditor.VFX.VFXAbstractRenderedOutput;
+using static UnityEngine.Experimental.Rendering.HDPipeline.HDRenderQueue;
 
 namespace UnityEditor.VFX
 {
-    class VFXHDRPOutputData : VFXSRPOutputData
+    class VFXHDRPSubOutput : VFXSRPSubOutput
     {
         [VFXSetting(VFXSettingAttribute.VisibleFlags.InInspector), Header("HDRP")]
-        public HDRenderQueue.OpaqueRenderQueue opaqueRenderQueue;
+        public OpaqueRenderQueue opaqueRenderQueue = OpaqueRenderQueue.Default;
 
         [VFXSetting(VFXSettingAttribute.VisibleFlags.InInspector)]
-        public HDRenderQueue.TransparentRenderQueue transparentRenderQueue;
+        public TransparentRenderQueue transparentRenderQueue = TransparentRenderQueue.Default;
 
         protected override IEnumerable<string> filteredOutSettings
         {

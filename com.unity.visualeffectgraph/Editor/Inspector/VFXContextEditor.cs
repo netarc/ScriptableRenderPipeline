@@ -22,7 +22,7 @@ class VFXContextEditor : VFXSlotContainerEditor
     SerializedProperty spaceProperty;
     SerializedObject dataObject;
 
-    SerializedObject srpDataObject;
+    SerializedObject srpSubOutputObject;
 
     float m_Width;
 
@@ -44,8 +44,8 @@ class VFXContextEditor : VFXSlotContainerEditor
             spaceProperty = null;
         }
 
-        UnityEngine.Object[] allSRPData = targets.OfType<VFXAbstractRenderedOutput>().Select(t => t.srpData).Where(t => t != null).ToArray();
-        srpDataObject = allSRPData.Length > 0 ? new SerializedObject(allSRPData) : null;
+        UnityEngine.Object[] allSRPSubOutputs = targets.OfType<VFXAbstractRenderedOutput>().Select(t => t.subOutput).Where(t => t != null).ToArray();
+        srpSubOutputObject = allSRPSubOutputs.Length > 0 ? new SerializedObject(allSRPSubOutputs) : null;
 
         if (!serializedObject.isEditingMultipleObjects)
         {
@@ -73,8 +73,8 @@ class VFXContextEditor : VFXSlotContainerEditor
     {
         if (setting.instance is VFXContext)
             return serializedObject.FindProperty(setting.field.Name);
-        if (setting.instance is VFXSRPOutputData)
-            return srpDataObject.FindProperty(setting.field.Name);
+        if (setting.instance is VFXSRPSubOutput)
+            return srpSubOutputObject.FindProperty(setting.field.Name);
         throw new ArgumentException("VFXSetting is from an unexpected instance: " + setting.instance);
     }
 
@@ -153,8 +153,8 @@ class VFXContextEditor : VFXSlotContainerEditor
         if (dataObject != null)
             dataObject.Update();
 
-        if (srpDataObject != null)
-            srpDataObject.Update();
+        if (srpSubOutputObject != null)
+            srpSubOutputObject.Update();
 
         if (m_ContextController != null && m_ContextController.letter != '\0')
         {
@@ -163,7 +163,7 @@ class VFXContextEditor : VFXSlotContainerEditor
 
         base.OnInspectorGUI();
 
-        bool invalidateContext = (dataObject != null && dataObject.ApplyModifiedProperties()) || (srpDataObject != null && srpDataObject.ApplyModifiedProperties());
+        bool invalidateContext = (dataObject != null && dataObject.ApplyModifiedProperties()) || (srpSubOutputObject != null && srpSubOutputObject.ApplyModifiedProperties());
         if (invalidateContext)
         {
             foreach (VFXContext ctx in targets.OfType<VFXContext>())
