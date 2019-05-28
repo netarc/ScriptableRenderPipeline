@@ -26,5 +26,24 @@ namespace UnityEditor.VFX
                     yield return "opaqueRenderQueue";
             }
         }
+
+        public override string GetRenderQueueStr()
+        {
+            RenderQueueType renderQueueType;
+            string prefix = string.Empty;
+            if (owner.isBlendModeOpaque)
+            {
+                prefix = "Opaque";
+                renderQueueType = HDRenderQueue.ConvertFromOpaqueRenderQueue(opaqueRenderQueue);
+            }
+            else
+            {
+                prefix = "Transparent";
+                renderQueueType = HDRenderQueue.ConvertFromTransparentRenderQueue(transparentRenderQueue);
+            }
+
+            int renderQueue = HDRenderQueue.ChangeType(renderQueueType, 0, owner.blendMode == BlendMode.Masked) - (int)(owner.isBlendModeOpaque ? Priority.Opaque : Priority.Transparent);
+            return prefix + renderQueue.ToString("+#;-#;+0");
+        }
     }
 }

@@ -81,25 +81,22 @@ namespace UnityEditor.VFX
         {
             VFXSetting setting = base.GetSetting(name);
             if (!setting.valid)
-                setting = m_CurrentSubOutput.GetSetting(name);
+                setting = subOutput.GetSetting(name);
             return setting;
         }
 
         public override IEnumerable<VFXSetting> GetSettings(bool listHidden, VFXSettingAttribute.VisibleFlags flags)
         {
             var settings = base.GetSettings(listHidden, flags);
-            settings = settings.Concat(m_CurrentSubOutput.GetSettings(listHidden, flags));
+            settings = settings.Concat(subOutput.GetSettings(listHidden, flags));
             return settings;
         }
 
         protected virtual void WriteBlendMode(VFXShaderWriter writer)
         {
-            if (blendMode == BlendMode.Additive)
-                writer.WriteLine("Blend SrcAlpha One");
-            else if (blendMode == BlendMode.Alpha)
-                writer.WriteLine("Blend SrcAlpha OneMinusSrcAlpha");
-            else if (blendMode == BlendMode.AlphaPremultiplied)
-                writer.WriteLine("Blend One OneMinusSrcAlpha");
+            var blendModeStr = subOutput.GetBlendModeStr();
+            if (!String.IsNullOrEmpty(blendModeStr))
+                writer.WriteLine(blendModeStr);
         }
 
         [SerializeField]

@@ -19,5 +19,37 @@ namespace UnityEditor.VFX
 
         private VFXAbstractRenderedOutput m_Owner;
         public VFXAbstractRenderedOutput owner => m_Owner;
+
+        public virtual string GetBlendModeStr()
+        {
+            switch (owner.blendMode)
+            {
+                case BlendMode.Additive:
+                    return "Blend SrcAlpha One";
+                case BlendMode.Alpha:
+                    return "Blend SrcAlpha OneMinusSrcAlpha";
+                case BlendMode.AlphaPremultiplied:
+                    return "Blend One OneMinusSrcAlpha";
+                default:
+                    return string.Empty;
+            }
+        }
+
+        public virtual string GetRenderQueueStr()
+        {
+            switch (owner.blendMode)
+            {
+                case BlendMode.Additive:
+                case BlendMode.Alpha:
+                case BlendMode.AlphaPremultiplied:
+                    return "Transparent";
+                case BlendMode.Opaque:
+                    return "Opaque";
+                case BlendMode.Masked:
+                    return "AlphaTest";
+                default:
+                    throw new NotImplementedException("Unknown blend mode");
+            }
+        }
     }
 }

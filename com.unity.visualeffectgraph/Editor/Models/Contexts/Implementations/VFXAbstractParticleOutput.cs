@@ -327,16 +327,10 @@ namespace UnityEditor.VFX
                 yield return new KeyValuePair<string, VFXShaderWriter>("${VFXOutputRenderState}", renderState);
 
                 var shaderTags = new VFXShaderWriter();
-                if (blendMode == BlendMode.Opaque)
-                    shaderTags.Write("Tags { \"Queue\"=\"Geometry\" \"IgnoreProjector\"=\"False\" \"RenderType\"=\"Opaque\" }");
-                else if (blendMode == BlendMode.Masked)
-                    shaderTags.Write("Tags { \"Queue\"=\"AlphaTest\" \"IgnoreProjector\"=\"False\" \"RenderType\"=\"Opaque\" }");
-                else
-                {
-                    string queueName = preRefraction ? "Geometry+750" : "Transparent"; // TODO Geometry + 750 is currently hardcoded value from HDRP...
-                    shaderTags.Write(string.Format("Tags {{ \"Queue\"=\"{0}\" \"IgnoreProjector\"=\"True\" \"RenderType\"=\"Transparent\" }}", queueName));
-                }
+                var renderQueueStr = subOutput.GetRenderQueueStr();
+                var renderTypeStr = isBlendModeOpaque ? "Opaque" : "Transparent";
 
+                shaderTags.Write(string.Format("Tags {{ \"Queue\"=\"{0}\" \"IgnoreProjector\"=\"{1}\" \"RenderType\"=\"{2}\" }}", renderQueueStr, !isBlendModeOpaque, renderTypeStr));
                 yield return new KeyValuePair<string, VFXShaderWriter>("${VFXShaderTags}", shaderTags);
             }
         }
