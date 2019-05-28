@@ -20,7 +20,8 @@ public class ResetMaterialProperties : MonoBehaviour
         "_ZTestDepthEqualForOpaque", "_ZTestDepthEqualForOpaque",
         "_AlphaCutoffEnable", "_AlphaCutoff",
         "_TransparentSortPriority", "_UseShadowThreshold",
-        "_DoubleSidedEnable", "_DoubleSidedNormalMode"
+        "_DoubleSidedEnable", "_DoubleSidedNormalMode",
+        "_TransparentBackfaceEnable"
     };
 
     static readonly string[] vectorPropertiesToReset = {

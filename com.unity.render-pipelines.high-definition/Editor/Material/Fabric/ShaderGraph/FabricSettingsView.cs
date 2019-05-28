@@ -64,15 +64,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline.Drawing
                     });
                 });
 
-                ps.Add(new PropertyRow(CreateLabel("Back Then Front Rendering", indentLevel)), (row) =>
-                {
-                    row.Add(new Toggle(), (toggle) =>
-                    {
-                        toggle.value = m_Node.backThenFrontRendering.isOn;
-                        toggle.OnToggleChanged(ChangeBackThenFrontRendering);
-                    });
-                });
-
                 m_SortPiorityField = new IntegerField();
                 ps.Add(new PropertyRow(CreateLabel("Sort Priority", indentLevel)), (row) =>
                 {
@@ -313,14 +304,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline.Drawing
             ToggleData td = m_Node.transparencyFog;
             td.isOn = evt.newValue;
             m_Node.transparencyFog = td;
-        }
-
-        void ChangeBackThenFrontRendering(ChangeEvent<bool> evt)
-        {
-            m_Node.owner.owner.RegisterCompleteObjectUndo("Back Then Front Rendering Change");
-            ToggleData td = m_Node.backThenFrontRendering;
-            td.isOn = evt.newValue;
-            m_Node.backThenFrontRendering = td;
         }
 
         void ChangeSortPriority(ChangeEvent<int> evt)

@@ -21,7 +21,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             AlphaCutoffThreshold        = 1 << 4,
             AlphaCutoffShadowThreshold  = 1 << 5,
             DoubleSidedNormalMode       = 1 << 6,
-            Unlit                       = Surface | BlendMode | DoubleSided | DoubleSidedNormalMode | AlphaCutoff | AlphaCutoffShadowThreshold | AlphaCutoffThreshold,
+            BackThenFrontRendering      = 1 << 7,
+            Unlit                       = Surface | BlendMode | DoubleSided | DoubleSidedNormalMode | AlphaCutoff | AlphaCutoffShadowThreshold | AlphaCutoffThreshold | BackThenFrontRendering,
             Lit                         = All,
             All                         = ~0,
         }
@@ -268,7 +269,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             alphaCutoffPostpass = FindProperty(kAlphaCutoffPostpass);
             transparentDepthPrepassEnable = FindProperty(kTransparentDepthPrepassEnable);
             transparentDepthPostpassEnable = FindProperty(kTransparentDepthPostpassEnable);
-            transparentBackfaceEnable = FindProperty(kTransparentBackfaceEnable);
+
+            if ((m_Features & Features.BackThenFrontRendering) != 0)
+                transparentBackfaceEnable = FindProperty(kTransparentBackfaceEnable);
 
             transparentSortPriority = FindProperty(kTransparentSortPriority);
 

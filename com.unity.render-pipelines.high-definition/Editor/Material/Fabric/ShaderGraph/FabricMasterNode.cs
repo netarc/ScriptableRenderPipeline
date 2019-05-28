@@ -259,21 +259,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         }
 
         [SerializeField]
-        bool m_BackThenFrontRendering;
-
-        public ToggleData backThenFrontRendering
-        {
-            get { return new ToggleData(m_BackThenFrontRendering); }
-            set
-            {
-                if (m_BackThenFrontRendering == value.isOn)
-                    return;
-                m_BackThenFrontRendering = value.isOn;
-                Dirty(ModificationScope.Graph);
-            }
-        }
-
-        [SerializeField]
         int m_SortPriority;
 
         public int sortPriority
@@ -742,7 +727,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 sortPriority,
                 zWrite.isOn,
                 transparentCullMode,
-                zTest
+                zTest,
+                false
             );
             HDSubShaderUtilities.AddAlphaCutoffShaderProperties(collector, alphaTest.isOn, false);
             HDSubShaderUtilities.AddDoubleSidedProperty(collector, doubleSidedMode);

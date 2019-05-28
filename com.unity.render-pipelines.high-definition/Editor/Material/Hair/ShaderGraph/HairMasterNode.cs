@@ -804,7 +804,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 sortPriority,
                 zWrite.isOn,
                 transparentCullMode,
-                zTest
+                zTest,
+                backThenFrontRendering.isOn
             );
             HDSubShaderUtilities.AddAlphaCutoffShaderProperties(collector, alphaTest.isOn, alphaTestShadow.isOn);
             HDSubShaderUtilities.AddDoubleSidedProperty(collector, doubleSidedMode);

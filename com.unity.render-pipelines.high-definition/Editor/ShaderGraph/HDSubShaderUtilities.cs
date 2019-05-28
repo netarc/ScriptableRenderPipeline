@@ -1020,7 +1020,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
         }
 
-        public static void AddBlendingStatesShaderProperties(PropertyCollector collector, SurfaceType surface, BlendMode blend, int sortingPriority, bool zWrite, TransparentCullMode transparentCullMode, CompareFunction zTest)
+        public static void AddBlendingStatesShaderProperties(
+            PropertyCollector collector, SurfaceType surface, BlendMode blend, int sortingPriority,
+            bool zWrite, TransparentCullMode transparentCullMode, CompareFunction zTest, bool backThenFrontRendering)
         {
             collector.AddFloatProperty("_SurfaceType", (int)surface);
             collector.AddFloatProperty("_BlendMode", (int)blend);
@@ -1053,6 +1055,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 cSharpEnumType = typeof(CompareFunction),
                 hidden = true,
             });
+
+            collector.AddToggleProperty(kTransparentBackfaceEnable, backThenFrontRendering);
         }
 
         public static void AddAlphaCutoffShaderProperties(PropertyCollector collector, bool alphaCutoff, bool shadowThreshold)
