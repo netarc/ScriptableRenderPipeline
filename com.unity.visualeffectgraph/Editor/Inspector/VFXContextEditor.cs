@@ -44,7 +44,7 @@ class VFXContextEditor : VFXSlotContainerEditor
             spaceProperty = null;
         }
 
-        UnityEngine.Object[] allSRPData = targets.OfType<VFXAbstractRenderedOutput>().Select(t => t.GetSRPData()).Where(t => t != null).ToArray();
+        UnityEngine.Object[] allSRPData = targets.OfType<VFXAbstractRenderedOutput>().Select(t => t.srpData).Where(t => t != null).ToArray();
         srpDataObject = allSRPData.Length > 0 ? new SerializedObject(allSRPData) : null;
 
         if (!serializedObject.isEditingMultipleObjects)

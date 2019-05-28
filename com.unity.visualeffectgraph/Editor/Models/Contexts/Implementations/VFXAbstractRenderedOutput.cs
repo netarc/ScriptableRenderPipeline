@@ -21,37 +21,37 @@ namespace UnityEditor.VFX
         [VFXSetting, Header("Render States")]
         public BlendMode blendMode = BlendMode.Alpha;
 
+        public bool isBlendModeOpaque { get { return blendMode == BlendMode.Opaque || blendMode == BlendMode.Masked; } }
+
         protected VFXAbstractRenderedOutput(VFXDataType dataType) : base(VFXContextType.kOutput, dataType, VFXDataType.kNone) { }
 
-        private static VFXSRPOutputData s_DefaultSRPData = null;
-        public VFXSRPOutputData GetSRPData()
+        public VFXSRPOutputData srpData => m_CurrentSrpData;
+        private VFXSRPOutputData CreateDefaultSRPData()
         {
-            if (currentSrpData == null)
-            {
-                if (s_DefaultSRPData == null)
-                    s_DefaultSRPData = ScriptableObject.CreateInstance<VFXSRPOutputData>();
-                return s_DefaultSRPData;
-            }
-
-            return currentSrpData;
+            var defaultSrpData  = ScriptableObject.CreateInstance<VFXSRPOutputData>();
+            defaultSrpData.Init(this);
+            return defaultSrpData;
         }
 
         private VFXSRPOutputData GetOrCreateSRPData()
         {
             VFXSRPBinder binder = VFXLibrary.currentSRPBinder;
             if (binder == null)
-                return null;
+                return CreateDefaultSRPData();
 
             Type outputDataType = binder.SRPOutputDataType;
             if (outputDataType == null)
-                return null;
+                return CreateDefaultSRPData();
 
-            var outputData = srpData.FirstOrDefault(d => d != null && d.GetType() == outputDataType);
+            var outputData = m_SrpData.FirstOrDefault(d => d != null && d.GetType() == outputDataType);
             if (outputData == null)
             {
                 outputData = (VFXSRPOutputData)ScriptableObject.CreateInstance(outputDataType);
-                srpData.Add(outputData);
+                m_SrpData.Add(outputData);
             }
+
+            if (outputData.owner != this)
+                outputData.Init(this);
 
             return outputData;
         }
@@ -60,16 +60,16 @@ namespace UnityEditor.VFX
         {
             base.OnEnable();
 
-            if (srpData == null)
-                srpData = new List<VFXSRPOutputData>();
+            if (m_SrpData == null)
+                m_SrpData = new List<VFXSRPOutputData>();
 
-            currentSrpData = GetOrCreateSRPData();
+            m_CurrentSrpData = GetOrCreateSRPData();
         }
 
         public override void CollectDependencies(HashSet<ScriptableObject> objs)
         {
             base.CollectDependencies(objs);
-            foreach (var data in srpData)
+            foreach (var data in m_SrpData)
                 if (data != null)
                 {
                     objs.Add(data);
@@ -80,16 +80,15 @@ namespace UnityEditor.VFX
         public override VFXSetting GetSetting(string name)
         {
             VFXSetting setting = base.GetSetting(name);
-            if (!setting.valid && currentSrpData != null)
-                setting = currentSrpData.GetSetting(name);
+            if (!setting.valid)
+                setting = m_CurrentSrpData.GetSetting(name);
             return setting;
         }
 
         public override IEnumerable<VFXSetting> GetSettings(bool listHidden, VFXSettingAttribute.VisibleFlags flags)
         {
             var settings = base.GetSettings(listHidden, flags);
-            if (currentSrpData != null)
-                settings = settings.Concat(currentSrpData.GetSettings(listHidden, flags));
+            settings = settings.Concat(m_CurrentSrpData.GetSettings(listHidden, flags));
             return settings;
         }
 
@@ -104,9 +103,9 @@ namespace UnityEditor.VFX
         }
 
         [SerializeField]
-        private List<VFXSRPOutputData> srpData;
+        private List<VFXSRPOutputData> m_SrpData;
 
         [NonSerialized]
-        private VFXSRPOutputData currentSrpData;
+        private VFXSRPOutputData m_CurrentSrpData;
     }
 }
