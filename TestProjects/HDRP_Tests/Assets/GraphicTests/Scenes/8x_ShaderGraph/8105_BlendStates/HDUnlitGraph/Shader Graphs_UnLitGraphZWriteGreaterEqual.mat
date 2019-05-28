@@ -51,6 +51,7 @@ Material:
     - _TransparentSortPriority: 0
     - _UseShadowThreshold: 0
     - _ZTestDepthEqualForOpaque: 7
+    - _ZTestGBuffer: 4
     - _ZTestTransparent: 7
     - _ZWrite: 1
     m_Colors:

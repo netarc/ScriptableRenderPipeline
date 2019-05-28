@@ -34,7 +34,9 @@ Material:
     - _DoubleSidedEnable: 0
     - _DoubleSidedNormalMode: 0
     - _DstBlend: 10
+    - _ReceivesSSR: 1
     - _RenderQueueType: 5
+    - _RequireSplitLighting: 0
     - _SrcBlend: 1
     - _StencilRef: 2
     - _StencilRefDepth: 0
@@ -47,14 +49,16 @@ Material:
     - _StencilWriteMaskGBuffer: 51
     - _StencilWriteMaskMV: 176
     - _SurfaceType: 1
+    - _TransparentBackfaceEnable: 0
     - _TransparentCullMode: 2
     - _TransparentSortPriority: -1
     - _UseShadowThreshold: 0
     - _ZTestDepthEqualForOpaque: 4
+    - _ZTestGBuffer: 4
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
-    - Color_444E3F87: {r: 0.08884285, g: 1, b: 0, a: 0}
+    - Color_444E3F87: {r: 0.08884282, g: 1, b: 0, a: 0}
     - Color_E2A04A9C: {r: 1, g: 0, b: 0.037591934, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
