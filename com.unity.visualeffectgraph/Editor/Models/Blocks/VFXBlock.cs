@@ -34,7 +34,7 @@ namespace UnityEditor.VFX
                 Invalidate(InvalidationCause.kStructureChanged);
             }
         }
-        public bool isValid
+        public virtual bool isValid
         {
             get
             {
