@@ -64,6 +64,10 @@ namespace UnityEngine.Rendering.LWRP
             ref CameraData cameraData = ref renderingData.cameraData;
             if (cameraData.isStereoEnabled || cameraData.isSceneViewCamera || cameraData.isDefaultViewport)
             {
+                // This set render target is necessary so we change the LOAD state to DontCare.
+                cmd.SetRenderTarget(BuiltinRenderTextureType.CameraTarget, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+                if (Application.isMobilePlatform || Application.platform == RuntimePlatform.Switch)
+                    cmd.ClearRenderTarget(true, true, Color.black);
                 cmd.Blit(m_Source.Identifier(), BuiltinRenderTextureType.CameraTarget);
             }
             else
@@ -76,7 +80,7 @@ namespace UnityEngine.Rendering.LWRP
                 SetRenderTarget(
                     cmd,
                     BuiltinRenderTextureType.CameraTarget,
-                    RenderBufferLoadAction.Load,
+                    m_ClearBlitTarget ? RenderBufferLoadAction.DontCare : RenderBufferLoadAction.Load,
                     RenderBufferStoreAction.Store,
                     m_ClearBlitTarget ? ClearFlag.Color : ClearFlag.None,
                     Color.black,
