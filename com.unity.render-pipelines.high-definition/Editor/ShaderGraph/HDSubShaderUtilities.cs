@@ -621,7 +621,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             var zClipCode = new ShaderStringBuilder();
             var stencilCode = new ShaderStringBuilder();
             var colorMaskCode = new ShaderStringBuilder();
-            HDSubShaderUtilities.BuildRenderStatesFromPassAndMaterialOptions(pass, blendCode, cullCode, zTestCode, zWriteCode, zClipCode, stencilCode, colorMaskCode);
+            HDSubShaderUtilities.BuildRenderStatesFromPass(pass, blendCode, cullCode, zTestCode, zWriteCode, zClipCode, stencilCode, colorMaskCode);
 
             HDRPShaderStructs.AddRequiredFields(pass.RequiredFields, activeFields);
 
@@ -778,7 +778,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             return activeSlots;
         }
 
-        public static void BuildRenderStatesFromPassAndMaterialOptions(
+        public static void BuildRenderStatesFromPass(
             Pass pass,
             ShaderStringBuilder blendCode,
             ShaderStringBuilder cullCode,
