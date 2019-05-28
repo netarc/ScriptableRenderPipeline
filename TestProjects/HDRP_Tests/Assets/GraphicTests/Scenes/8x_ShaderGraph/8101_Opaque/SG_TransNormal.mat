@@ -44,7 +44,9 @@ Material:
     - _DstBlend: 0
     - _Occlusion: 1
     - _Profile: 8
+    - _ReceivesSSR: 1
     - _RenderQueueType: 1
+    - _RequireSplitLighting: 0
     - _Smoothness: 0.1
     - _SrcBlend: 1
     - _StencilRef: 2
@@ -59,6 +61,7 @@ Material:
     - _StencilWriteMaskMV: 176
     - _SurfaceType: 0
     - _Thickness: 0.9
+    - _TransparentBackfaceEnable: 0
     - _TransparentCullMode: 2
     - _TransparentSortPriority: 0
     - _UseShadowThreshold: 0
