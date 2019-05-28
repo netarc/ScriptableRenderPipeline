@@ -21,7 +21,7 @@ public class ResetMaterialProperties : MonoBehaviour
         "_AlphaCutoffEnable", "_AlphaCutoff",
         "_TransparentSortPriority", "_UseShadowThreshold",
         "_DoubleSidedEnable", "_DoubleSidedNormalMode",
-        "_TransparentBackfaceEnable"
+        "_TransparentBackfaceEnable", "_ReceivesSSR", "_RequireSplitLighting"
     };
 
     static readonly string[] vectorPropertiesToReset = {
