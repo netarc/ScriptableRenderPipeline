@@ -50,7 +50,7 @@ namespace UnityEditor.ShaderGraph.Drawing.Colors
             {
                 foreach (var view in nodeViews)
                 {
-                    activeProvider.ClearColor(view);
+                    activeProvider.ClearAllColors(view);
                 }
             }
         }

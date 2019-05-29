@@ -18,5 +18,9 @@ namespace UnityEditor.ShaderGraph.Drawing.Colors
         public void ClearColor(IShaderNodeView nodeView)
         {
         }
+
+        public void ClearAllColors(IShaderNodeView nodeView)
+        {
+        }
     }
 }

@@ -593,6 +593,10 @@ namespace UnityEditor.ShaderGraph.Drawing
                 }
             }
 
+            var nodeList = m_GraphView.Query<MaterialNodeView>().ToList();
+            m_ColorManager.SetNodesDirty(nodeList);
+            m_ColorManager.UpdateNodeViews(nodeList);
+
             UpdateBadges();
         }
 

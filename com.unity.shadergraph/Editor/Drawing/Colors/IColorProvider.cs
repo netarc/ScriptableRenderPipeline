@@ -13,6 +13,7 @@ namespace UnityEditor.ShaderGraph.Drawing.Colors
 
         void ApplyColor(IShaderNodeView nodeView);
         void ClearColor(IShaderNodeView nodeView);
+        void ClearAllColors(IShaderNodeView nodeView);
     }
 
     internal abstract class ColorProviderFromCode : IColorProvider
@@ -41,6 +42,11 @@ namespace UnityEditor.ShaderGraph.Drawing.Colors
         {
             nodeView.ResetColor();
         }
+
+        public virtual void ClearAllColors(IShaderNodeView nodeView)
+        {
+
+        }
     }
 
     internal abstract class ColorProviderFromStyleSheet : IColorProvider
@@ -66,6 +72,14 @@ namespace UnityEditor.ShaderGraph.Drawing.Colors
             if (GetClassFromNode(nodeView.node, out var ussClass))
             {
                 nodeView.colorElement.RemoveFromClassList(ussClass);
+            }
+        }
+
+        public virtual void ClearAllColors(IShaderNodeView nodeView)
+        {
+            foreach(var type in ConcretePrecision.GetValues(typeof(ConcretePrecision)))
+            {
+                nodeView.colorElement.RemoveFromClassList(type.ToString());
             }
         }
     }
