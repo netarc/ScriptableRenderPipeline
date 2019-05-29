@@ -44,7 +44,6 @@ namespace UnityEditor.Experimental.Rendering.LWRP
             }
 
             string unlitTemplate = ReadTemplate("lightweightSpriteUnlitPass.template", sourceAssetDependencyPaths);
-            string forwardTemplate = ReadTemplate("lightweightSpriteForwardPass.template", sourceAssetDependencyPaths);
 
             var unlitMasterNode = masterNode as SpriteUnlitMasterNode;
 
@@ -63,12 +62,6 @@ namespace UnityEditor.Experimental.Rendering.LWRP
                 var materialOptions = ShaderGenerator.GetMaterialOptions(SurfaceType.Transparent, AlphaMode.Alpha, true);
                 subShader.AppendLines(GetShaderPassFromTemplate(
                         unlitTemplate,
-                        unlitMasterNode,
-                        pass,
-                        mode,
-                        materialOptions));
-                subShader.AppendLines(GetShaderPassFromTemplate(
-                        forwardTemplate,
                         unlitMasterNode,
                         pass,
                         mode,
