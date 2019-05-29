@@ -68,6 +68,8 @@ Pass
 	ps_output frag(ps_input i)
 	{
 		ps_output o = (ps_output)0;
+		VFXTransformPSInputs(i);
+		
 		o.color = VFXGetFragmentColor(i);
 		
 #if VFX_USE_RIM_LIGHT

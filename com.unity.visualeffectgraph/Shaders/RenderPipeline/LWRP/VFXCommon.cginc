@@ -6,6 +6,8 @@
 Texture2D _CameraDepthTexture;
 float3 _LightDirection;
 
+void VFXTransformPSInputs(inout VFX_VARYING_PS_INPUTS input) {}
+
 float3 GetCurrentViewPosition()
 {
     return UNITY_MATRIX_I_V._14_24_34;

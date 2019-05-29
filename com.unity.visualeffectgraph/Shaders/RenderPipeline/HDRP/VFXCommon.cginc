@@ -2,6 +2,14 @@
 #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPass.cs.hlsl"
 #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Lighting/AtmosphericScattering/AtmosphericScattering.hlsl"
 
+void VFXTransformPSInputs(inout VFX_VARYING_PS_INPUTS input)
+{
+#if IS_TRANSPARENT_PARTICLE && defined(VFX_VARYING_POSCS)
+    // We need to readapt the SS position as our screen space positions are for a low res buffer, but we try to access a full res buffer.
+    input.VFX_VARYING_POSCS.xy = _OffScreenRendering > 0 ? (input.VFX_VARYING_POSCS.xy * _OffScreenDownsampleFactor) : input.VFX_VARYING_POSCS.xy;
+#endif
+}
+
 float4 VFXTransformPositionWorldToClip(float3 posWS)
 {
 #if VFX_WORLD_SPACE

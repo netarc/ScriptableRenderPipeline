@@ -58,7 +58,8 @@ Pass
 	ps_output frag(ps_input i)
 	{
 		ps_output o = (ps_output)0;
-
+		VFXTransformPSInputs(i);
+		
 		#define VFX_TEXTURE_COLOR VFXGetTextureColor(VFX_SAMPLER(mainTexture),i)
 		${VFXApplyColor}
 
