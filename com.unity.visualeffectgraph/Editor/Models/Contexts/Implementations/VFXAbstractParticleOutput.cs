@@ -112,7 +112,7 @@ namespace UnityEditor.VFX
         }
         public bool NeedsDeadListCount() { return HasIndirectDraw() && (taskType == VFXTaskType.ParticleQuadOutput || taskType == VFXTaskType.ParticleHexahedronOutput); } // Should take the capacity into account to avoid false positive
 
-        protected VFXAbstractParticleOutput() : base(VFXDataType.kParticle) {}
+        protected VFXAbstractParticleOutput() : base(VFXDataType.Particle) {}
 
         public override bool codeGeneratorCompute { get { return false; } }
 
@@ -172,7 +172,7 @@ namespace UnityEditor.VFX
         {
             if (target == VFXDeviceTarget.GPU)
             {
-                var gpuMapper = VFXExpressionMapper.FromBlocks(activeChildrenWithImplicit);
+                var gpuMapper = VFXExpressionMapper.FromBlocks(activeFlattenedChildrenWithImplicit);
                 gpuMapper.AddExpressions(CollectGPUExpressions(GetExpressionsFromSlots(this)), -1);
                 return gpuMapper;
             }
