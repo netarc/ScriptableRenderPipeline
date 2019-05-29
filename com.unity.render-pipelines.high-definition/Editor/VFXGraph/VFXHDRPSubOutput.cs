@@ -13,7 +13,7 @@ namespace UnityEditor.VFX
         [VFXSetting(VFXSettingAttribute.VisibleFlags.InInspector), Header("HDRP")]
         public OpaqueRenderQueue opaqueRenderQueue = OpaqueRenderQueue.Default;
 
-        [VFXSetting(VFXSettingAttribute.VisibleFlags.InInspector)]
+        [VFXSetting(VFXSettingAttribute.VisibleFlags.InInspector), Header("HDRP")]
         public TransparentRenderQueue transparentRenderQueue = TransparentRenderQueue.Default;
 
         protected override IEnumerable<string> filteredOutSettings
@@ -50,7 +50,7 @@ namespace UnityEditor.VFX
             string prefix = string.Empty;
             if (owner.isBlendModeOpaque)
             {
-                prefix = "Opaque";
+                prefix = "Geometry";
                 renderQueueType = HDRenderQueue.ConvertFromOpaqueRenderQueue(opaqueRenderQueue);
             }
             else
