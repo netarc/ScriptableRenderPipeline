@@ -23,7 +23,7 @@ namespace UnityEditor.VFX
 
         public bool isBlendModeOpaque { get { return blendMode == BlendMode.Opaque || blendMode == BlendMode.Masked; } }
 
-        protected VFXAbstractRenderedOutput(VFXDataType dataType) : base(VFXContextType.kOutput, dataType, VFXDataType.kNone) { }
+        protected VFXAbstractRenderedOutput(VFXDataType dataType) : base(VFXContextType.Output, dataType, VFXDataType.None) { }
 
         public VFXSRPSubOutput subOutput => m_CurrentSubOutput;
         private VFXSRPSubOutput CreateDefaultSubOutput()
@@ -66,14 +66,14 @@ namespace UnityEditor.VFX
             m_CurrentSubOutput = GetOrCreateSubOutput();
         }
 
-        public override void CollectDependencies(HashSet<ScriptableObject> objs)
+        public override void CollectDependencies(HashSet<ScriptableObject> objs, bool ownedOnly)
         {
-            base.CollectDependencies(objs);
+            base.CollectDependencies(objs, ownedOnly);
             foreach (var data in m_SubOutputs)
                 if (data != null)
                 {
                     objs.Add(data);
-                    data.CollectDependencies(objs);
+                    data.CollectDependencies(objs, ownedOnly);
                 }
         }
 
