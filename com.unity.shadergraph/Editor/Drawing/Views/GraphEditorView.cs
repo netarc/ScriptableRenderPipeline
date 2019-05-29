@@ -460,6 +460,15 @@ namespace UnityEditor.ShaderGraph.Drawing
         public void HandleGraphChanges()
         {
             previewManager.HandleGraphChanges();
+
+            if (previewManager.nodesToUpdate.Count > 0)
+            {
+                var nodeList = m_GraphView.Query<MaterialNodeView>().ToList();
+
+                m_ColorManager.SetNodesDirty(nodeList);
+                m_ColorManager.UpdateNodeViews(nodeList);
+            }
+
             previewManager.RenderPreviews();
             m_BlackboardProvider.HandleGraphChanges();
             m_GroupHashSet.Clear();
@@ -592,10 +601,6 @@ namespace UnityEditor.ShaderGraph.Drawing
                     }
                 }
             }
-
-            var nodeList = m_GraphView.Query<MaterialNodeView>().ToList();
-            m_ColorManager.SetNodesDirty(nodeList);
-            m_ColorManager.UpdateNodeViews(nodeList);
 
             UpdateBadges();
         }

@@ -27,6 +27,11 @@ namespace UnityEditor.ShaderGraph.Drawing
         HashSet<AbstractMaterialNode> m_TimedNodes = new HashSet<AbstractMaterialNode>();
         bool m_RefreshTimedNodes;
 
+        public HashSet<AbstractMaterialNode> nodesToUpdate
+        {
+            get { return m_NodesToUpdate; }
+        }
+
         PreviewSceneResources m_SceneResources;
         Texture2D m_ErrorTexture;
         Vector2? m_NewMasterPreviewSize;
