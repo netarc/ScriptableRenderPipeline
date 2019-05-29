@@ -50,11 +50,22 @@ namespace UnityEditor.ShaderGraph.Drawing.Colors
             {
                 foreach (var view in nodeViews)
                 {
+                    activeProvider.ClearColor(view);
+                }
+            }
+        }
+
+        public void RemoveNodeColors(IEnumerable<IShaderNodeView> nodeViews)
+        {
+            if (activeProvider.ClearOnDirty())
+            {
+                foreach (var view in nodeViews)
+                {
                     activeProvider.ClearAllColors(view);
                 }
             }
         }
-        
+
         public void SetActiveProvider(int newIndex, IEnumerable<IShaderNodeView> nodeViews)
         {
             if (newIndex == activeIndex || !IsValidIndex(newIndex))
