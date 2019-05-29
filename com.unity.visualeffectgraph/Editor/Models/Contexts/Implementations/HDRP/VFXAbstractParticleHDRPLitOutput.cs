@@ -396,17 +396,6 @@ namespace UnityEditor.VFX
             base.OnEnable();
         }
 
-        // HDRP always premultiplies in shader
-        protected override void WriteBlendMode(VFXShaderWriter writer)
-        {
-            if (blendMode == BlendMode.Additive)
-                writer.WriteLine("Blend One One");
-            else if (blendMode == BlendMode.Alpha)
-                writer.WriteLine("Blend One OneMinusSrcAlpha");
-            else if (blendMode == BlendMode.AlphaPremultiplied)
-                writer.WriteLine("Blend One OneMinusSrcAlpha");
-        }
-
         public override IEnumerable<KeyValuePair<string, VFXShaderWriter>> additionalReplacements
         {
             get

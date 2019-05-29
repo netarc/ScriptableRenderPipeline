@@ -27,6 +27,23 @@ namespace UnityEditor.VFX
             }
         }
 
+        public override string GetBlendModeStr()
+        {
+            bool isLowRes = transparentRenderQueue == TransparentRenderQueue.LowResolution;
+            bool isLit = owner is VFXAbstractParticleHDRPLitOutput;
+            switch (owner.blendMode)
+            {
+                case BlendMode.Additive:
+                    return string.Format("Blend {0} One {1}", isLit ? "One" : "SrcAlpha", isLowRes ? ", Zero One" : "");
+                case BlendMode.Alpha:
+                    return string.Format("Blend {0} OneMinusSrcAlpha {1}", isLit ? "One" : "SrcAlpha", isLowRes ? ", Zero OneMinusSrcAlpha" : "");
+                case BlendMode.AlphaPremultiplied:
+                    return string.Format("Blend One OneMinusSrcAlpha {0}", isLowRes ? ", Zero OneMinusSrcAlpha" : "");
+                default:
+                    return string.Empty;
+            }
+        }
+
         public override string GetRenderQueueStr()
         {
             RenderQueueType renderQueueType;
