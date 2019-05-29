@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `Fixed`, `Viewer`, and `Automatic` modes to compute the FOV used when rendering a `PlanarReflectionProbe`
 - A checkbox to toggle the chrome gizmo of `ReflectionProbe`and `PlanarReflectionProbe`
 - Added a Light layer in shadows that allow for objects to cast shadows without being affected by light (and vice versa).
-- ShaderGraph blend states are now accessible from the material UI (Surface Type, Sorting Priority, Blending Mode, etc.)
+- ShaderGraph blend states are now accessible from the material UI (Surface Type, Sorting Priority, Blending Mode, etc.). Materials using a ShaderGraph may be broken after this change so we provide an upgrade script for the materials in the scene: https://gist.github.com/alelievr/8003b0892558deee911cd4d6189d68e4
 - Added the control over ZTest, ZWrite and CullMode for transparent materials
 - Unlit HD Unlit master node shaders now cast shadows, as well as the Unlit Shader
 
