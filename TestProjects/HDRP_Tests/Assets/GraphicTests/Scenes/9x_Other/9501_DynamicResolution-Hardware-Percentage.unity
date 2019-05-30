@@ -153,7 +153,7 @@ MonoBehaviour:
   priority: -1
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: cf1b32335766f2e40a3d01fb915d6960, type: 2}
+  sharedProfile: {fileID: 11400000, guid: e1aa60a7132464a76aaa519e0adee3c7, type: 2}
 --- !u!4 &85133686
 Transform:
   m_ObjectHideFlags: 0
@@ -670,7 +670,7 @@ PrefabInstance:
         type: 3}
       propertyPath: renderPipelineAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 64971dba3ed16364b8fe631880c604ee,
+      objectReference: {fileID: 11400000, guid: 1be0f3f05bce34603b12c874aa0ae8da,
         type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e1cb99d8f0231c342b3378ce5e280559, type: 3}

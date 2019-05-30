@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cf1dab834d4ec34195b920ea7bbf9ec, type: 3}
-  m_Name: DynamicResolutionHDRPSettingsPercentage
+  m_Name: DynamicResolutionHDRPSettingsSoftwarePercentage
   m_EditorClassIdentifier: 
   m_Version: 5
   m_ObsoleteFrameSettings:
@@ -242,7 +242,7 @@ MonoBehaviour:
       enabled: 1
       maxPercentage: 25
       minPercentage: 1
-      dynResType: 1
+      dynResType: 0
       upsampleFilter: 1
       forceResolution: 1
       forcedPercentage: 25

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cf1dab834d4ec34195b920ea7bbf9ec, type: 3}
-  m_Name: DynamicResolutionHDRPSettings
+  m_Name: DynamicResolutionHDRPSettingsHardwareLERP
   m_EditorClassIdentifier: 
   m_Version: 5
   m_ObsoleteFrameSettings:
@@ -245,7 +245,7 @@ MonoBehaviour:
       dynResType: 1
       upsampleFilter: 1
       forceResolution: 0
-      forcedPercentage: 100
+      forcedPercentage: 25
     lowresTransparentSettings:
       enabled: 1
       checkerboardDepthBuffer: 1
