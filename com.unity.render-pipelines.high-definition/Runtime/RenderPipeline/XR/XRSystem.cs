@@ -99,14 +99,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
                 // XRTODO: handle more than 2 instanced views
                 TextureXR.maxViews = 2;
+
+                return true;
             }
             else
             {
                 display = null;
             }
-
-            return display != null;
-#endif
 
             return false;
         }
