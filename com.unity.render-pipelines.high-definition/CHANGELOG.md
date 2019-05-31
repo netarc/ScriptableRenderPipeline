@@ -10,9 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `Fixed`, `Viewer`, and `Automatic` modes to compute the FOV used when rendering a `PlanarReflectionProbe`
 - A checkbox to toggle the chrome gizmo of `ReflectionProbe`and `PlanarReflectionProbe`
 - Added a Light layer in shadows that allow for objects to cast shadows without being affected by light (and vice versa).
-- ShaderGraph blend states are now accessible from the material UI (Surface Type, Sorting Priority, Blending Mode, etc.). Materials using a ShaderGraph may be broken after this change, to fix them you can use the `Edit/Render Pipeline/Reset all ShaderGraph Scene Materials BlendStates` option that will synch the blendstate of your shader graph master node with the material properties.
-- Added the control over ZTest, ZWrite and CullMode for transparent materials
-- Unlit HD Unlit master node shaders now cast shadows, as well as the Unlit Shader
+- You can now access ShaderGraph blend states from the Material UI (for example, **Surface Type**, **Sorting Priority**, and **Blending Mode**). This change may break Materials that use a ShaderGraph, to fix them, select **Edit > Render Pipeline > Reset all ShaderGraph Scene Materials BlendStates**. This syncs the blendstates of you ShaderGraph master nodes with the Material properties.
+- You can now control ZTest, ZWrite, and CullMode for transparent Materials.
+- Materials that use Unlit Shaders or Unlit Master Node Shaders now cast shadows.
 
 ### Fixed
 - Fixed an issue with history buffers causing effects like TAA or auto exposure to flicker when more than one camera was visible in the editor
@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Replaced HDCamera.computePassCount by viewCount
 - Removed xrInstancing flag in RTHandles (replaced by TextureXR.slices and TextureXR.dimensions)
 - Refactor the HDRenderPipeline and lightloop code to preprare for high level rendergraph
-- Removed the Back Then Front Rendering option in the fabric master node settings that didn't do anything
+- Removed the **Back Then Front Rendering** option in the fabric Master Node settings. Enabling this option previously did nothing.
 
 ## [6.7.0-preview] - 2019-05-16
 
