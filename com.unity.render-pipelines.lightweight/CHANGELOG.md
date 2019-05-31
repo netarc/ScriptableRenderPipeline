@@ -17,8 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed an issue that caused forward renderer resources to not load properly when you upgraded LWRP from an older version to 7.0.0. [case 1154925](https://issuetracker.unity3d.com/issues/lwrp-upgrading-lwrp-package-to-7-dot-0-0-breaks-forwardrenderdata-asset-in-resource-files)
 - Fixed GC spikes caused by LWRP allocating heap memory every frame.
 - Fixed NullReference exception caused when trying to add a ScriptableRendererFeature.
-- Fixed warnings about unsupported shadow map format for GLES2 API.
-- Disabled shadows for devices that do not support shadow map nor depth textures.
+- Fixed warnings for unsupported shadow map formats for GLES2 API.
+- Disabled shadows for devices that do not support shadow maps or depth textures.
 
 ## [6.7.0] - 2019-05-16
 ### Added
