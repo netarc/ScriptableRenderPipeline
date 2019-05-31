@@ -106,6 +106,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             {
                 display = null;
             }
+#endif
 
             return false;
         }
