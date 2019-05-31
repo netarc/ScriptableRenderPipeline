@@ -22,7 +22,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             Input = 1<<1,
             Tesselation = 1<<2,
             Transparency = 1<<3,
-            VertexAnimation = 1<<4,
+            // Free slot 4
             Detail = 1<<5,
             Emissive = 1<<6,
             Advance = 1<<7,

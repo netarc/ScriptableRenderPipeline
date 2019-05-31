@@ -2844,6 +2844,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 #endif
         }
 
+
         public void SetContactShadowsTexture(HDCamera hdCamera, RTHandleSystem.RTHandle contactShadowsRT, CommandBuffer cmd)
         {
             if (!WillRenderContactShadow())

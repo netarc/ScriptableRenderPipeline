@@ -59,8 +59,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             public static GUIContent anisotropyText = new GUIContent("Anisotropy", "Controls the scale factor for anisotropy.");
             public static GUIContent anisotropyMapText = new GUIContent("Anisotropy Map", "Specifies the Anisotropy Map(R) for this Material.");
 
-            public static GUIContent UVBaseMappingText = new GUIContent("Base UV Mapping", "");
-            public static GUIContent texWorldScaleText = new GUIContent("World Scale", "Sets the tiling factor HDRP applies to Planar/Trilinear mapping.");
+            public static GUIContent UVBaseMappingText = new GUIContent("Base UV mapping", "");
+            public static GUIContent texWorldScaleText = new GUIContent("World scale", "Sets the tiling factor HDRP applies to Planar/Trilinear mapping.");
 
             // Specular color
             public static GUIContent energyConservingSpecularColorText = new GUIContent("Energy Conserving Specular Color", "When enabled, HDRP simulates energy conservation when using Specular Color mode. This results in high Specular Color values producing lower Diffuse Color values.");

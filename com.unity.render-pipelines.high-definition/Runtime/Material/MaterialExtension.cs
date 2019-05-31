@@ -76,13 +76,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         Add
     }
 
-    internal enum    AxfBrdfType
-    {
-        SVBRDF,
-        CAR_PAINT,
-        BTF,
-    }
-
     internal enum UVDetailMapping
     {
         UV0,

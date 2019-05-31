@@ -758,7 +758,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public const string kDoubleSidedNormalMode = "_DoubleSidedNormalMode";
         public const string kDistortionOnly = "_DistortionOnly";
         public const string kTransparentDepthPrepassEnable = "_TransparentDepthPrepassEnable";
-        public const string kEnableMotionVectorForVertexAnimation = "_EnableMotionVectorForVertexAnimation";
         public const string kTransparentDepthPostpassEnable = "_TransparentDepthPostpassEnable";
 
         public const int kMaxLayerCount = 4;

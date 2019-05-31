@@ -28,15 +28,14 @@ Pass
     // Variant
     //-------------------------------------------------------------------------------------
     
-    #pragma shader_feature_local _ALPHATEST_ON
     // #pragma shader_feature_local _DOUBLESIDED_ON - We have no lighting, so no need to have this combination for shader, the option will just disable backface culling
-
-    #pragma shader_feature_local _EMISSIVE_COLOR_MAP
 
     // Keyword for transparent
     #pragma shader_feature _SURFACE_TYPE_TRANSPARENT
     #pragma shader_feature_local _ _BLENDMODE_ALPHA _BLENDMODE_ADD _BLENDMODE_PRE_MULTIPLY
     #pragma shader_feature_local _ENABLE_FOG_ON_TRANSPARENT
+
+    $AlphaFog:                           #define _ENABLE_FOG_ON_TRANSPARENT 1
 
     //enable GPU instancing support
     #pragma multi_compile_instancing
@@ -136,9 +135,7 @@ $include("SharedCode.template.hlsl")
         // Perform alpha test very early to save performance (a killed pixel will not sample textures)
         // TODO: split graph evaluation to grab just alpha dependencies first? tricky..
         
-    #ifdef _ALPHATEST_ON
-        DoAlphaTest(surfaceDescription.Alpha, surfaceDescription.AlphaClipThreshold);
-    #endif
+        $AlphaTest: DoAlphaTest(surfaceDescription.Alpha, surfaceDescription.AlphaClipThreshold);
 
         BuildSurfaceData(fragInputs, surfaceDescription, V, posInput, surfaceData);
 

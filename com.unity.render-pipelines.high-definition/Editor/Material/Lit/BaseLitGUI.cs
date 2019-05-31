@@ -81,8 +81,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 CoreUtils.SetKeyword(material, "_DEPTHOFFSET_ON", depthOffsetEnable);
             }
 
-            bool windEnabled = material.HasProperty(kWindEnabled) && material.GetFloat(kWindEnabled) > 0.0f;
-            CoreUtils.SetKeyword(material, "_VERTEX_WIND", windEnabled);
+            CoreUtils.SetKeyword(material, "_VERTEX_WIND", false);
 
             if (material.HasProperty(kTessellationMode))
             {

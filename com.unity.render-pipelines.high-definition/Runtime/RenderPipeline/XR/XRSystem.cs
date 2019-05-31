@@ -104,9 +104,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             {
                 display = null;
             }
-#endif
 
             return display != null;
+#endif
+
+            return false;
         }
 
         void CreateLayoutLegacyStereo(Camera camera)

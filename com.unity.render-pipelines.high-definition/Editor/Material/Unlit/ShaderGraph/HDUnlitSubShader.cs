@@ -293,6 +293,19 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 return activeFields;
             }
 
+            if (masterNode.alphaTest.isOn && pass.PixelShaderUsesSlot(HDUnlitMasterNode.AlphaThresholdSlotId))
+            {
+                activeFields.Add("AlphaTest");
+            }
+
+            if (masterNode.surfaceType != SurfaceType.Opaque)
+            {
+                if (masterNode.transparencyFog.isOn)
+                {
+                    activeFields.Add("AlphaFog");
+                }
+            }
+
             return activeFields;
         }
 

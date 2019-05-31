@@ -8,6 +8,13 @@ using static UnityEngine.Experimental.Rendering.HDPipeline.HDMaterialProperties;
 
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
+    internal enum AxfBrdfType
+    {
+        SVBRDF,
+        CAR_PAINT,
+        BTF,
+    }
+        
     /// <summary>
     /// GUI for HDRP AxF materials
     /// </summary>

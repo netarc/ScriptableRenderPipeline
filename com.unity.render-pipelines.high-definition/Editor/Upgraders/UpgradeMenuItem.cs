@@ -4,6 +4,10 @@ using UnityEngine.Experimental.Rendering.HDPipeline;
 using System.Collections.Generic;
 using UnityEditor.Rendering;
 using UnityEngine.Rendering;
+using UnityEditor.ShaderGraph;
+
+// Include material common properties names
+using static UnityEngine.Experimental.Rendering.HDPipeline.HDMaterialProperties;
 
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
@@ -279,6 +283,52 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             // Caution: Version of latest script and default version in all HDRP shader must match 
 
             UpgradeSceneMaterials();
+        }
+
+        static readonly string[] floatPropertiesToReset = {
+            kStencilRef, kStencilWriteMask,
+            kStencilRefDepth, kStencilWriteMaskDepth,
+            kStencilRefMV, kStencilWriteMaskMV,
+            kStencilRefDistortionVec, kStencilWriteMaskDistortionVec,
+            kStencilRefGBuffer, kStencilWriteMaskGBuffer, kZTestGBuffer,
+            kSurfaceType, kBlendMode, "_SrcBlend", "_DstBlend", "_AlphaSrcBlend", "_AlphaDstBlend",
+            kZWrite, "_CullMode", "_CullModeForward", kTransparentCullMode,
+            kZTestDepthEqualForOpaque,
+            kAlphaCutoffEnabled, "_AlphaCutoff",
+            "_TransparentSortPriority", "_UseShadowThreshold",
+            kDoubleSidedEnable, kDoubleSidedNormalMode,
+            kTransparentBackfaceEnable, kReceivesSSR, kUseSplitLighting
+        };
+
+        static readonly string[] vectorPropertiesToReset = {
+            "_DoubleSidedConstants",
+        };
+
+        [MenuItem("Edit/Render Pipeline/Reset All ShaderGraph Scene Materials BlendStates")]
+        static public void UpgradeAllShaderGraphMaterialBlendStates()
+        {
+            var materials = Resources.FindObjectsOfTypeAll< Material >();
+
+            foreach (var mat in materials)
+            {
+                if (GraphUtil.IsShaderGraph(mat.shader))
+                {
+                    var defaultProperties = new Material(mat.shader);
+
+                    foreach (var floatToReset in floatPropertiesToReset)
+                        if (mat.HasProperty(floatToReset))
+                            mat.SetFloat(floatToReset, defaultProperties.GetFloat(floatToReset));
+                    foreach (var vectorToReset in vectorPropertiesToReset)
+                        if (mat.HasProperty(vectorToReset))
+                            mat.SetVector(vectorToReset, defaultProperties.GetVector(vectorToReset));
+
+                    HDEditorUtils.ResetMaterialKeywords(mat);
+
+                    mat.renderQueue = mat.shader.renderQueue;
+
+                    defaultProperties = null;
+                }
+            }
         }
     }
 }

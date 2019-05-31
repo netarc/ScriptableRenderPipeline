@@ -159,6 +159,7 @@ namespace UnityEngine.Experimental.Rendering
         {
             get
             {
+                return m_BlackTexture2DArray;
                 if (m_BlackUIntTexture2DArray == null)
                 {
                     // Uint textures can't be used in Sampling operations so we can't use the Texture2DArray class because

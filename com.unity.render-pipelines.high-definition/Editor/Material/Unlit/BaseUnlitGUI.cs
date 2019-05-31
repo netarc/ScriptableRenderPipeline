@@ -274,7 +274,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 material.SetShaderPassEnabled(HDShaderPassNames.s_ForwardOnlyStr, enablePass);
                 material.SetShaderPassEnabled(HDShaderPassNames.s_GBufferStr, enablePass);
                 material.SetShaderPassEnabled(HDShaderPassNames.s_GBufferWithPrepassStr, enablePass);
-                material.SetShaderPassEnabled(HDShaderPassNames.s_MotionVectorsStr, enablePass);
                 material.SetShaderPassEnabled(HDShaderPassNames.s_DistortionVectorsStr, distortionEnable); // note: use distortionEnable
                 material.SetShaderPassEnabled(HDShaderPassNames.s_TransparentDepthPrepassStr, enablePass);
                 material.SetShaderPassEnabled(HDShaderPassNames.s_TransparentBackfaceStr, enablePass);
@@ -304,15 +303,12 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             // Shader graphs materials have their own management of motion vector pass in the material inspector
             if (!material.shader.IsShaderGraph())
             {
-                if (material.HasProperty(kEnableMotionVectorForVertexAnimation))
-                {
-                    material.SetShaderPassEnabled(HDShaderPassNames.s_MotionVectorsStr, material.GetFloat(kEnableMotionVectorForVertexAnimation) > 0.0f);
-                }
-                else
-                {
-                    // In case we have an HDRP material that inherits from this UI but does not have an _EnableMotionVectorForVertexAnimation property, we need to set it to false (default behavior)
-                    material.SetShaderPassEnabled(HDShaderPassNames.s_MotionVectorsStr, false);
-                }
+                // We don't have any vertex animation for lit/unlit vector, so we
+                // setup motion vector pass to false. Remind that in HDRP this
+                // doesn't disable motion vector, it just mean that the material
+                // don't do any vertex deformation but we can still have
+                // skinning / morph target
+                material.SetShaderPassEnabled(HDShaderPassNames.s_MotionVectorsStr, false);
             }
         }
     }
