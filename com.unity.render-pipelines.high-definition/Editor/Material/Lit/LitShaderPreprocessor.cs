@@ -30,9 +30,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             {
                 string shaderPath = AssetDatabase.GetAssetPath(shader);
                 isBuiltInLit |= GraphUtil.GetOutputNodeType(shaderPath) == typeof(HDLitMasterNode);
-                isBuiltInLit |= GraphUtil.GetOutputNodeType(shaderPath) == typeof(HairMasterNode);
-                isBuiltInLit |= GraphUtil.GetOutputNodeType(shaderPath) == typeof(FabricMasterNode);
-                isBuiltInLit |= GraphUtil.GetOutputNodeType(shaderPath) == typeof(StackLitMasterNode);
             }
 
             // When using forward only, we never need GBuffer pass (only Forward)
@@ -76,25 +73,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                         return true;
                 }
 
-                if (inputData.shaderKeywordSet.IsEnabled(m_Transparent))
-                {
-                    // If transparent, we never need GBuffer pass.
-                    if (isGBufferPass)
-                        return true;
-
-                    // If transparent we don't need the depth only pass
-                    if (isDepthOnlyPass)
-                        return true;
-
-                    // If transparent we don't need the motion vector pass
-                    if (isMotionPass)
-                        return true;
-
-                    // If we are transparent we use cluster lighting and not tile lighting
-                    if (inputData.shaderKeywordSet.IsEnabled(m_TileLighting))
-                        return true;
-                }
-                else // Opaque
+                if (!inputData.shaderKeywordSet.IsEnabled(m_Transparent)) // Opaque
                 {
                     // If opaque, we never need transparent specific passes (even in forward only mode)
                     if (isTransparentForwardPass)
@@ -117,6 +96,25 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     // if (inputData.shaderKeywordSet.IsEnabled(m_ClusterLighting) && !hdrpAsset.currentPlatformRenderPipelineSettings.supportMSAA)
                     //    return true;
                 }
+            }
+
+            if (inputData.shaderKeywordSet.IsEnabled(m_Transparent))
+            {
+                // If transparent, we never need GBuffer pass.
+                if (isGBufferPass)
+                    return true;
+
+                // If transparent we don't need the depth only pass
+                if (isDepthOnlyPass)
+                    return true;
+
+                // If transparent we don't need the motion vector pass
+                if (isMotionPass)
+                    return true;
+
+                // If we are transparent we use cluster lighting and not tile lighting
+                if (inputData.shaderKeywordSet.IsEnabled(m_TileLighting))
+                    return true;
             }
 
             // TODO: Tests for later
