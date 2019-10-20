@@ -273,6 +273,8 @@ namespace UnityEngine.Rendering.HighDefinition
         // MSAA resolve materials
         Material m_ColorResolveMaterial = null;
 
+        public event Action<ScriptableRenderContext> postRenderHook;
+        public bool hasPostRenderHook { get { return postRenderHook != null; } }
 
         public HDRenderPipeline(HDRenderPipelineAsset asset, HDRenderPipelineAsset defaultAsset)
         {
@@ -1592,6 +1594,12 @@ namespace UnityEngine.Rendering.HighDefinition
                         renderContext.Submit();
                     }
                 }
+            }
+
+            if (hasPostRenderHook)
+            {
+                postRenderHook(renderContext);
+                renderContext.Submit();
             }
 
             m_XRSystem.ReleaseFrame();
