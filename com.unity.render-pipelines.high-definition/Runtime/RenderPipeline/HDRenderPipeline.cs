@@ -291,6 +291,8 @@ namespace UnityEngine.Rendering.HighDefinition
         bool m_RayTracingSupported = false;
         public bool rayTracingSupported { get { return m_RayTracingSupported; } }
 
+        public event Action<ScriptableRenderContext> postRenderHook;
+        public bool hasPostRenderHook { get { return postRenderHook != null; } }
 
 #if UNITY_EDITOR
         bool m_ResourcesInitialized = false;
@@ -1765,6 +1767,12 @@ namespace UnityEngine.Rendering.HighDefinition
                         renderContext.Submit();
                     }
                 }
+            }
+
+            if (hasPostRenderHook)
+            {
+                postRenderHook(renderContext);
+                renderContext.Submit();
             }
 
             m_XRSystem.ReleaseFrame();
